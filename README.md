@@ -2,4 +2,4 @@
 
 ## 프리뷰
 
-<img src="./preview.png">
+<img src="./preview.png" alt="preview image">
