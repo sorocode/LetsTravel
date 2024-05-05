@@ -7,9 +7,9 @@ import profile_blank from "../../assets/icons/profile_blank.svg";
 import home_blank from "../../assets/icons/home_blank.svg";
 import { NavLink } from "react-router-dom";
 const NavBar = () => {
-  const navItemList = ["map", "navigator", "home", "heart", "profile"];
+  // const navItemList = ["map", "navigator", "home", "heart", "profile"];
   return (
-    <div className="container flex justify-evenly items-center bg-gray-400 w-screen max-w-screen-2xl h-[50px]">
+    <div className="container flex justify-evenly items-center w-screen max-w-screen-2xl h-[50px] bg-white">
       {/* {navItemList.map((item, index) => (
         <NavLink key={index}>
           <img src={`${item}_blank`} alt={`${item}_blank`} />
