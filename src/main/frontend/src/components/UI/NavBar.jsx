@@ -1,10 +1,10 @@
-import heart_blank from "../../assets/heart_blank.svg";
-import map_filled from "../../assets/map_filled.svg";
-import map_blank from "../../assets/map_blank.svg";
-import navigator_filled from "../../assets/navigator_filled.svg";
-import navigator_blank from "../../assets/navigator_blank.svg";
-import profile_blank from "../../assets/profile_blank.svg";
-import home_blank from "../../assets/home_blank.svg";
+import heart_blank from "../../assets/icons/heart_blank.svg";
+import map_filled from "../../assets/icons/map_filled.svg";
+import map_blank from "../../assets/icons/map_blank.svg";
+import navigator_filled from "../../assets/icons/navigator_filled.svg";
+import navigator_blank from "../../assets/icons/navigator_blank.svg";
+import profile_blank from "../../assets/icons/profile_blank.svg";
+import home_blank from "../../assets/icons/home_blank.svg";
 import { NavLink } from "react-router-dom";
 const NavBar = () => {
   const navItemList = ["map", "navigator", "home", "heart", "profile"];
