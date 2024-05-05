@@ -15,7 +15,7 @@ const SelectCityPage = () => {
         </p>
       ))}
       <br />
-      <h2>현재 {cities.length}개 국가 선택중</h2>
+      <h2>현재 {cities.length}개 도시 선택중</h2>
       {cities.map((city, index) => (
         <p key={index}>{city.cityName}</p>
       ))}
