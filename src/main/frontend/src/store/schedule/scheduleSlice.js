@@ -7,7 +7,6 @@ tomorrow.setDate(today.getDate() + 1);
 
 const initialState = {
   cities: [], //도시 리스트
-  totalQuantity: 0, // 도시 총 개수
   startDate: toMySQLDate(today), //시작일 오늘로 설정
   endDate: toMySQLDate(tomorrow), //종료일 내일로 설정
   dateDif: 1, // 종료일과 시작일 사이의 날짜 차이
@@ -27,7 +26,6 @@ export const scheduleSlice = createSlice({
           cityName: newCity.cityName,
           countryName: newCity.countryName,
         });
-        state.totalQuantity++;
       } else {
         alert("이미 추가된 도시입니다.");
       }
@@ -41,7 +39,7 @@ export const scheduleSlice = createSlice({
         return;
       } else {
         state.cities = state.cities.filter((city) => city.id !== id);
-        state.totalQuantity--;
+        // state.totalQuantity--;
       }
     },
     //TODO:출발일, 도착일 변경 로직
