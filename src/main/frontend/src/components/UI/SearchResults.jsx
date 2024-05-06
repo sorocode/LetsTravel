@@ -1,18 +1,20 @@
-import { useRef, useState } from "react";
+import { useRef, useState, forwardRef } from "react";
 import SearchBar from "./SearchBar";
 
-const SearchResults = ({ searchId, items, isClicked, children }) => {
-  const lastChange = useRef();
+const SearchResults = forwardRef(function SearchResults(
+  { searchId, items, children },
+  ref
+) {
   const [searchTerm, setSearchTerm] = useState("");
   const searchResults = items.filter((item) =>
     JSON.stringify(item).toLowerCase().includes(searchTerm.toLowerCase())
   );
   function handleChange(event) {
-    if (lastChange.current) {
+    if (ref.current) {
       clearTimeout();
     }
-    lastChange.current = setTimeout(() => {
-      lastChange.current = null;
+    ref.current = setTimeout(() => {
+      ref.current = null;
       setSearchTerm(event.target.value);
     }, 1000);
   }
@@ -22,7 +24,7 @@ const SearchResults = ({ searchId, items, isClicked, children }) => {
         searchBarId={searchId}
         placeHolder="어디로 떠나시나요?"
         onChange={handleChange}
-        ref={lastChange}
+        ref={ref}
       />
       <ul className="w-3/4">
         {searchResults.map((item, isClicked) => (
@@ -31,6 +33,6 @@ const SearchResults = ({ searchId, items, isClicked, children }) => {
       </ul>
     </div>
   );
-};
+});
 
 export default SearchResults;
