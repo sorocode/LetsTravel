@@ -1,4 +1,7 @@
+import { motion } from "framer-motion";
 import addIcon from "../../assets/icons/add_icon.svg";
+import checkIcon from "../../assets/icons/check_icon.svg";
+import blueCheckIcon from "../../assets/icons/blue_check_icon.svg";
 import infoIcon from "../../assets/icons/info_icon.svg";
 import tokyo from "../../assets/images/tokyo.svg";
 import bangkok from "../../assets/images/bangkok.svg";
@@ -8,7 +11,7 @@ import beijing from "../../assets/images/beijing.svg";
 import hanoi from "../../assets/images/hanoi.svg";
 import newyork from "../../assets/images/newyork.svg";
 
-function CityItem({ cityName, cityCountry, ...props }) {
+function CityItem({ cityName, cityCountry, isSelected, ...props }) {
   const formattedCityName = cityName.replace(/\s/g, "");
   let cityImage;
   switch (formattedCityName) {
@@ -38,7 +41,7 @@ function CityItem({ cityName, cityCountry, ...props }) {
       break;
   }
   return (
-    <div className="container flex justify-between w-3/4 my-2">
+    <div className="container flex justify-between my-2">
       <div className="leftSide flex gap-6">
         <img src={cityImage} alt={formattedCityName} />
         <div className="cityInfo flex flex-col items-start justify-center">
@@ -49,9 +52,21 @@ function CityItem({ cityName, cityCountry, ...props }) {
         </div>
       </div>
       <div className="rightSide flex items-center justify-center gap-5">
-        <button {...props}>
-          <img src={addIcon} alt={addIcon} />
-        </button>
+        <motion.button
+          variants={{
+            default: { scale: 1 },
+            clicked: { scale: 1.5 },
+          }}
+          animate={isSelected ? "clicked" : "default"}
+          transition={{ duration: 0.2 }}
+          {...props}
+        >
+          <img
+            src={isSelected ? blueCheckIcon : addIcon}
+            alt={isSelected ? blueCheckIcon : addIcon}
+          />
+        </motion.button>
+
         <button>
           <img src={infoIcon} alt={infoIcon} />
         </button>
