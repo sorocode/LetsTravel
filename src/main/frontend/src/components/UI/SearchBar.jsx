@@ -1,6 +1,10 @@
+import { forwardRef } from "react";
 import searchIcon from "../../assets/icons/search_icon.svg";
 
-const SearchBar = ({ searchBarId, placeHolder, ...props }) => {
+const SearchBar = forwardRef(function SearchBar(
+  { searchBarId, placeHolder, ...props },
+  ref
+) {
   return (
     <div className="container flex border-gray-600 border-[0.9px] w-4/5 rounded-xl justify-between px-4 py-2 mt-20 mb-5">
       <input
@@ -9,6 +13,7 @@ const SearchBar = ({ searchBarId, placeHolder, ...props }) => {
         id={searchBarId}
         placeholder={placeHolder}
         className="w-full"
+        ref={ref}
         {...props}
       />
       <button>
@@ -16,6 +21,6 @@ const SearchBar = ({ searchBarId, placeHolder, ...props }) => {
       </button>
     </div>
   );
-};
+});
 
 export default SearchBar;
