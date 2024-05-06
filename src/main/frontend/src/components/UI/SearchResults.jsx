@@ -1,4 +1,4 @@
-import { useRef, useState, forwardRef } from "react";
+import { useState, forwardRef } from "react";
 import SearchBar from "./SearchBar";
 
 const SearchResults = forwardRef(function SearchResults(
