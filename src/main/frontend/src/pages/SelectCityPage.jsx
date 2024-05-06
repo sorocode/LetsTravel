@@ -1,12 +1,19 @@
 import { useDispatch, useSelector } from "react-redux";
 import { dummyCities } from "../dummyCities";
-import { addCity } from "../store/schedule/scheduleSlice";
+import { addCity, removeCity } from "../store/schedule/scheduleSlice";
 import SearchBar from "../components/UI/SearchBar";
 import CityItem from "../components/UI/CityItem";
 import SearchResults from "../components/UI/SearchResults";
+import { useState } from "react";
 const SelectCityPage = () => {
   const cities = useSelector((state) => state.schedule.cities);
   const dispatch = useDispatch();
+  const handleAdd = (item) => {
+    dispatch(addCity(item));
+  };
+  const handleRemove = (item) => {
+    dispatch(removeCity(item.id));
+  };
   return (
     <div>
       {/* <SearchBar searchBarId="city" placeHolder="어디로 떠나시나요?" />
@@ -20,14 +27,20 @@ const SelectCityPage = () => {
         />
       ))} */}
       <SearchResults items={dummyCities}>
-        {(item) => (
-          <CityItem
-            key={item.id}
-            cityName={item.cityName}
-            cityCountry={item.countryName}
-            onClick={() => dispatch(addCity(item))}
-          />
-        )}
+        {(item) => {
+          const isSelected = JSON.stringify(cities).includes(item.id);
+          return (
+            <CityItem
+              key={item.id}
+              cityName={item.cityName}
+              cityCountry={item.countryName}
+              onClick={() => {
+                isSelected ? handleRemove(item) : handleAdd(item);
+              }}
+              isSelected={isSelected}
+            />
+          );
+        }}
       </SearchResults>
       <br />
       <h2 className="text-center">

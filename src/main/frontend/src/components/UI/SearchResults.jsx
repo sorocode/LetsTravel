@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import SearchBar from "./SearchBar";
 
-const SearchResults = ({ searchId, items, children }) => {
+const SearchResults = ({ searchId, items, isClicked, children }) => {
   const lastChange = useRef();
   const [searchTerm, setSearchTerm] = useState("");
   const searchResults = items.filter((item) =>
@@ -25,8 +25,8 @@ const SearchResults = ({ searchId, items, children }) => {
         ref={lastChange}
       />
       <ul className="w-3/4">
-        {searchResults.map((item) => (
-          <li key={item.id}>{children(item)}</li>
+        {searchResults.map((item, isClicked) => (
+          <li key={item.id}>{children(item, isClicked)}</li>
         ))}
       </ul>
     </div>
