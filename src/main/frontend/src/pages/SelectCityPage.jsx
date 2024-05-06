@@ -4,6 +4,7 @@ import { addCity, removeCity } from "../store/schedule/scheduleSlice";
 import CityItem from "../components/UI/CityItem";
 import SearchResults from "../components/UI/SearchResults";
 import { motion, AnimatePresence } from "framer-motion";
+import Button from "../components/UI/Buttons/Button";
 const SelectCityPage = () => {
   const cities = useSelector((state) => state.schedule.cities);
   const dispatch = useDispatch();
@@ -63,6 +64,11 @@ const SelectCityPage = () => {
             </motion.span>
           ))}
         </AnimatePresence>
+      </div>
+      <div className="flex justify-center">
+        <Button color="FCD4FF" to="term">
+          다음 단계
+        </Button>
       </div>
     </div>
   );
