@@ -58,6 +58,7 @@ function CityItem({ cityName, cityCountry, isSelected, ...props }) {
             clicked: { scale: 1.5 },
           }}
           animate={isSelected ? "clicked" : "default"}
+          transition={{ duration: 0.2 }}
           {...props}
         >
           <img

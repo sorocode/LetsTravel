@@ -1,10 +1,9 @@
 import { useDispatch, useSelector } from "react-redux";
 import { dummyCities } from "../dummyCities";
 import { addCity, removeCity } from "../store/schedule/scheduleSlice";
-import SearchBar from "../components/UI/SearchBar";
 import CityItem from "../components/UI/CityItem";
 import SearchResults from "../components/UI/SearchResults";
-import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 const SelectCityPage = () => {
   const cities = useSelector((state) => state.schedule.cities);
   const dispatch = useDispatch();
@@ -47,11 +46,23 @@ const SelectCityPage = () => {
         현재 <b>{cities.length}</b>개 도시 선택중
       </h2>
       <div className="flex gap-2 justify-center">
-        {cities.map((city, index) => (
-          <span key={index} className="font-bold">
-            {city.cityName.toUpperCase()}
-          </span>
-        ))}
+        <AnimatePresence>
+          {cities.map((city, index) => (
+            <motion.span
+              key={index}
+              className="font-bold"
+              variants={{
+                hidden: { opacity: 0, scale: 0.5 },
+                visible: { opacity: 1, scale: 1 },
+              }}
+              initial="hidden"
+              animate="visible"
+              exit={{ opacity: 0, scale: 0.5 }}
+            >
+              {city.cityName.toUpperCase()}
+            </motion.span>
+          ))}
+        </AnimatePresence>
       </div>
     </div>
   );
