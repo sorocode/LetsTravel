@@ -1,9 +1,8 @@
+import { RouterProvider } from "react-router-dom";
+import { router } from "./util/router";
+
 function App() {
-  return (
-    <>
-      <h1>메인</h1>
-    </>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;
