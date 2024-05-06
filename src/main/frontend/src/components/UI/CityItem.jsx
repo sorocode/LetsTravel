@@ -38,7 +38,7 @@ function CityItem({ cityName, cityCountry, ...props }) {
       break;
   }
   return (
-    <div className="container flex justify-between w-3/4 my-2">
+    <div className="container flex justify-between my-2">
       <div className="leftSide flex gap-6">
         <img src={cityImage} alt={formattedCityName} />
         <div className="cityInfo flex flex-col items-start justify-center">
