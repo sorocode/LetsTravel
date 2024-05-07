@@ -4,6 +4,7 @@ import { createPortal } from "react-dom";
 
 function BottomSheet({ children }) {
   const { onDragEnd, controls, onToggle } = useBottomSheet();
+
   return createPortal(
     <motion.div
       drag="y"
@@ -19,12 +20,12 @@ function BottomSheet({ children }) {
         // hidden: { y: "calc(100% - 256px)" },
         // visible: { y: "10%" },
         visible: { y: "-60%" },
-        hidden: { y: "-10%" },
+        hidden: { y: "-15%" },
         closed: { y: "0%" },
       }}
       dragConstraints={{ top: "-60%" }}
       dragElastic={0.2}
-      className="inline-block bg-white w-full mx-1 h-[768px] drop-shadow-2xl border-t-[0.8px] border-[#E0E0E0] rounded-xl overflow-hidden z-[1000] text-center"
+      className="inline-block bg-white w-full mx-1 h-[300px] drop-shadow-2xl border-t-[0.8px] border-[#E0E0E0] rounded-xl overflow-hidden z-[1000] text-center fixed"
       //   style={{
       //     display: "inline-block",
       //     backgroundColor: "white",
