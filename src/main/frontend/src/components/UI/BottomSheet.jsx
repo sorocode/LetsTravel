@@ -19,13 +19,13 @@ function BottomSheet({ children }) {
       variants={{
         // hidden: { y: "calc(100% - 256px)" },
         // visible: { y: "10%" },
-        visible: { y: "-60%" },
-        hidden: { y: "-15%" },
+        visible: { y: "-40%" },
+        hidden: { y: "0%" },
         closed: { y: "0%" },
       }}
       dragConstraints={{ top: "-60%" }}
       dragElastic={0.2}
-      className="inline-block bg-white w-full mx-1 h-[300px] drop-shadow-2xl border-t-[0.8px] border-[#E0E0E0] rounded-xl overflow-hidden z-[1000] text-center fixed"
+      className="inline-block bg-white w-full mx-1 h-[700px] drop-shadow-2xl border-t-[0.8px] border-[#E0E0E0] rounded-xl overflow-hidden z-[1000] text-center fixed"
       //   style={{
       //     display: "inline-block",
       //     backgroundColor: "white",
