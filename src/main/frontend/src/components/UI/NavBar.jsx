@@ -1,4 +1,3 @@
-import heart_blank from "../../assets/icons/heart_blank.svg";
 import calendar_filled from "../../assets/icons/calendar_icon.svg";
 import calendar_blank from "../../assets/icons/calendar_blank.svg";
 import map_filled from "../../assets/icons/map_filled.svg";
@@ -7,12 +6,8 @@ import map_indicator_filled from "../../assets/icons/map_indicator_filled.svg";
 import map_indicator_blank from "../../assets/icons/map_indicator_blank.svg";
 import earth_filled from "../../assets/icons/earth_filled.svg";
 import earth_blank from "../../assets/icons/earth_blank.svg";
-import navigator_filled from "../../assets/icons/navigator_filled.svg";
-import navigator_blank from "../../assets/icons/navigator_blank.svg";
 import profile_blank from "../../assets/icons/profile_blank.svg";
 import profile_filled from "../../assets/icons/profile_filled.svg";
-import home_blank from "../../assets/icons/home_blank.svg";
-import home_filled from "../../assets/icons/home_filled.svg";
 import { NavLink, useLocation, useParams } from "react-router-dom";
 import { useEffect } from "react";
 
