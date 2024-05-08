@@ -11,7 +11,5 @@ function Button({ color, children, ...props }) {
     </Link>
   );
 }
-Button.defaultProps = {
-  color: "fcd4ff",
-};
+
 export default Button;

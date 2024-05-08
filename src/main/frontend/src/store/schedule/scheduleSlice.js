@@ -42,9 +42,13 @@ export const scheduleSlice = createSlice({
         // state.totalQuantity--;
       }
     },
-    //TODO:출발일, 도착일 변경 로직
-    setStartDate: () => {},
-    setEndDate: () => {},
+    //TODO:action 하나로 통일하기
+    setStartDate: (state, action) => {
+      state.startDate = action.payload;
+    },
+    setEndDate: (state, action) => {
+      state.endDate = action.payload;
+    },
   },
 });
 
