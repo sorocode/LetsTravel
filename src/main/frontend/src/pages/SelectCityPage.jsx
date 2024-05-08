@@ -35,6 +35,7 @@ const SelectCityPage = () => {
               key={item.id}
               cityName={item.cityName}
               cityCountry={item.countryName}
+              isSelectMode={true}
               onClick={() => {
                 isSelected ? handleRemove(item) : handleAdd(item);
               }}
