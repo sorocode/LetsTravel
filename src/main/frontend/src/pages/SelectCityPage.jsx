@@ -16,17 +16,7 @@ const SelectCityPage = () => {
     dispatch(removeCity(item.id));
   };
   return (
-    <div>
-      {/* <SearchBar searchBarId="city" placeHolder="어디로 떠나시나요?" />
-      <p className="my-2 w-3/4">✈️요즘 핫한 해외 여행지여행지</p>
-      {dummyCities.map((city) => (
-        <CityItem
-          key={city.id}
-          cityName={city.cityName}
-          cityCountry={city.countryName}
-          onClick={() => dispatch(addCity(city))}
-        />
-      ))} */}
+    <>
       <SearchResults items={dummyCities}>
         {(item) => {
           const isSelected = JSON.stringify(cities).includes(item.id);
@@ -45,7 +35,6 @@ const SelectCityPage = () => {
         }}
       </SearchResults>
       <br />
-
       <BottomSheet
         title={
           <h2 className="text-center">
@@ -53,12 +42,12 @@ const SelectCityPage = () => {
           </h2>
         }
       >
-        <div className="flex gap-2 justify-center">
+        <div className="flex flex-col gap-2 justify-center items-center mt-2">
           <AnimatePresence>
             {cities.map((city, index) => (
               <motion.span
                 key={index}
-                className="font-bold"
+                className="font-bold w-1/2"
                 variants={{
                   hidden: { opacity: 0, scale: 0.5 },
                   visible: { opacity: 1, scale: 1 },
@@ -73,12 +62,12 @@ const SelectCityPage = () => {
           </AnimatePresence>
         </div>
         <div className="flex justify-center">
-          <Button color="FCD4FF" to="term">
+          <Button color="#FCD4FF" to="term">
             다음 단계
           </Button>
         </div>
       </BottomSheet>
-    </div>
+    </>
   );
 };
 
