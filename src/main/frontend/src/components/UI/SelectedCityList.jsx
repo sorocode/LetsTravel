@@ -8,7 +8,7 @@ const SelectedCityList = () => {
   );
   return (
     <article>
-      <h1 className="text-2xl">선택 도시</h1>
+      <h1 className="text-2xl">선택 도시(총 {cities.length}개)</h1>
       <br />
       <div className="h-[90px] overflow-scroll bg-gray-100 border-[1px] rounded-md p-2 shadow-inner">
         {cities.length === 0 ? (
