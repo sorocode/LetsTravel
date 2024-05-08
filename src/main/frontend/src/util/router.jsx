@@ -18,7 +18,7 @@ export const router = createBrowserRouter([
         element: <SelectTermPage />, // 날짜 선택 페이지
       },
       {
-        path: ":city",
+        path: "spot/:city",
         element: <SelectSpotPage />, // 여행장소 선택 페이지(params로 도시 명 입력받음)
       },
     ],
