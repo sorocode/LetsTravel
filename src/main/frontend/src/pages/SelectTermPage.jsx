@@ -1,4 +1,3 @@
-import Button from "../components/UI/Buttons/Button";
 import SelectDateArea from "../components/UI/SelectDateArea";
 import SelectedCityList from "../components/UI/SelectedCityList";
 
