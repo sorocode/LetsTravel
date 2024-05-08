@@ -12,12 +12,10 @@ const SelectDateArea = () => {
   const dateDif = useSelector((state) => state.schedule.dateDif);
   const dispatch = useDispatch();
   const onChangeStartDate = (e) => {
-    //TODO: 날짜 바꾸는 dispatch
     dispatch(setStartDate(e.target.value));
     dispatch(setDateDif());
   };
   const onChangeEndDate = (e) => {
-    //TODO: 날짜 바꾸는 dispatch
     dispatch(setEndDate(e.target.value));
     dispatch(setDateDif());
   };
