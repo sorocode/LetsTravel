@@ -32,14 +32,9 @@ export const useBottomSheet = () => {
   }
 
   useEffect(() => {
-    const { body } = document;
-    const root = document.getElementById("root");
-    const bottomSheet = document.getElementById("bottom-sheet");
     if (prevIsOpen && !isOpen) {
       controls.start("hidden");
     } else if (!prevIsOpen && isOpen) {
-      root.setAttribute("aria-hidden", "true");
-      body.setAttribute("style", "overflow: hidden");
       controls.start("visible");
     }
   }, [controls, isOpen, prevIsOpen]);
