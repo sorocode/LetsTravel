@@ -5,7 +5,7 @@ import CityItem from "../components/UI/CityItem";
 import SearchResults from "../components/UI/SearchResults";
 import { motion, AnimatePresence } from "framer-motion";
 import Button from "../components/UI/Buttons/Button";
-import BottomSheet from "../components/UI/BottomSheet";
+import BottomSheet from "../components/UI/Bottomsheet/BottomSheet";
 const SelectCityPage = () => {
   const cities = useSelector((state) => state.schedule.cities);
   const dispatch = useDispatch();
