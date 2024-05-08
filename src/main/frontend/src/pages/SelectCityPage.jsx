@@ -46,11 +46,13 @@ const SelectCityPage = () => {
       </SearchResults>
       <br />
 
-      <BottomSheet>
-        <h2 className="text-center">
-          현재 <b>{cities.length}</b>개 도시 선택중
-        </h2>
-
+      <BottomSheet
+        title={
+          <h2 className="text-center">
+            현재 <b>{cities.length}</b>개 도시 선택중
+          </h2>
+        }
+      >
         <div className="flex gap-2 justify-center">
           <AnimatePresence>
             {cities.map((city, index) => (

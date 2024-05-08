@@ -9,20 +9,23 @@ const SelectedCityList = () => {
   return (
     <article>
       <h1 className="text-2xl">선택 도시</h1>
-      {cities.length === 0 ? (
-        fallBackTxt
-      ) : (
-        <ul>
-          {cities.map((city) => (
-            <li key={city.id}>
-              <CityItem
-                cityName={city.cityName}
-                cityCountry={city.countryName}
-              />
-            </li>
-          ))}
-        </ul>
-      )}
+      <br />
+      <div className="h-[90px] overflow-scroll bg-gray-100 border-[1px] rounded-md p-2 shadow-inner">
+        {cities.length === 0 ? (
+          fallBackTxt
+        ) : (
+          <ul>
+            {cities.map((city) => (
+              <li key={city.id} className="border-[1px]">
+                <CityItem
+                  cityName={city.cityName}
+                  cityCountry={city.countryName}
+                />
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </article>
   );
 };
