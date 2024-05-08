@@ -1,5 +1,16 @@
+import SelectDateArea from "../components/UI/SelectDateArea";
+import SelectedCityList from "../components/UI/SelectedCityList";
 function SelectTermPage() {
-  return <h1>날짜를 선택하는 페이지입니다.</h1>;
+  return (
+    <section className="flex flex-col w-3/4 mt-10 mx-auto">
+      <SelectedCityList />
+      <hr className="mt-5 mb-10" />
+
+      <article className="mx-auto">
+        <SelectDateArea />
+      </article>
+    </section>
+  );
 }
 
 export default SelectTermPage;

@@ -31,7 +31,7 @@ function BottomSheet({ title, children }) {
       onClick={onToggle}
     >
       <DragHandleEdge onClick={handleDoubleClick} />
-      <SheetHeader title={title} />
+      <SheetHeader>{title}</SheetHeader>
       {children}
     </motion.div>,
     document.getElementById("bottom-sheet")

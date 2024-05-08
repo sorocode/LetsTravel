@@ -1,4 +1,5 @@
 import heart_blank from "../../assets/icons/heart_blank.svg";
+import calendar from "../../assets/icons/calendar_icon.svg";
 import map_filled from "../../assets/icons/map_filled.svg";
 import map_blank from "../../assets/icons/map_blank.svg";
 import navigator_filled from "../../assets/icons/navigator_filled.svg";
@@ -15,19 +16,19 @@ const NavBar = () => {
           <img src={`${item}_blank`} alt={`${item}_blank`} />
         </NavLink>
       ))} */}
-      <NavLink>
+      <NavLink to="/">
         <img src={map_filled} alt="map_filled" />
       </NavLink>
-      <NavLink>
-        <img src={navigator_blank} alt="navigator_blank" />
+      <NavLink to="/term">
+        <img src={calendar} alt="navigator_blank" />
       </NavLink>
-      <NavLink>
+      <NavLink to="/">
         <img src={home_blank} alt="home blank" />
       </NavLink>
-      <NavLink>
+      <NavLink to="/">
         <img src={heart_blank} alt="heart blank" />
       </NavLink>
-      <NavLink>
+      <NavLink to="/">
         <img src={profile_blank} alt="profile_blank" />
       </NavLink>
     </div>

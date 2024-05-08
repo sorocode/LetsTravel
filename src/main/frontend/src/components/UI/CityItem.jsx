@@ -11,7 +11,13 @@ import beijing from "../../assets/images/beijing.svg";
 import hanoi from "../../assets/images/hanoi.svg";
 import newyork from "../../assets/images/newyork.svg";
 
-function CityItem({ cityName, cityCountry, isSelected, ...props }) {
+function CityItem({
+  cityName,
+  cityCountry,
+  isSelectMode,
+  isSelected,
+  ...props
+}) {
   const formattedCityName = cityName.replace(/\s/g, "");
   let cityImage;
   switch (formattedCityName) {
@@ -51,28 +57,29 @@ function CityItem({ cityName, cityCountry, isSelected, ...props }) {
           </p>
         </div>
       </div>
-      <div className="rightSide flex items-center justify-center gap-5">
-        <motion.button
-          variants={{
-            default: { scale: 1 },
-            clicked: { scale: 1.5 },
-          }}
-          animate={isSelected ? "clicked" : "default"}
-          transition={{ duration: 0.2 }}
-          {...props}
-        >
-          <img
-            src={isSelected ? blueCheckIcon : addIcon}
-            alt={isSelected ? blueCheckIcon : addIcon}
-          />
-        </motion.button>
+      {isSelectMode && (
+        <div className="rightSide flex items-center justify-center gap-5">
+          <motion.button
+            variants={{
+              default: { scale: 1 },
+              clicked: { scale: 1.5 },
+            }}
+            animate={isSelected ? "clicked" : "default"}
+            transition={{ duration: 0.2 }}
+            {...props}
+          >
+            <img
+              src={isSelected ? blueCheckIcon : addIcon}
+              alt={isSelected ? blueCheckIcon : addIcon}
+            />
+          </motion.button>
 
-        <button>
-          <img src={infoIcon} alt={infoIcon} />
-        </button>
-      </div>
+          <button>
+            <img src={infoIcon} alt={infoIcon} />
+          </button>
+        </div>
+      )}
     </div>
   );
 }
-
 export default CityItem;
