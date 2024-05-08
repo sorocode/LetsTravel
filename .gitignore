@@ -4,7 +4,9 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
-application-db.properties
+application.properties
+application-dev.properties
+application-local.properties
 
 ### STS ###
 .apt_generated
