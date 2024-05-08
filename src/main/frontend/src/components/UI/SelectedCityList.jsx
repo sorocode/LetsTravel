@@ -3,7 +3,6 @@ import CityItem from "./CityItem";
 
 const SelectedCityList = () => {
   const cities = useSelector((state) => state.schedule.cities);
-  console.log(cities);
   return (
     <article>
       <h1 className="text-xl">선택 도시</h1>

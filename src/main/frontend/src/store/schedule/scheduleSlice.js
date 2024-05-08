@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { toMySQLDate } from "../../util/toMySQLDate";
+import { getDaysDifference } from "../../util/getDateDif";
 
 const today = new Date();
 const tomorrow = new Date(today);
@@ -42,18 +43,20 @@ export const scheduleSlice = createSlice({
         // state.totalQuantity--;
       }
     },
-    //TODO:action 하나로 통일하기
     setStartDate: (state, action) => {
       state.startDate = action.payload;
     },
     setEndDate: (state, action) => {
       state.endDate = action.payload;
     },
+    setDateDif: (state) => {
+      state.dateDif = getDaysDifference(state.startDate, state.endDate);
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { addCity, removeCity, setStartDate, setEndDate } =
+export const { addCity, removeCity, setStartDate, setEndDate, setDateDif } =
   scheduleSlice.actions;
 
 export default scheduleSlice.reducer;
