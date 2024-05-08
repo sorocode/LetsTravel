@@ -14,12 +14,9 @@ import { useEffect } from "react";
 const NavBar = () => {
   const location = useLocation();
   const params = useParams();
-  console.log(params);
-  useEffect(() => {
-    console.log(location.pathname);
-  }, [location]);
+  // console.log(params);
   return (
-    <div className="container flex justify-evenly items-center w-screen max-w-screen-2xl h-[50px] bg-white z-[200]">
+    <div className="container flex justify-around items-center w-screen max-w-screen-2xl h-[50px] bg-white z-[200]">
       <NavLink to="/">
         <img
           className={
@@ -40,7 +37,7 @@ const NavBar = () => {
           alt="navigator_blank"
         />
       </NavLink>
-      <NavLink to="/">
+      <NavLink to={`/spot/${params.city}`}>
         <img
           className={
             location.pathname == `/spot/${params.city}`
