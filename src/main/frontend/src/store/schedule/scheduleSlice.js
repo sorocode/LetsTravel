@@ -50,7 +50,10 @@ export const scheduleSlice = createSlice({
       state.endDate = action.payload;
     },
     setDateDif: (state) => {
-      state.dateDif = getDaysDifference(state.startDate, state.endDate);
+      state.dateDif =
+        getDaysDifference(state.startDate, state.endDate) < 0
+          ? "-"
+          : getDaysDifference(state.startDate, state.endDate);
     },
   },
 });

@@ -24,18 +24,20 @@ const SelectDateArea = () => {
   return (
     <div className="flex flex-col gap-4 items-center">
       <div className="flex items-center gap-2">
-        <span>🛫 출발</span>
+        <span>🛫</span>
         <DateInput isStart dateValue={startDate} onChange={onChangeStartDate} />
       </div>
       <div className="flex items-center gap-2">
-        <span>🛬 도착</span>
+        <span>🛬</span>
         <DateInput
           isStart={false}
           dateValue={endDate}
           onChange={onChangeEndDate}
         />
       </div>
-      <div className="text-xl font-semibold">총 {dateDif + 1}일</div>
+      <div className="text-xl font-semibold">
+        총 {dateDif !== "-" ? dateDif + 1 : "-"}일
+      </div>
       <div>
         <Button color="FCD4FF">다음 단계</Button>
       </div>
