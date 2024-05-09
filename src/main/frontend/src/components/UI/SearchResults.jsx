@@ -27,7 +27,7 @@ function SearchResults({ searchId, items, children }) {
       />
       <ul className="w-3/4">
         {searchResults.map((item, isClicked) => (
-          <li key={item.spotId}>{children(item, isClicked)}</li>
+          <li key={item.id}>{children(item, isClicked)}</li>
         ))}
       </ul>
     </div>

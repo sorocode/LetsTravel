@@ -16,7 +16,7 @@ function SelectSpotPage() {
           const isSelected = JSON.stringify(selectedCity).includes(item.id);
           return (
             <CityItem
-              key={item.spotId}
+              key={item.id}
               cityName={item.spotName}
               cityCountry={item.spotName}
               isSelectMode={true}
