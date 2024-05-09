@@ -32,7 +32,7 @@ function SelectSpotPage() {
           );
         }}
       </SearchResults>
-      <BottomSheet title={<h2>바텀시트</h2>}>
+      <BottomSheet title={<h2>일정 고르기</h2>}>
         <div className="flex flex-col gap-2 justify-center items-center mt-2">
           <AnimatePresence>
             TODO: 아래 주석 참고해서 선택 아이템 표시
