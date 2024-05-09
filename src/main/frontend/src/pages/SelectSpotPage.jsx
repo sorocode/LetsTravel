@@ -1,16 +1,33 @@
 import { useParams } from "react-router-dom";
+import SearchResults from "../components/UI/SearchResults";
+import { dummyCities } from "../dummyCities";
+import CityItem from "../components/UI/CityItem";
 
 function SelectSpotPage() {
   const params = useParams();
+  const selectedCity = dummyCities.find(
+    (city) => city.cityName === params.city
+  );
 
   return (
     <div>
-      <h1>여행스팟을 선택하는 페이지입니다.</h1>
-      <p>
-        {params.city.includes("noCity") &&
-          "도시가 선택되지 않았습니다. 도시를 선택해주세요."}
-        {!params.city.includes("noCity") && `현재 선택된 장소: ${params.city}`}
-      </p>
+      <SearchResults items={selectedCity.spots} searchId="spots">
+        {(item) => {
+          const isSelected = JSON.stringify(selectedCity).includes(item.id);
+          return (
+            <CityItem
+              key={item.spotId}
+              cityName={item.spotName}
+              cityCountry={item.spotName}
+              isSelectMode={true}
+              // onClick={() => {
+              //   isSelected ? handleRemove(item) : handleAdd(item);
+              // }}
+              isSelected={isSelected}
+            />
+          );
+        }}
+      </SearchResults>
     </div>
   );
 }
