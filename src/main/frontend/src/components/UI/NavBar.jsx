@@ -9,11 +9,13 @@ import earth_blank from "../../assets/icons/earth_blank.svg";
 import profile_blank from "../../assets/icons/profile_blank.svg";
 import profile_filled from "../../assets/icons/profile_filled.svg";
 import { NavLink, useLocation, useParams } from "react-router-dom";
-import { useEffect } from "react";
+import { useSelector } from "react-redux";
 
 const NavBar = () => {
   const location = useLocation();
   const params = useParams();
+  const cities = useSelector((state) => state.schedule.cities);
+  const firstCityName = cities[0] ? cities[0].cityName : "noCity";
   // console.log(params);
   return (
     <div className="container flex justify-around items-center w-screen max-w-screen-2xl h-[50px] bg-white z-[200]">
@@ -37,10 +39,10 @@ const NavBar = () => {
           alt="navigator_blank"
         />
       </NavLink>
-      <NavLink to={`/spot/${params.city}`}>
+      <NavLink to={`/spot/${firstCityName}`}>
         <img
           className={
-            location.pathname == `/spot/${params.city}`
+            location.pathname == `/spot/${firstCityName}`
               ? "shadow-lg rounded-xl p-2"
               : undefined
           }
@@ -52,17 +54,25 @@ const NavBar = () => {
           alt="home blank"
         />
       </NavLink>
-      <NavLink to="/">
+      <NavLink to="/map">
         <img
           className={
             location.pathname == "map" ? "shadow-lg rounded-xl p-2" : undefined
           }
-          src={location.pathname == "map" ? map_filled : map__blank}
+          src={location.pathname == "/map" ? map_filled : map__blank}
           alt="heart blank"
         />
       </NavLink>
-      <NavLink to="/">
-        <img src={profile_blank} alt="profile_blank" />
+      <NavLink to="/profile">
+        <img
+          className={
+            location.pathname == "/profile"
+              ? "shadow-lg rounded-xl p-2"
+              : undefined
+          }
+          src={location.pathname == "/profile" ? profile_filled : profile_blank}
+          alt="profile_blank"
+        />
       </NavLink>
     </div>
   );
