@@ -1,4 +1,4 @@
-import { useState, forwardRef, useRef } from "react";
+import { useState, useRef } from "react";
 import SearchBar from "./SearchBar";
 
 function SearchResults({ searchId, items, children }) {
