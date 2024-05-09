@@ -1,4 +1,4 @@
-import { useState, forwardRef, useRef } from "react";
+import { useState, useRef } from "react";
 import SearchBar from "./SearchBar";
 
 function SearchResults({ searchId, items, children }) {
@@ -7,6 +7,7 @@ function SearchResults({ searchId, items, children }) {
   const searchResults = items.filter((item) =>
     JSON.stringify(item).toLowerCase().includes(searchTerm.toLowerCase())
   );
+
   function handleChange(event) {
     if (lastTerm.current) {
       clearTimeout();

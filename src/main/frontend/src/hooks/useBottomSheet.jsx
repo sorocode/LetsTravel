@@ -4,6 +4,7 @@ import { usePrevious } from "./usePrevious";
 
 export const useBottomSheet = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isClose, setIsClose] = useState(false);
   function onClose() {
     setIsOpen(false);
   }
@@ -15,6 +16,7 @@ export const useBottomSheet = () => {
   function onToggle() {
     setIsOpen(!isOpen);
   }
+
   const controls = useAnimation();
   const prevIsOpen = usePrevious(isOpen);
 
@@ -26,18 +28,26 @@ export const useBottomSheet = () => {
       onClose();
     } else {
       controls.start("visible");
-
       onOpen();
     }
   }
 
   useEffect(() => {
     if (prevIsOpen && !isOpen) {
+      // console.log("hidden");
       controls.start("hidden");
+      setIsClose(false);
     } else if (!prevIsOpen && isOpen) {
       controls.start("visible");
+      // console.log("visible");
+      setIsClose(false);
+    } else if (isClose) {
+      controls.start("closed");
+      // console.log("closed");
+    } else if (!isClose) {
+      controls.start("hidden");
     }
-  }, [controls, isOpen, prevIsOpen]);
+  }, [controls, isOpen, isClose, prevIsOpen]);
 
   const handleDoubleClick = (e) => {
     switch (e.detail) {
@@ -63,11 +73,14 @@ export const useBottomSheet = () => {
     }
   };
   return {
-    onDragEnd,
-    controls,
-    setIsOpen,
     isOpen,
+    isClose,
+    controls,
+    onDragEnd,
+    setIsOpen,
+    setIsClose,
     handleDoubleClick,
     onToggle,
+    onClose,
   };
 };

@@ -1,35 +1,78 @@
-import heart_blank from "../../assets/icons/heart_blank.svg";
-import calendar from "../../assets/icons/calendar_icon.svg";
+import calendar_filled from "../../assets/icons/calendar_icon.svg";
+import calendar_blank from "../../assets/icons/calendar_blank.svg";
 import map_filled from "../../assets/icons/map_filled.svg";
-import map_blank from "../../assets/icons/map_blank.svg";
-import navigator_filled from "../../assets/icons/navigator_filled.svg";
-import navigator_blank from "../../assets/icons/navigator_blank.svg";
+import map__blank from "../../assets/icons/map_blank.svg";
+import map_indicator_filled from "../../assets/icons/map_indicator_filled.svg";
+import map_indicator_blank from "../../assets/icons/map_indicator_blank.svg";
+import earth_filled from "../../assets/icons/earth_filled.svg";
+import earth_blank from "../../assets/icons/earth_blank.svg";
 import profile_blank from "../../assets/icons/profile_blank.svg";
-import home_blank from "../../assets/icons/home_blank.svg";
-import { NavLink } from "react-router-dom";
+import profile_filled from "../../assets/icons/profile_filled.svg";
+import { NavLink, useLocation, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+
 const NavBar = () => {
-  // const navItemList = ["map", "navigator", "home", "heart", "profile"];
+  const location = useLocation();
+  const params = useParams();
+  const cities = useSelector((state) => state.schedule.cities);
+  const firstCityName = cities[0] ? cities[0].cityName : null;
+  // console.log(params);
   return (
-    <div className="container flex justify-evenly items-center w-screen max-w-screen-2xl h-[50px] bg-white">
-      {/* {navItemList.map((item, index) => (
-        <NavLink key={index}>
-          <img src={`${item}_blank`} alt={`${item}_blank`} />
-        </NavLink>
-      ))} */}
+    <div className="container flex justify-around items-center w-screen max-w-screen-2xl h-[50px] bg-white z-[200]">
       <NavLink to="/">
-        <img src={map_filled} alt="map_filled" />
+        <img
+          className={
+            location.pathname == "/" ? "shadow-lg rounded-xl p-2" : undefined
+          }
+          src={location.pathname == "/" ? earth_filled : earth_blank}
+          alt="earth_filled"
+        />
       </NavLink>
       <NavLink to="/term">
-        <img src={calendar} alt="navigator_blank" />
+        <img
+          className={
+            location.pathname == "/term"
+              ? "shadow-lg rounded-xl p-2"
+              : undefined
+          }
+          src={location.pathname == "/term" ? calendar_filled : calendar_blank}
+          alt="navigator_blank"
+        />
       </NavLink>
-      <NavLink to="/">
-        <img src={home_blank} alt="home blank" />
+      <NavLink to={firstCityName && `/spot/${firstCityName}`}>
+        <img
+          className={
+            location.pathname == `/spot/${firstCityName}`
+              ? "shadow-lg rounded-xl p-2"
+              : undefined
+          }
+          src={
+            location.pathname == `/spot/${params.city}`
+              ? map_indicator_filled
+              : map_indicator_blank
+          }
+          alt="home blank"
+        />
       </NavLink>
-      <NavLink to="/">
-        <img src={heart_blank} alt="heart blank" />
+      <NavLink to="/map">
+        <img
+          className={
+            location.pathname == "map" ? "shadow-lg rounded-xl p-2" : undefined
+          }
+          src={location.pathname == "/map" ? map_filled : map__blank}
+          alt="heart blank"
+        />
       </NavLink>
-      <NavLink to="/">
-        <img src={profile_blank} alt="profile_blank" />
+      <NavLink to="/profile">
+        <img
+          className={
+            location.pathname == "/profile"
+              ? "shadow-lg rounded-xl p-2"
+              : undefined
+          }
+          src={location.pathname == "/profile" ? profile_filled : profile_blank}
+          alt="profile_blank"
+        />
       </NavLink>
     </div>
   );
