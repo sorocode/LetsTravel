@@ -8,7 +8,7 @@ import {
 } from "../../store/schedule/scheduleSlice";
 const SelectDateArea = () => {
   const cities = useSelector((state) => state.schedule.cities);
-  const firstCityName = cities[0] ? cities[0].cityName : "noCity";
+  const firstCityName = cities[0] ? cities[0].cityName : null;
 
   const startDate = useSelector((state) => state.schedule.startDate);
   const endDate = useSelector((state) => state.schedule.endDate);
@@ -44,7 +44,7 @@ const SelectDateArea = () => {
         <Button color="#7BC9FF" to="..">
           이전
         </Button>
-        <Button color="#FCD4FF" to={`/spot/${firstCityName}`}>
+        <Button color="#FCD4FF" to={firstCityName && `/spot/${firstCityName}`}>
           다음
         </Button>
       </div>

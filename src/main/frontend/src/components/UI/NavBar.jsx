@@ -15,7 +15,7 @@ const NavBar = () => {
   const location = useLocation();
   const params = useParams();
   const cities = useSelector((state) => state.schedule.cities);
-  const firstCityName = cities[0] ? cities[0].cityName : "noCity";
+  const firstCityName = cities[0] ? cities[0].cityName : null;
   // console.log(params);
   return (
     <div className="container flex justify-around items-center w-screen max-w-screen-2xl h-[50px] bg-white z-[200]">
@@ -39,7 +39,7 @@ const NavBar = () => {
           alt="navigator_blank"
         />
       </NavLink>
-      <NavLink to={`/spot/${firstCityName}`}>
+      <NavLink to={firstCityName && `/spot/${firstCityName}`}>
         <img
           className={
             location.pathname == `/spot/${firstCityName}`
