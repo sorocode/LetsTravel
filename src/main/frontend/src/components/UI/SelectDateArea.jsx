@@ -7,6 +7,9 @@ import {
   setDateDif,
 } from "../../store/schedule/scheduleSlice";
 const SelectDateArea = () => {
+  const cities = useSelector((state) => state.schedule.cities);
+  const firstCityName = cities[0] ? cities[0].cityName : null;
+
   const startDate = useSelector((state) => state.schedule.startDate);
   const endDate = useSelector((state) => state.schedule.endDate);
   const dateDif = useSelector((state) => state.schedule.dateDif);
@@ -41,7 +44,9 @@ const SelectDateArea = () => {
         <Button color="#7BC9FF" to="..">
           이전
         </Button>
-        <Button color="#FCD4FF">다음</Button>
+        <Button color="#FCD4FF" to={firstCityName && `/spot/${firstCityName}`}>
+          다음
+        </Button>
       </div>
     </div>
   );
