@@ -20,12 +20,13 @@ function SelectSpotPage() {
   const handleRemoveSpot = (item) => {
     dispatch(removeSpot(item.id));
   };
+
   return (
     <div>
       <SearchResults items={selectedCity.spots} searchId="spots">
         {(item) => {
-          const isSelected = JSON.stringify(spots).includes(item.id);
-          console.log("dj", isSelected);
+          //FIXME:임시로 longitude를 id처럼 썼지만 나중에 진짜 id로 바꾸기
+          const isSelected = JSON.stringify(spots).includes(item.longitude);
           return (
             <SpotItem
               key={item.id}
@@ -35,7 +36,7 @@ function SelectSpotPage() {
               onClick={() => {
                 isSelected ? handleRemoveSpot(item) : handleAddSpot(item);
               }}
-              isSelected={false}
+              isSelected={isSelected}
             />
           );
         }}
