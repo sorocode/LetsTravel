@@ -1,12 +1,16 @@
 import { useDispatch, useSelector } from "react-redux";
 import { dummyCities } from "../dummyCities";
+import { countryData } from "../countryData";
 import { addCity, removeCity } from "../store/schedule/scheduleSlice";
 import CityItem from "../components/UI/CityItem";
 import SearchResults from "../components/UI/SearchResults";
 import { motion, AnimatePresence } from "framer-motion";
 import Button from "../components/UI/Buttons/Button";
 import BottomSheet from "../components/UI/Bottomsheet/BottomSheet";
+import { useState } from "react";
 const SelectCityPage = () => {
+  // 나라 선택모드인지 도시 선택 모드인지에 대한 상태, 초기값은 false(나라 선택 모드)
+  const [isCityMode, setIsCityMode] = useState(false);
   const cities = useSelector((state) => state.schedule.cities);
   const dispatch = useDispatch();
   const handleAdd = (item) => {
@@ -18,23 +22,48 @@ const SelectCityPage = () => {
   return (
     <>
       <div>
-        <SearchResults items={dummyCities}>
-          {(item) => {
-            const isSelected = JSON.stringify(cities).includes(item.id);
-            return (
-              <CityItem
-                key={item.id}
-                cityName={item.cityName}
-                cityCountry={item.countryName}
-                isSelectMode={true}
-                onClick={() => {
-                  isSelected ? handleRemove(item) : handleAdd(item);
-                }}
-                isSelected={isSelected}
-              />
-            );
-          }}
-        </SearchResults>
+        {/* 나라 선택 모드일 때 */}
+        {!isCityMode && (
+          <SearchResults items={countryData}>
+            {(item, index) => {
+              const isSelected = JSON.stringify(cities).includes(item.id);
+              if (index < 10) {
+                return (
+                  <CityItem
+                    key={item.id}
+                    title={item.countryName_KR}
+                    subTitle={item.countryName}
+                    isSelectMode={true}
+                    onClick={() => {
+                      isSelected ? handleRemove(item) : handleAdd(item);
+                    }}
+                    isSelected={isSelected}
+                  />
+                );
+              }
+            }}
+          </SearchResults>
+        )}
+        {/* 도시 선택 모드일때 */}
+        {isCityMode && (
+          <SearchResults items={dummyCities}>
+            {(item) => {
+              const isSelected = JSON.stringify(cities).includes(item.id);
+              return (
+                <CityItem
+                  key={item.id}
+                  title={item.cityName}
+                  subTitle={item.countryName}
+                  isSelectMode={true}
+                  onClick={() => {
+                    isSelected ? handleRemove(item) : handleAdd(item);
+                  }}
+                  isSelected={isSelected}
+                />
+              );
+            }}
+          </SearchResults>
+        )}
       </div>
       <br />
       <BottomSheet
