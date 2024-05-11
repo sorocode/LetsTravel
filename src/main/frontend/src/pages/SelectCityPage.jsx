@@ -15,9 +15,10 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchCities } from "../util/http";
 const SelectCityPage = () => {
+  const countryState = useSelector((state) => state.schedule.country);
   const { data, isPending, isError, error } = useQuery({
     //FIXME: 쿼리키 configure 설정
-    queryKey: ["cities"],
+    queryKey: ["cities", { country: countryState }],
     queryFn: () => fetchCities(countryState),
   });
   // 나라 선택모드인지 도시 선택 모드인지에 대한 상태, 초기값은 false(나라 선택 모드)
@@ -25,7 +26,6 @@ const SelectCityPage = () => {
   const selectCountry = () => {
     setIsCityMode(true);
   };
-  const countryState = useSelector((state) => state.schedule.country);
   const cities = useSelector((state) => state.schedule.cities);
   const dispatch = useDispatch();
   const handleAdd = (item) => {
