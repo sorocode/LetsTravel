@@ -52,7 +52,7 @@ const SelectCityPage = () => {
             <CityItem
               key={item.citySeq}
               title={item.cityName}
-              subTitle={item.cityNname}
+              subTitle={item.cityName}
               isSelectMode={true}
               onClick={() => {
                 isSelected ? handleRemove(item) : handleAdd(item);
