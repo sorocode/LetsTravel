@@ -10,51 +10,46 @@ import london from "../../assets/images/london.svg";
 import beijing from "../../assets/images/beijing.svg";
 import hanoi from "../../assets/images/hanoi.svg";
 import newyork from "../../assets/images/newyork.svg";
-
-function CityItem({
-  cityName,
-  cityCountry,
-  isSelectMode,
-  isSelected,
-  ...props
-}) {
-  const formattedCityName = cityName.replace(/\s/g, "");
-  let cityImage;
+import dummyImage from "../../assets/icons/dummy_image.svg";
+function CityItem({ title, subTitle, isSelectMode, isSelected, ...props }) {
+  const formattedCityName = subTitle.replace(/\s/g, "");
+  let thumbnail;
   switch (formattedCityName) {
     case "tokyo":
-      cityImage = tokyo;
+    case "Japan":
+      thumbnail = tokyo;
       break;
+    case "Thailand":
     case "bangkok":
-      cityImage = bangkok;
+      thumbnail = bangkok;
       break;
     case "osaka":
-      cityImage = osaka;
+      thumbnail = osaka;
       break;
     case "london":
-      cityImage = london;
+      thumbnail = london;
       break;
+    case "Vietnam":
     case "hanoi":
-      cityImage = hanoi;
+      thumbnail = hanoi;
       break;
     case "newyork":
-      cityImage = newyork;
+      thumbnail = newyork;
       break;
     case "beijing":
-      cityImage = beijing;
+      thumbnail = beijing;
       break;
     default:
-      cityImage = null; // 기본값 설정
+      thumbnail = dummyImage; // 기본값 설정
       break;
   }
   return (
     <div className="container flex justify-between my-2">
       <div className="leftSide flex gap-6">
-        <img src={cityImage} alt={formattedCityName} />
+        <img src={thumbnail} alt={formattedCityName} />
         <div className="cityInfo flex flex-col items-start justify-center">
-          <p className="cityName font-bold">{cityName.toUpperCase()}</p>
-          <p className="cityLocation text-[#848484]">
-            {cityCountry.toUpperCase()}
-          </p>
+          <p className="title font-bold">{title.toUpperCase()}</p>
+          <p className="subtitle text-[#848484]">{subTitle.toUpperCase()}</p>
         </div>
       </div>
       {isSelectMode && (

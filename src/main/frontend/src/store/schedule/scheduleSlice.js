@@ -7,6 +7,7 @@ const tomorrow = new Date(today);
 tomorrow.setDate(today.getDate() + 1);
 
 const initialState = {
+  country: "",
   cities: [], //도시 리스트
   spots: [], //여행지 리스트
   startDate: toMySQLDate(today), //시작일 오늘로 설정
@@ -18,6 +19,9 @@ export const scheduleSlice = createSlice({
   name: "schedule",
   initialState,
   reducers: {
+    setCountry: (state, action) => {
+      state.country = action.payload;
+    },
     //도시 추가
     addCity: (state, action) => {
       const newCity = action.payload;
@@ -88,6 +92,7 @@ export const scheduleSlice = createSlice({
 
 // Action creators are generated for each case reducer function
 export const {
+  setCountry,
   addCity,
   removeCity,
   addSpot,
