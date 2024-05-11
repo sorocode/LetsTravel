@@ -5,19 +5,19 @@
 SELECT user();
 
 -- DB를 로컬에서 접속할 계정 만들기
-CREATE USER 'travel_admin'@'localhost' IDENTIFIED BY 'mysql';
+CREATE USER 'testid'@'localhost' IDENTIFIED BY 'testpw';
 
 -- DB를 원격에서 접속할 계정 만들기
 CREATE USER 'travel_admin'@'IP' IDENTIFIED BY 'mysql';
 
 -- DB 권한 부여
-GRANT ALL PRIVILEGES ON LETSTRAVEL.* TO 'travel_admin'@'localhost';
+GRANT ALL PRIVILEGES ON TESTDB.* TO 'testid'@'localhost';
 
 -- DB 계정 권한 확인
-SHOW GRANTS FOR 'travel_admin'@'localhost';
+SHOW GRANTS FOR 'testid'@'localhost';
 
 -- DB 계정 삭제
-DROP USER 'travel_admin'@'localhost';
+DROP USER 'testid'@'localhost';
 
 -- DB 제거
 DROP DATABASE LETSTRAVEL;
@@ -35,10 +35,10 @@ SHOW TABLES;
 -- 이 아래부터 다 실행시키면 됨
 
 -- DB 생성 + 기본 인코딩: UTF-8
-CREATE DATABASE LETSTRAVEL DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE DATABASE TESTDB DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 -- DB 선택
-USE LETSTRAVEL;
+USE TESTDB;
 
 -- Table 생성
 CREATE TABLE Member(
