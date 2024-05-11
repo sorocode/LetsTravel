@@ -17,7 +17,6 @@ import { fetchCities } from "../util/http";
 const SelectCityPage = () => {
   const countryState = useSelector((state) => state.schedule.country);
   const { data, isPending, isError, error } = useQuery({
-    //FIXME: 쿼리키 configure 설정
     queryKey: ["cities", { country: countryState }],
     queryFn: () => fetchCities(countryState),
   });
