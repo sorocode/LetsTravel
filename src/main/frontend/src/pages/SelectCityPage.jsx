@@ -35,8 +35,20 @@ const SelectCityPage = () => {
   };
   let content;
   if (isPending) {
-    //FIXME: 로딩 인디케이터 만들어서 대체하기
-    content = <p>{countryState.countryName}의 도시들을 불러오는 중입니다...</p>;
+    content = (
+      <motion.div
+        initial={{ opacity: 0, x: "30%", y: 100 }}
+        animate={{ opacity: 1, x: "30%", y: 50 }}
+        transition={{ duration: 0.8 }}
+      >
+        <CityItem
+          key={countryState.countryName}
+          title={countryState.countryName}
+          subTitle="의 도시를 불러오는 중입니다..."
+          isSelectMode={false}
+        />
+      </motion.div>
+    );
   }
   if (isError) {
     //FIXME: 에러 컴포넌트 만들어서 대체하기
