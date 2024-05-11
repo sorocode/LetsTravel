@@ -7,7 +7,7 @@ const tomorrow = new Date(today);
 tomorrow.setDate(today.getDate() + 1);
 
 const initialState = {
-  country: "",
+  country: [],
   cities: [], //도시 리스트
   spots: [], //여행지 리스트
   startDate: toMySQLDate(today), //시작일 오늘로 설정

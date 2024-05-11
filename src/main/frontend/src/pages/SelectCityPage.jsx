@@ -18,7 +18,7 @@ const SelectCityPage = () => {
   const countryState = useSelector((state) => state.schedule.country);
   const { data, isPending, isError, error } = useQuery({
     queryKey: ["cities", { country: countryState }],
-    queryFn: () => fetchCities(countryState),
+    queryFn: () => fetchCities(countryState.countryCode),
   });
   // 나라 선택모드인지 도시 선택 모드인지에 대한 상태, 초기값은 false(나라 선택 모드)
   const [isCityMode, setIsCityMode] = useState(false);
@@ -36,7 +36,7 @@ const SelectCityPage = () => {
   let content;
   if (isPending) {
     //FIXME: 로딩 인디케이터 만들어서 대체하기
-    content = <p>도시들을 불러오는 중입니다...</p>;
+    content = <p>{countryState.countryName}의 도시들을 불러오는 중입니다...</p>;
   }
   if (isError) {
     //FIXME: 에러 컴포넌트 만들어서 대체하기
@@ -78,7 +78,11 @@ const SelectCityPage = () => {
                     subTitle={item.countryName}
                     isSelectMode={true}
                     onClick={() => {
-                      dispatch(setCountry(item.countryCode));
+                      const data = {
+                        countryCode: item.countryCode,
+                        countryName: item.countryName_KR,
+                      };
+                      dispatch(setCountry(data));
                       selectCountry();
                     }}
                   />
