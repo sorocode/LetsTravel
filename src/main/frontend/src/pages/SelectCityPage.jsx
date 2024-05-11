@@ -19,6 +19,7 @@ const SelectCityPage = () => {
   const { data, isPending, isError, error } = useQuery({
     queryKey: ["cities", { country: countryState }],
     queryFn: () => fetchCities(countryState.countryCode),
+    enabled: countryState.countryCode !== undefined, // 작동 조건 추가
   });
   // 나라 선택모드인지 도시 선택 모드인지에 대한 상태, 초기값은 false(나라 선택 모드)
   const [isCityMode, setIsCityMode] = useState(false);
