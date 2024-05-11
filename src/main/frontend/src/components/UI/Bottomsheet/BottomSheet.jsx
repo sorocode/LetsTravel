@@ -44,13 +44,13 @@ function BottomSheet({ title, children }) {
         variants={{
           // hidden: { y: "calc(100% - 256px)" },
           // visible: { y: "10%" },
-          visible: { y: "-40%" },
-          hidden: { y: "0%" },
+          visible: { y: "-80%" },
+          hidden: { y: "-200px" },
           closed: { y: "100%" },
         }}
         dragConstraints={{ top: "-60%" }}
         dragElastic={0.2}
-        className="inline-block bg-white w-full mx-1 h-[700px] drop-shadow-2xl border-t-[0.8px] border-[#E0E0E0] rounded-t-3xl overflow-hidden text-center fixed"
+        className="inline-block bg-white w-full mx-1 h-[700px] drop-shadow-2xl border-t-[0.8px] border-[#E0E0E0] rounded-t-3xl overflow-hidden text-center fixed top-[118%]"
         onDoubleClick={onToggle}
       >
         <DragHandleEdge onClick={handleDoubleClick} />

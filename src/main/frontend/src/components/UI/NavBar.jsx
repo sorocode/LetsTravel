@@ -16,13 +16,16 @@ const NavBar = () => {
   const params = useParams();
   const cities = useSelector((state) => state.schedule.cities);
   const firstCityName = cities[0] ? cities[0].cityName : null;
+
   // console.log(params);
   return (
     <div className="container flex justify-around items-center w-screen max-w-screen-2xl h-[50px] bg-white z-[200]">
       <NavLink to="/">
         <img
           className={
-            location.pathname == "/" ? "shadow-lg rounded-xl p-2" : undefined
+            location.pathname == "/"
+              ? "shadow-lg rounded-xl border-gray-300 border-[0.5px]"
+              : undefined
           }
           src={location.pathname == "/" ? earth_filled : earth_blank}
           alt="earth_filled"
@@ -32,7 +35,7 @@ const NavBar = () => {
         <img
           className={
             location.pathname == "/term"
-              ? "shadow-lg rounded-xl p-2"
+              ? "shadow-lg rounded-xl border-gray-300 border-[0.5px]"
               : undefined
           }
           src={location.pathname == "/term" ? calendar_filled : calendar_blank}
@@ -43,7 +46,7 @@ const NavBar = () => {
         <img
           className={
             location.pathname == `/spot/${firstCityName}`
-              ? "shadow-lg rounded-xl p-2"
+              ? "shadow-lg rounded-xl"
               : undefined
           }
           src={
@@ -57,7 +60,9 @@ const NavBar = () => {
       <NavLink to="/map">
         <img
           className={
-            location.pathname == "map" ? "shadow-lg rounded-xl p-2" : undefined
+            location.pathname == "map"
+              ? "shadow-lg rounded-xl border-gray-300 border-[0.5px]"
+              : undefined
           }
           src={location.pathname == "/map" ? map_filled : map__blank}
           alt="heart blank"
@@ -67,7 +72,7 @@ const NavBar = () => {
         <img
           className={
             location.pathname == "/profile"
-              ? "shadow-lg rounded-xl p-2"
+              ? "shadow-lg rounded-xl border-gray-300 border-[0.5px]"
               : undefined
           }
           src={location.pathname == "/profile" ? profile_filled : profile_blank}

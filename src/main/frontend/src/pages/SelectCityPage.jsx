@@ -17,27 +17,29 @@ const SelectCityPage = () => {
   };
   return (
     <>
-      <SearchResults items={dummyCities}>
-        {(item) => {
-          const isSelected = JSON.stringify(cities).includes(item.id);
-          return (
-            <CityItem
-              key={item.id}
-              cityName={item.cityName}
-              cityCountry={item.countryName}
-              isSelectMode={true}
-              onClick={() => {
-                isSelected ? handleRemove(item) : handleAdd(item);
-              }}
-              isSelected={isSelected}
-            />
-          );
-        }}
-      </SearchResults>
+      <div>
+        <SearchResults items={dummyCities}>
+          {(item) => {
+            const isSelected = JSON.stringify(cities).includes(item.id);
+            return (
+              <CityItem
+                key={item.id}
+                cityName={item.cityName}
+                cityCountry={item.countryName}
+                isSelectMode={true}
+                onClick={() => {
+                  isSelected ? handleRemove(item) : handleAdd(item);
+                }}
+                isSelected={isSelected}
+              />
+            );
+          }}
+        </SearchResults>
+      </div>
       <br />
       <BottomSheet
         title={
-          <h2 className="text-center">
+          <h2 className="text-center text-xs">
             현재 <b>{cities.length}</b>개 도시 선택중
           </h2>
         }
