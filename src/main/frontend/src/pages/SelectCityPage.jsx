@@ -91,38 +91,40 @@ const SelectCityPage = () => {
         {isCityMode && content}
       </div>
       <br />
-      <BottomSheet
-        title={
-          <h2 className="text-center text-xs">
-            현재 <b>{cities.length}</b>개 도시 선택중
-          </h2>
-        }
-      >
-        <div className="flex flex-col gap-2 justify-center items-center mt-2">
-          <AnimatePresence>
-            {cities.map((city, index) => (
-              <motion.span
-                key={index}
-                className="font-bold w-1/2"
-                variants={{
-                  hidden: { opacity: 0, scale: 0.5 },
-                  visible: { opacity: 1, scale: 1 },
-                }}
-                initial="hidden"
-                animate="visible"
-                exit={{ opacity: 0, scale: 0.5 }}
-              >
-                {city.cityName.toUpperCase()}
-              </motion.span>
-            ))}
-          </AnimatePresence>
-        </div>
-        <div className="flex justify-center">
-          <Button color="#FCD4FF" to="term">
-            다음 단계
-          </Button>
-        </div>
-      </BottomSheet>
+      {isCityMode && (
+        <BottomSheet
+          title={
+            <h2 className="text-center text-xs">
+              현재 <b>{cities.length}</b>개 도시 선택중
+            </h2>
+          }
+        >
+          <div className="flex flex-col gap-2 justify-center items-center mt-2">
+            <AnimatePresence>
+              {cities.map((city, index) => (
+                <motion.span
+                  key={index}
+                  className="font-bold w-1/2"
+                  variants={{
+                    hidden: { opacity: 0, scale: 0.5 },
+                    visible: { opacity: 1, scale: 1 },
+                  }}
+                  initial="hidden"
+                  animate="visible"
+                  exit={{ opacity: 0, scale: 0.5 }}
+                >
+                  {city.cityName.toUpperCase()}
+                </motion.span>
+              ))}
+            </AnimatePresence>
+          </div>
+          <div className="flex justify-center">
+            <Button color="#FCD4FF" to="term">
+              다음 단계
+            </Button>
+          </div>
+        </BottomSheet>
+      )}
     </>
   );
 };
