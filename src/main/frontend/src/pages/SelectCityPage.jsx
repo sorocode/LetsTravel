@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { dummyCities } from "../dummyCities";
+
 import { countryData } from "../countryData";
 import {
   addCity,
@@ -16,7 +16,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchCities } from "../util/http";
 const SelectCityPage = () => {
   const { data, isPending, isError, error } = useQuery({
-    queryKey: ["cities"],
+    queryKey: ["cities", { country: countryState }],
     queryFn: () => fetchCities(countryState),
   });
   // 나라 선택모드인지 도시 선택 모드인지에 대한 상태, 초기값은 false(나라 선택 모드)
