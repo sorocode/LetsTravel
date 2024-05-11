@@ -1,0 +1,15 @@
+spring:
+  config:
+    activate:
+      on-profile: default
+  web:
+    resources:
+      static-locations: classpath:/static/,classpath:/public/,classpath:/resources/,classpath:/META-INF/resources/,file:src/main/frontend/dist/
+  application:
+    name: LetsTravel
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/testdb?serverTimezone=UTC&characterEncoding=UTF-8
+    username: testid
+    password: testpw
