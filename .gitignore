@@ -4,10 +4,12 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
-application.properties
-application-dev.properties
-application-local.properties
+application.yml
+application-dev.yml
+application-local.yml
+application-test.yml
 LetsTravelDevDB.sql
+LetsTravelLocalDB.sql
 
 ### STS ###
 .apt_generated
