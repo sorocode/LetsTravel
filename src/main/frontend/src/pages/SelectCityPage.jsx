@@ -32,12 +32,38 @@ const SelectCityPage = () => {
   const handleAdd = (item) => {
     dispatch(addCity(item));
   };
-  const handleRemove = (item) => {
-    dispatch(removeCity(item.id));
+  const handleRemove = (id) => {
+    dispatch(removeCity(id));
   };
-  let content;
+  // 나라 목록 컨텐츠
+  let countryContent = (
+    <SearchResults items={countryData}>
+      {(item, index) => {
+        if (index < 10) {
+          return (
+            <CityItem
+              key={item.id}
+              title={item.countryName_KR}
+              subTitle={item.countryName}
+              isSelectMode={true}
+              onClick={() => {
+                const data = {
+                  countryCode: item.countryCode,
+                  countryName: item.countryName_KR,
+                };
+                dispatch(setCountry(data));
+                changeMode();
+              }}
+            />
+          );
+        }
+      }}
+    </SearchResults>
+  );
+  // 도시 목록 컨텐츠
+  let cityContent;
   if (isPending) {
-    content = (
+    cityContent = (
       <motion.div
         initial={{ opacity: 0, x: "8%", y: 100 }}
         animate={{ opacity: 1, x: "8%", y: 50 }}
@@ -55,45 +81,45 @@ const SelectCityPage = () => {
   }
   if (isError) {
     //FIXME: 에러 컴포넌트 만들어서 대체하기
-    content = <p>{error.info?.message || "데이터 불러오기 실패"}</p>;
+    cityContent = <p>{error.info?.message || "데이터 불러오기 실패"}</p>;
   }
   if (data) {
-    content = (
+    console.log("data", data);
+    console.log("cities", cities);
+    cityContent = (
       <>
-        <AnimatePresence>
-          <motion.div
-            className="flex flex-col items-start w-"
-            initial={{ opacity: 0, x: "30%", y: 50 }}
-            animate={{ opacity: 1, x: "12%", y: 50 }}
-            exit={{ opacity: 0, x: "30%", y: 50 }}
-            transition={{ duration: 0.8 }}
-          >
-            <CityItem
-              key={countryState.countryName}
-              title={countryState.countryName}
-              subTitle="의 도시 선택 중"
-              isSelectMode={false}
-            />
-            <button onClick={changeMode}>국가재선택</button>
-          </motion.div>
-          <SearchResults items={data}>
-            {(item) => {
-              const isSelected = JSON.stringify(cities).includes(item.id);
-              return (
-                <CityItem
-                  key={item.citySeq}
-                  title={item.cityName}
-                  subTitle={item.cityName}
-                  isSelectMode={true}
-                  onClick={() => {
-                    isSelected ? handleRemove(item) : handleAdd(item);
-                  }}
-                  isSelected={isSelected}
-                />
-              );
-            }}
-          </SearchResults>
-        </AnimatePresence>
+        <motion.div
+          className="flex flex-col items-start w-"
+          initial={{ opacity: 0, x: "30%", y: 50 }}
+          animate={{ opacity: 1, x: "12%", y: 50 }}
+          exit={{ opacity: 0, x: "30%", y: 50 }}
+          transition={{ duration: 0.8 }}
+        >
+          <CityItem
+            key={countryState.countryName}
+            title={countryState.countryName}
+            subTitle="의 도시 선택 중"
+            isSelectMode={false}
+          />
+          <button onClick={changeMode}>국가재선택</button>
+        </motion.div>
+        <SearchResults items={data}>
+          {(item) => {
+            const isSelected = JSON.stringify(cities).includes(item.cityName);
+            return (
+              <CityItem
+                key={item.citySeq}
+                title={item.cityName}
+                subTitle={item.cityName}
+                isSelectMode={true}
+                onClick={() => {
+                  isSelected ? handleRemove(item.citySeq) : handleAdd(item);
+                }}
+                isSelected={isSelected}
+              />
+            );
+          }}
+        </SearchResults>
       </>
     );
   }
@@ -101,32 +127,9 @@ const SelectCityPage = () => {
     <>
       <div>
         {/* 나라 선택 모드일 때 */}
-        {mode === "country" && (
-          <SearchResults items={countryData}>
-            {(item, index) => {
-              if (index < 10) {
-                return (
-                  <CityItem
-                    key={item.id}
-                    title={item.countryName_KR}
-                    subTitle={item.countryName}
-                    isSelectMode={true}
-                    onClick={() => {
-                      const data = {
-                        countryCode: item.countryCode,
-                        countryName: item.countryName_KR,
-                      };
-                      dispatch(setCountry(data));
-                      changeMode();
-                    }}
-                  />
-                );
-              }
-            }}
-          </SearchResults>
-        )}
+        {mode === "country" && countryContent}
         {/* 도시 선택 모드일때 */}
-        {mode === "city" && content}
+        {mode === "city" && cityContent}
       </div>
       <br />
       {mode === "city" && (
