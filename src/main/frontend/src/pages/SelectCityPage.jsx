@@ -6,25 +6,26 @@ import {
   removeCity,
   setCountry,
 } from "../store/schedule/scheduleSlice";
+import { chagneMode } from "../store/navigation/navigationSlice";
 import CityItem from "../components/UI/CityItem";
 import SearchResults from "../components/UI/SearchResults";
 import { motion, AnimatePresence } from "framer-motion";
 import Button from "../components/UI/Buttons/Button";
 import BottomSheet from "../components/UI/Bottomsheet/BottomSheet";
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchCities } from "../util/http";
 const SelectCityPage = () => {
-  const countryState = useSelector((state) => state.schedule.country);
+  const countryState = useSelector((state) => state.schedule.country); //나라 상태
+  const mode = useSelector((state) => state.navigation.mode);
   const { data, isPending, isError, error } = useQuery({
     queryKey: ["cities", { country: countryState }],
     queryFn: () => fetchCities(countryState.countryCode),
     enabled: countryState.countryCode !== undefined, // 작동 조건 추가
   });
-  // 나라 선택모드인지 도시 선택 모드인지에 대한 상태, 초기값은 false(나라 선택 모드)
-  const [isCityMode, setIsCityMode] = useState(false);
-  const selectCountry = () => {
-    setIsCityMode(true);
+
+  const changeMode = () => {
+    console.log("모드를 변경합니다.");
+    dispatch(chagneMode());
   };
   const cities = useSelector((state) => state.schedule.cities);
   const dispatch = useDispatch();
@@ -38,9 +39,10 @@ const SelectCityPage = () => {
   if (isPending) {
     content = (
       <motion.div
-        initial={{ opacity: 0, x: "30%", y: 100 }}
-        animate={{ opacity: 1, x: "30%", y: 50 }}
+        initial={{ opacity: 0, x: "8%", y: 100 }}
+        animate={{ opacity: 1, x: "8%", y: 50 }}
         transition={{ duration: 0.8 }}
+        className="flex justify-start"
       >
         <CityItem
           key={countryState.countryName}
@@ -57,30 +59,49 @@ const SelectCityPage = () => {
   }
   if (data) {
     content = (
-      <SearchResults items={data}>
-        {(item) => {
-          const isSelected = JSON.stringify(cities).includes(item.id);
-          return (
+      <>
+        <AnimatePresence>
+          <motion.div
+            className="flex flex-col items-start w-"
+            initial={{ opacity: 0, x: "30%", y: 50 }}
+            animate={{ opacity: 1, x: "12%", y: 50 }}
+            exit={{ opacity: 0, x: "30%", y: 50 }}
+            transition={{ duration: 0.8 }}
+          >
             <CityItem
-              key={item.citySeq}
-              title={item.cityName}
-              subTitle={item.cityName}
-              isSelectMode={true}
-              onClick={() => {
-                isSelected ? handleRemove(item) : handleAdd(item);
-              }}
-              isSelected={isSelected}
+              key={countryState.countryName}
+              title={countryState.countryName}
+              subTitle="의 도시 선택 중"
+              isSelectMode={false}
             />
-          );
-        }}
-      </SearchResults>
+            <button onClick={changeMode}>국가재선택</button>
+          </motion.div>
+          <SearchResults items={data}>
+            {(item) => {
+              const isSelected = JSON.stringify(cities).includes(item.id);
+              return (
+                <CityItem
+                  key={item.citySeq}
+                  title={item.cityName}
+                  subTitle={item.cityName}
+                  isSelectMode={true}
+                  onClick={() => {
+                    isSelected ? handleRemove(item) : handleAdd(item);
+                  }}
+                  isSelected={isSelected}
+                />
+              );
+            }}
+          </SearchResults>
+        </AnimatePresence>
+      </>
     );
   }
   return (
     <>
       <div>
         {/* 나라 선택 모드일 때 */}
-        {!isCityMode && (
+        {mode === "country" && (
           <SearchResults items={countryData}>
             {(item, index) => {
               if (index < 10) {
@@ -96,7 +117,7 @@ const SelectCityPage = () => {
                         countryName: item.countryName_KR,
                       };
                       dispatch(setCountry(data));
-                      selectCountry();
+                      changeMode();
                     }}
                   />
                 );
@@ -105,10 +126,10 @@ const SelectCityPage = () => {
           </SearchResults>
         )}
         {/* 도시 선택 모드일때 */}
-        {isCityMode && content}
+        {mode === "city" && content}
       </div>
       <br />
-      {isCityMode && (
+      {mode === "city" && (
         <BottomSheet
           title={
             <h2 className="text-center text-xs">
