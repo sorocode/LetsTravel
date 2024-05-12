@@ -11,4 +11,5 @@ public class CityDTO {
 
 	private int citySeq;
 	private String cityName;
+	private String cityNameTranslated;
 }
