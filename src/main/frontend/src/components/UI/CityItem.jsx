@@ -13,6 +13,11 @@ import newyork from "../../assets/images/newyork.svg";
 import dummyImage from "../../assets/icons/dummy_image.svg";
 function CityItem({ title, subTitle, isSelectMode, isSelected, ...props }) {
   const formattedCityName = subTitle.replace(/\s/g, "");
+  let cssClass = "cityInfo flex justify-center items-center";
+  if (isSelectMode) {
+    cssClass -= "items-center";
+    cssClass += " flex-col items-start";
+  }
   let thumbnail;
   switch (formattedCityName) {
     case "tokyo":
@@ -43,11 +48,12 @@ function CityItem({ title, subTitle, isSelectMode, isSelected, ...props }) {
       thumbnail = dummyImage; // 기본값 설정
       break;
   }
+
   return (
     <div className="container flex justify-between my-2">
       <div className="leftSide flex gap-6">
         <img src={thumbnail} alt={formattedCityName} />
-        <div className="cityInfo flex flex-col items-start justify-center">
+        <div className={cssClass}>
           <p className="title font-bold">{title.toUpperCase()}</p>
           <p className="subtitle text-[#848484]">{subTitle.toUpperCase()}</p>
         </div>

@@ -1,4 +1,7 @@
 import axios from "axios";
+import { QueryClient } from "@tanstack/react-query";
+export const queryClient = new QueryClient();
+
 const URL = "http://localhost:8080/api";
 // countryCode 보내면 도시 불러옴
 export const fetchCities = async (countryCode) => {
