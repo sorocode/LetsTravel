@@ -24,6 +24,8 @@ export const scheduleSlice = createSlice({
     },
     unsetCountry: (state) => {
       state.country = [];
+      state.cities = [];
+      state.spots = [];
     },
     //도시 추가
     addCity: (state, action) => {
