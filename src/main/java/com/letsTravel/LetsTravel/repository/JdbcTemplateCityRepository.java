@@ -29,7 +29,7 @@ public class JdbcTemplateCityRepository implements CityRepository {
 			@Override
 			public CityDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
 				CityDTO cityDTO = new CityDTO();
-				cityDTO.setCitySeq(rs.getInt(1));
+				cityDTO.setId(rs.getInt(1));
 				cityDTO.setCityName(rs.getString(2));
 				cityDTO.setCityNameTranslated(rs.getString(3));
 				return cityDTO;
