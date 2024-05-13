@@ -129,8 +129,8 @@ const SelectCityPage = () => {
               <CityItem
                 btnKey={item.id}
                 key={item.cityName}
-                title={item.cityName}
-                subTitle={item.cityNameTranslated}
+                title={item.cityNameTranslated}
+                subTitle={item.cityName}
                 isSelectMode={true}
                 onClick={() => {
                   isSelected ? handleRemove(item.citySeq) : handleAdd(item);
