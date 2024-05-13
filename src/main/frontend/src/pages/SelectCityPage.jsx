@@ -5,6 +5,7 @@ import {
   addCity,
   removeCity,
   setCountry,
+  unsetCountry,
 } from "../store/schedule/scheduleSlice";
 import { chagneMode } from "../store/navigation/navigationSlice";
 import CityItem from "../components/UI/CityItem";
@@ -15,7 +16,11 @@ import BottomSheet from "../components/UI/Bottomsheet/BottomSheet";
 import { useQuery } from "@tanstack/react-query";
 import { fetchCities } from "../util/http";
 import ErrorPage from "../components/UI/Error/ErrorPage";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 const SelectCityPage = () => {
+  const navigate = useNavigate();
   const countryState = useSelector((state) => state.schedule.country); //나라 상태
   const mode = useSelector((state) => state.navigation.mode);
   const { data, isPending, isError, error } = useQuery({
@@ -35,6 +40,13 @@ const SelectCityPage = () => {
   };
   const handleRemove = (id) => {
     dispatch(removeCity(id));
+  };
+
+  //도시 불러오기 오류 시 인트로 화면으로 돌아갈 수 있게 하는 기능
+  const handleBack = () => {
+    dispatch(unsetCountry());
+    dispatch(chagneMode());
+    navigate("..");
   };
   // 나라 목록 컨텐츠
   let countryContent = (
@@ -86,6 +98,7 @@ const SelectCityPage = () => {
       <ErrorPage
         title="⚠️에러 발생"
         message={error.info?.message || "데이터 불러오기 실패"}
+        onClick={handleBack}
       />
     );
   }
@@ -110,7 +123,7 @@ const SelectCityPage = () => {
           <button onClick={changeMode}>국가재선택</button>
         </motion.div>
         <SearchResults items={data}>
-          {(item, index) => {
+          {(item) => {
             const isSelected = JSON.stringify(cities).includes(item.cityName);
             return (
               <CityItem

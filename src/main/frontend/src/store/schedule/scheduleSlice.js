@@ -22,6 +22,9 @@ export const scheduleSlice = createSlice({
     setCountry: (state, action) => {
       state.country = action.payload;
     },
+    unsetCountry: (state) => {
+      state.country = [];
+    },
     //도시 추가
     addCity: (state, action) => {
       const newCity = action.payload;
@@ -97,6 +100,7 @@ export const scheduleSlice = createSlice({
 // Action creators are generated for each case reducer function
 export const {
   setCountry,
+  unsetCountry,
   addCity,
   removeCity,
   addSpot,
