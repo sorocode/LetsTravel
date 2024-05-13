@@ -44,7 +44,7 @@ const SelectDateArea = () => {
         <Button color="#7BC9FF" to="..">
           이전
         </Button>
-        <Button color="#FCD4FF" to={firstCityName && `/spot/${firstCityName}`}>
+        <Button color="#FCD4FF" to={firstCityName && `spot/${firstCityName}`}>
           다음
         </Button>
       </div>
