@@ -174,7 +174,7 @@ const SelectCityPage = () => {
                   animate="visible"
                   exit={{ opacity: 0, scale: 0.5 }}
                 >
-                  {city.cityName.toUpperCase()}
+                  {city.cityNameTranslated.toUpperCase()}
                 </motion.span>
               ))}
             </AnimatePresence>
