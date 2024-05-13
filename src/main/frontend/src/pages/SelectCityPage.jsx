@@ -127,10 +127,10 @@ const SelectCityPage = () => {
             const isSelected = JSON.stringify(cities).includes(item.cityName);
             return (
               <CityItem
-                btnKey={item.citySeq}
+                btnKey={item.id}
                 key={item.cityName}
                 title={item.cityName}
-                subTitle={item.cityName}
+                subTitle={item.cityNameTranslated}
                 isSelectMode={true}
                 onClick={() => {
                   isSelected ? handleRemove(item.citySeq) : handleAdd(item);

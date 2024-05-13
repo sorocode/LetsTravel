@@ -28,13 +28,12 @@ export const scheduleSlice = createSlice({
     //도시 추가
     addCity: (state, action) => {
       const newCity = action.payload;
-      const existingCity = state.cities.find(
-        (item) => item.citySeq === newCity.citySeq
-      );
+      const existingCity = state.cities.find((item) => item.id === newCity.id);
       if (!existingCity) {
         state.cities.push({
-          citySeq: newCity.citySeq,
+          id: newCity.id,
           cityName: newCity.cityName,
+          cityNameTranslated: newCity.cityNameTranslated,
           //TODO:백엔드 연동 후 한국어 이름 추가하기
         });
       } else {
@@ -43,15 +42,13 @@ export const scheduleSlice = createSlice({
     },
     // 도시 삭제
     removeCity: (state, action) => {
-      const citySeq = action.payload;
-      const existingCity = state.cities.find(
-        (item) => item.citySeq === citySeq
-      );
+      const id = action.payload;
+      const existingCity = state.cities.find((item) => item.id === id);
       if (!existingCity) {
         alert("리스트에 존재하지 않는 도시입니다. 다시 시도해주세요.");
         return;
       } else {
-        state.cities = state.cities.filter((city) => city.citySeq !== citySeq);
+        state.cities = state.cities.filter((city) => city.id !== id);
         // state.totalQuantity--;
       }
     },
