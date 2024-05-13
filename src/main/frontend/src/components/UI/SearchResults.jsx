@@ -33,7 +33,7 @@ function SearchResults({ searchId, items, children }) {
         className="w-3/4"
       >
         {searchResults.map((item, isClicked) => (
-          <motion.li layout key={item.id}>
+          <motion.li layout key={item.id ? item.id : item.citySeq}>
             {children(item, isClicked)}
           </motion.li>
         ))}

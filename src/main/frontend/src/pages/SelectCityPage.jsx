@@ -24,7 +24,7 @@ const SelectCityPage = () => {
   });
 
   const changeMode = () => {
-    console.log("모드를 변경합니다.");
+    // console.log("모드를 변경합니다.");
     dispatch(chagneMode());
   };
   const cities = useSelector((state) => state.schedule.cities);
@@ -84,8 +84,8 @@ const SelectCityPage = () => {
     cityContent = <p>{error.info?.message || "데이터 불러오기 실패"}</p>;
   }
   if (data) {
-    console.log("data", data);
-    console.log("cities", cities);
+    // console.log("data", data);
+    // console.log("cities", cities);
     cityContent = (
       <>
         <motion.div
@@ -104,11 +104,12 @@ const SelectCityPage = () => {
           <button onClick={changeMode}>국가재선택</button>
         </motion.div>
         <SearchResults items={data}>
-          {(item) => {
+          {(item, index) => {
             const isSelected = JSON.stringify(cities).includes(item.cityName);
             return (
               <CityItem
-                key={item.citySeq}
+                btnKey={item.citySeq}
+                key={item.cityName}
                 title={item.cityName}
                 subTitle={item.cityName}
                 isSelectMode={true}
@@ -125,12 +126,12 @@ const SelectCityPage = () => {
   }
   return (
     <>
-      <div>
+      <article>
         {/* 나라 선택 모드일 때 */}
         {mode === "country" && countryContent}
         {/* 도시 선택 모드일때 */}
         {mode === "city" && cityContent}
-      </div>
+      </article>
       <br />
       {mode === "city" && (
         <BottomSheet
