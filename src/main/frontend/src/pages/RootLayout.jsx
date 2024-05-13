@@ -7,7 +7,7 @@ const RootLayout = () => {
       <main>
         <Outlet />
       </main>
-      <nav className="fixed bottom-0 z-[1000]">
+      <nav className="fixed bottom-0 z-[1000] flex justify-center items-center min-w-full">
         <NavBar />
       </nav>
     </>
