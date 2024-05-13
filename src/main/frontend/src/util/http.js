@@ -7,7 +7,7 @@ const URL = "http://localhost:8080/api";
 export const fetchCities = async (countryCode) => {
   try {
     const req = await axios.get(URL + `/city/${countryCode}`);
-    console.log(req);
+    // console.log(req);
     return req.data;
   } catch (err) {
     const fetchError = new Error("도시 불러오기 실패");

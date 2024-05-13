@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import SearchBar from "./SearchBar";
+import { motion } from "framer-motion";
 
 function SearchResults({ searchId, items, children }) {
   const lastTerm = useRef();
@@ -25,11 +26,18 @@ function SearchResults({ searchId, items, children }) {
         onChange={handleChange}
         ref={lastTerm}
       />
-      <ul className="w-3/4">
+      <motion.ul
+        initial={{ opacity: 0.5, y: 100 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        className="w-3/4"
+      >
         {searchResults.map((item, isClicked) => (
-          <li key={item.id}>{children(item, isClicked)}</li>
+          <motion.li layout key={item.id ? item.id : item.citySeq}>
+            {children(item, isClicked)}
+          </motion.li>
         ))}
-      </ul>
+      </motion.ul>
     </div>
   );
 }

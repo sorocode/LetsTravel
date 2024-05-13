@@ -22,15 +22,20 @@ export const scheduleSlice = createSlice({
     setCountry: (state, action) => {
       state.country = action.payload;
     },
+    unsetCountry: (state) => {
+      state.country = [];
+    },
     //도시 추가
     addCity: (state, action) => {
       const newCity = action.payload;
-      const existingCity = state.cities.find((item) => item.id === newCity.id);
+      const existingCity = state.cities.find(
+        (item) => item.citySeq === newCity.citySeq
+      );
       if (!existingCity) {
         state.cities.push({
-          id: newCity.id,
+          citySeq: newCity.citySeq,
           cityName: newCity.cityName,
-          countryName: newCity.countryName,
+          //TODO:백엔드 연동 후 한국어 이름 추가하기
         });
       } else {
         alert("이미 추가된 도시입니다.");
@@ -38,13 +43,15 @@ export const scheduleSlice = createSlice({
     },
     // 도시 삭제
     removeCity: (state, action) => {
-      const id = action.payload;
-      const existingCity = state.cities.find((item) => item.id === id);
+      const citySeq = action.payload;
+      const existingCity = state.cities.find(
+        (item) => item.citySeq === citySeq
+      );
       if (!existingCity) {
         alert("리스트에 존재하지 않는 도시입니다. 다시 시도해주세요.");
         return;
       } else {
-        state.cities = state.cities.filter((city) => city.id !== id);
+        state.cities = state.cities.filter((city) => city.citySeq !== citySeq);
         // state.totalQuantity--;
       }
     },
@@ -93,6 +100,7 @@ export const scheduleSlice = createSlice({
 // Action creators are generated for each case reducer function
 export const {
   setCountry,
+  unsetCountry,
   addCity,
   removeCity,
   addSpot,
