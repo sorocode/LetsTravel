@@ -17,10 +17,7 @@ const SelectedCityList = () => {
           <ul>
             {cities.map((city) => (
               <li key={city.id} className="border-[1px]">
-                <CityItem
-                  cityName={city.cityName}
-                  cityCountry={city.countryName}
-                />
+                <CityItem title={city.cityName} subTitle={city.cityName} />
               </li>
             ))}
           </ul>

@@ -11,7 +11,14 @@ import beijing from "../../assets/images/beijing.svg";
 import hanoi from "../../assets/images/hanoi.svg";
 import newyork from "../../assets/images/newyork.svg";
 import dummyImage from "../../assets/icons/dummy_image.svg";
-function CityItem({ title, subTitle, isSelectMode, isSelected, ...props }) {
+function CityItem({
+  btnKey,
+  title,
+  subTitle,
+  isSelectMode,
+  isSelected,
+  ...props
+}) {
   const formattedCityName = subTitle.replace(/\s/g, "");
   let cssClass = "cityInfo flex justify-center items-center";
   if (isSelectMode) {
@@ -61,6 +68,7 @@ function CityItem({ title, subTitle, isSelectMode, isSelected, ...props }) {
       {isSelectMode && (
         <div className="rightSide flex items-center justify-center gap-5">
           <motion.button
+            key={btnKey}
             variants={{
               default: { scale: 1 },
               clicked: { scale: 1.5 },
