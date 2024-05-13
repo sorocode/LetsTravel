@@ -14,6 +14,7 @@ import Button from "../components/UI/Buttons/Button";
 import BottomSheet from "../components/UI/Bottomsheet/BottomSheet";
 import { useQuery } from "@tanstack/react-query";
 import { fetchCities } from "../util/http";
+import ErrorPage from "../components/UI/Error/ErrorPage";
 const SelectCityPage = () => {
   const countryState = useSelector((state) => state.schedule.country); //나라 상태
   const mode = useSelector((state) => state.navigation.mode);
@@ -81,7 +82,12 @@ const SelectCityPage = () => {
   }
   if (isError) {
     //FIXME: 에러 컴포넌트 만들어서 대체하기
-    cityContent = <p>{error.info?.message || "데이터 불러오기 실패"}</p>;
+    cityContent = (
+      <ErrorPage
+        title="⚠️에러 발생"
+        message={error.info?.message || "데이터 불러오기 실패"}
+      />
+    );
   }
   if (data) {
     // console.log("data", data);
