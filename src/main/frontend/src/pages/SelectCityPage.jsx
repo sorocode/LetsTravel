@@ -38,8 +38,8 @@ const SelectCityPage = () => {
   const handleAdd = (item) => {
     dispatch(addCity(item));
   };
-  const handleRemove = (id) => {
-    dispatch(removeCity(id));
+  const handleRemove = (item) => {
+    dispatch(removeCity(item.id));
   };
 
   //도시 불러오기 오류 시 인트로 화면으로 돌아갈 수 있게 하는 기능
@@ -133,7 +133,7 @@ const SelectCityPage = () => {
                 subTitle={item.cityName}
                 isSelectMode={true}
                 onClick={() => {
-                  isSelected ? handleRemove(item.citySeq) : handleAdd(item);
+                  isSelected ? handleRemove(item) : handleAdd(item);
                 }}
                 isSelected={isSelected}
               />
