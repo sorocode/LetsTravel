@@ -22,13 +22,13 @@ export const fetchSpots = async (searchTerm, city) => {
   try {
     const req = await axios.post(
       PLACE_TEXT_URL,
-      { textQuery: `${searchTerm} in ${city}`, languageCode: "ko" },
+      { textQuery: `${city}의 ${searchTerm}`, languageCode: "ko" },
       {
         headers: {
           "Content-Type": "application/json",
           "X-Goog-Api-Key": GOOGLE_API_KEY,
           "X-Goog-FieldMask":
-            "places.displayName,places.formattedAddress,places.priceLevel,places.location",
+            "places.id,places.displayName,places.location,places.types,places.photos",
         },
       }
     );
