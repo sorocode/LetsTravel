@@ -36,7 +36,6 @@ export const scheduleSlice = createSlice({
           id: newCity.id,
           cityName: newCity.cityName,
           cityNameTranslated: newCity.cityNameTranslated,
-          //TODO:백엔드 연동 후 한국어 이름 추가하기
         });
       } else {
         alert("이미 추가된 도시입니다.");
