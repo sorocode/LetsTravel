@@ -7,20 +7,33 @@ import { AnimatePresence, motion } from "framer-motion";
 import BottomSheet from "../components/UI/Bottomsheet/BottomSheet";
 import { useDispatch, useSelector } from "react-redux";
 import { addSpot, removeSpot } from "../store/schedule/scheduleSlice";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { fetchSpots } from "../util/http";
 import ErrorPage from "../components/UI/Error/ErrorPage";
+import { useEffect } from "react";
 function SelectSpotPage() {
   const params = useParams();
   const spots = useSelector((state) => state.schedule.spots);
   const dispatch = useDispatch();
 
-  const { data, isPending, isError, error } = useQuery({
-    queryKey: ["spots"],
-    queryFn: () => fetchSpots("관광지", params.city),
+  // const { data, isPending, isError, error } = useQuery({
+  //   queryKey: ["spots"],
+  //   queryFn: () => fetchSpots("관광지", params.city),
+  //   enabled: params.city != "",
+  // });
+  const { data, mutate, isPending, isError, error } = useMutation({
+    mutationKey: ["spots"],
+    mutationFn: () => fetchSpots("관광지", params.city),
+    onMutate: () => {
+      console.log("작동");
+      console.log(data);
+    },
   });
   //TODO: 추천 목록 추가
-
+  useEffect(() => {
+    // console.log("작동", data);
+    mutate();
+  }, [mutate]);
   const handleAddSpot = (item) => {
     dispatch(addSpot(item));
   };

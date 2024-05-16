@@ -9,7 +9,7 @@ function SearchResults({ apiMode, searchId, items, children }) {
   const lastTerm = useRef();
   const params = useParams();
   const [searchTerm, setSearchTerm] = useState("");
-  //FIXME: 새로고침하기 전에 오류 발생 문제 해결
+
   const searchResults = items.filter((item) =>
     JSON.stringify(item).toLowerCase().includes(searchTerm.toLowerCase())
   );
