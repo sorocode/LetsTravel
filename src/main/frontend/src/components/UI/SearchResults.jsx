@@ -1,7 +1,7 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import SearchBar from "./SearchBar";
 import { motion } from "framer-motion";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { fetchSpots } from "../../util/http";
 import { useParams } from "react-router-dom";
 import ErrorPage from "./Error/ErrorPage";
@@ -13,10 +13,9 @@ function SearchResults({ apiMode, searchId, items, children }) {
   const searchResults = items.filter((item) =>
     JSON.stringify(item).toLowerCase().includes(searchTerm.toLowerCase())
   );
-  const { data, isPending, isError, error } = useQuery({
-    queryKey: ["spots"],
-    queryFn: () => fetchSpots(searchTerm, params.city),
-    enabled: searchTerm != "",
+  const { data, mutate, isPending, isError, error } = useMutation({
+    mutationKey: ["spots", { term: searchTerm }],
+    mutationFn: () => fetchSpots(searchTerm, params.city),
   });
 
   function handleChange(event) {
@@ -28,7 +27,13 @@ function SearchResults({ apiMode, searchId, items, children }) {
       setSearchTerm(event.target.value);
     }, 1000);
   }
+  function onSubmitHandler(event) {
+    event.preventDefault();
+    setSearchTerm(event.target.searchTerm.value);
+    mutate();
+  }
   let content;
+
   if (!apiMode) {
     content = searchResults.map((item, isClicked) => (
       <motion.li layout key={item.id ? item.id : item.citySeq}>
@@ -53,6 +58,8 @@ function SearchResults({ apiMode, searchId, items, children }) {
           {children(item, isClicked)}
         </motion.li>
       ));
+    } else {
+      content = <p>검색 결과가 없습니다.</p>;
     }
   }
   return (
@@ -60,6 +67,7 @@ function SearchResults({ apiMode, searchId, items, children }) {
       <SearchBar
         searchBarId={searchId}
         placeHolder="어디로 떠나시나요?"
+        onSubmit={onSubmitHandler}
         onChange={handleChange}
         ref={lastTerm}
       />

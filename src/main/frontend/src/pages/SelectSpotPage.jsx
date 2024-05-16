@@ -10,24 +10,20 @@ import { addSpot, removeSpot } from "../store/schedule/scheduleSlice";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { fetchSpots } from "../util/http";
 import ErrorPage from "../components/UI/Error/ErrorPage";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 function SelectSpotPage() {
   const params = useParams();
+  const [apiMode, setApiMode] = useState(false);
   const spots = useSelector((state) => state.schedule.spots);
   const dispatch = useDispatch();
-
   // const { data, isPending, isError, error } = useQuery({
   //   queryKey: ["spots"],
   //   queryFn: () => fetchSpots("관광지", params.city),
   //   enabled: params.city != "",
   // });
   const { data, mutate, isPending, isError, error } = useMutation({
-    mutationKey: ["spots"],
+    mutationKey: ["recommend"],
     mutationFn: () => fetchSpots("관광지", params.city),
-    onMutate: () => {
-      console.log("작동");
-      console.log(data);
-    },
   });
   //TODO: 추천 목록 추가
   useEffect(() => {
@@ -58,24 +54,26 @@ function SelectSpotPage() {
   if (data) {
     console.log(data.places);
     content = (
-      <SearchResults items={data.places} searchId="spots" apiMode={false}>
-        {(item) => {
-          //FIXME:임시로 longitude를 id처럼 썼지만 나중에 진짜 id로 바꾸기
-          const isSelected = JSON.stringify(spots).includes(item.longitude);
-          return (
-            <SpotItem
-              key={item.id}
-              spotName={item.displayName.text}
-              latitude={item.location.latitude}
-              longitude={item.location.longitude}
-              onClick={() => {
-                isSelected ? handleRemoveSpot(item) : handleAddSpot(item);
-              }}
-              isSelected={isSelected}
-            />
-          );
-        }}
-      </SearchResults>
+      <div onClick={() => setApiMode(true)}>
+        <SearchResults items={data.places} searchId="spots" apiMode={apiMode}>
+          {(item) => {
+            //FIXME:임시로 longitude를 id처럼 썼지만 나중에 진짜 id로 바꾸기
+            const isSelected = JSON.stringify(spots).includes(item.longitude);
+            return (
+              <SpotItem
+                key={item.id}
+                spotName={item.displayName.text}
+                latitude={item.location.latitude}
+                longitude={item.location.longitude}
+                onClick={() => {
+                  isSelected ? handleRemoveSpot(item) : handleAddSpot(item);
+                }}
+                isSelected={isSelected}
+              />
+            );
+          }}
+        </SearchResults>
+      </div>
     );
   }
   return (
