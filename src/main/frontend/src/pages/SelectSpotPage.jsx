@@ -7,32 +7,54 @@ import { AnimatePresence, motion } from "framer-motion";
 import BottomSheet from "../components/UI/Bottomsheet/BottomSheet";
 import { useDispatch, useSelector } from "react-redux";
 import { addSpot, removeSpot } from "../store/schedule/scheduleSlice";
+import { useQuery } from "@tanstack/react-query";
+import { fetchSpots } from "../util/http";
+import ErrorPage from "../components/UI/Error/ErrorPage";
 function SelectSpotPage() {
   const params = useParams();
   const spots = useSelector((state) => state.schedule.spots);
   const dispatch = useDispatch();
-  const selectedCity = dummyCities.find(
-    (city) => city.cityName === params.city
-  );
+
+  const { data, isPending, isError, error } = useQuery({
+    queryKey: ["spots"],
+    queryFn: () => fetchSpots("관광지", params.city),
+  });
+  //TODO: 추천 목록 추가
+
   const handleAddSpot = (item) => {
     dispatch(addSpot(item));
   };
   const handleRemoveSpot = (item) => {
     dispatch(removeSpot(item.id));
   };
-
-  return (
-    <div>
-      <SearchResults items={selectedCity.spots} searchId="spots">
+  let content;
+  if (isPending) {
+    content = <p>여행지를 불러오는 중</p>;
+  }
+  if (isError) {
+    content = (
+      <ErrorPage
+        title="에러 발생!"
+        message={
+          error.info?.message ||
+          "여행지를 가져오는 데 실패했습니다. 잠시 후 다시 시도해주십시오."
+        }
+      />
+    );
+  }
+  if (data) {
+    console.log(data.places);
+    content = (
+      <SearchResults items={data.places} searchId="spots" apiMode={false}>
         {(item) => {
           //FIXME:임시로 longitude를 id처럼 썼지만 나중에 진짜 id로 바꾸기
           const isSelected = JSON.stringify(spots).includes(item.longitude);
           return (
             <SpotItem
               key={item.id}
-              spotName={item.spotName}
-              latitude={item.latitude}
-              longitude={item.longitude}
+              spotName={item.displayName.text}
+              latitude={item.location.latitude}
+              longitude={item.location.longitude}
               onClick={() => {
                 isSelected ? handleRemoveSpot(item) : handleAddSpot(item);
               }}
@@ -41,6 +63,11 @@ function SelectSpotPage() {
           );
         }}
       </SearchResults>
+    );
+  }
+  return (
+    <div>
+      {content}
       <BottomSheet title={<h2>일정 고르기</h2>}>
         <div className="flex flex-col gap-2 justify-center items-center mt-2">
           <AnimatePresence>
