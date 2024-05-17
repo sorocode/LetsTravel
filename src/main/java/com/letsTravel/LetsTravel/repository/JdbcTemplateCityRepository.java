@@ -2,7 +2,6 @@ package com.letsTravel.LetsTravel.repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -30,6 +29,7 @@ public class JdbcTemplateCityRepository implements CityRepository {
 			public CityDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
 				CityDTO cityDTO = new CityDTO();
 				cityDTO.setId(rs.getInt(1));
+				cityDTO.setCountryCode(countryCode);
 				cityDTO.setCityName(rs.getString(2));
 				cityDTO.setCityNameTranslated(rs.getString(3));
 				return cityDTO;
