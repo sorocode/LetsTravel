@@ -10,6 +10,7 @@ import lombok.Setter;
 public class CityDTO {
 
 	private int id;
+	private String countryCode;
 	private String cityName;
 	private String cityNameTranslated;
 }
