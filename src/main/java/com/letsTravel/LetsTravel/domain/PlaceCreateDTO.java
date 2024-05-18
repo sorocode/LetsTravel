@@ -1,22 +1,18 @@
 package com.letsTravel.LetsTravel.domain;
 
-import java.sql.Date;
-
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 @Getter
-@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class PlaceCreateDTO {
-	
-	private String placeId;
-	private String placeName;
-	private String placeFormattedAddress;
-	private String cityName;
-	private String cityLanguageCode;
-	private String countryCode;
-	private float placeLatitude;
-	private float placeLongitude;
-	private String placeGmapUri;
-	private Date placeInsertDate;
+
+	private String id;
+	private String displayName;
+	private String formattedAddress;
+	private Location location;
+	private String googleMapsUri;
+
 }
