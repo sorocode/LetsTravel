@@ -16,25 +16,23 @@ function SelectSpotPage() {
   const [apiMode, setApiMode] = useState(false);
   const spots = useSelector((state) => state.schedule.spots);
   const dispatch = useDispatch();
-  // const { data, isPending, isError, error } = useQuery({
-  //   queryKey: ["spots"],
-  //   queryFn: () => fetchSpots("관광지", params.city),
-  //   enabled: params.city != "",
-  // });
   const { data, mutate, isPending, isError, error } = useMutation({
     mutationKey: ["recommend"],
     mutationFn: () => fetchSpots("관광지", params.city),
   });
   //TODO: 추천 목록 추가
   useEffect(() => {
-    // console.log("작동", data);
     mutate();
   }, [mutate]);
+
   const handleAddSpot = (item) => {
     dispatch(addSpot(item));
   };
   const handleRemoveSpot = (item) => {
     dispatch(removeSpot(item.id));
+  };
+  const changeMode = () => {
+    setApiMode(true);
   };
   let content;
   if (isPending) {
@@ -52,19 +50,30 @@ function SelectSpotPage() {
     );
   }
   if (data) {
-    console.log(data.places);
     content = (
-      <div onClick={() => setApiMode(true)}>
-        <SearchResults items={data.places} searchId="spots" apiMode={apiMode}>
+      <div>
+        <SearchResults
+          items={data.places}
+          searchId="spots"
+          apiMode={apiMode}
+          changeMode={changeMode}
+        >
           {(item) => {
-            //FIXME:임시로 longitude를 id처럼 썼지만 나중에 진짜 id로 바꾸기
-            const isSelected = JSON.stringify(spots).includes(item.longitude);
+            const isSelected = JSON.stringify(spots).includes(item.id);
+
+            const countryComponent = item.addressComponents.find(
+              (component) => {
+                return component.types.includes("country");
+              }
+            );
+            const country = countryComponent.longText;
             return (
               <SpotItem
                 key={item.id}
                 spotName={item.displayName.text}
                 latitude={item.location.latitude}
                 longitude={item.location.longitude}
+                country={country}
                 onClick={() => {
                   isSelected ? handleRemoveSpot(item) : handleAddSpot(item);
                 }}
