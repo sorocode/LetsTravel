@@ -1,28 +1,25 @@
-import { useState, useRef } from "react";
+import { useRef } from "react";
 import SearchBar from "./SearchBar";
 import { motion } from "framer-motion";
 
-function SearchResults({ searchId, items, children }) {
+import { useSearch } from "../../hooks/useSearch";
+function SearchResults({ apiMode, searchId, items, changeMode, children }) {
   const lastTerm = useRef();
-  const [searchTerm, setSearchTerm] = useState("");
-  const searchResults = items.filter((item) =>
-    JSON.stringify(item).toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
-  function handleChange(event) {
-    if (lastTerm.current) {
-      clearTimeout();
-    }
-    lastTerm.current = setTimeout(() => {
-      lastTerm.current = null;
-      setSearchTerm(event.target.value);
-    }, 1000);
-  }
+  const { content, onSubmitHandler, handleChange } = useSearch({
+    items,
+    apiMode,
+    lastTerm,
+    children,
+  });
+
   return (
     <div className="flex flex-col items-center">
       <SearchBar
         searchBarId={searchId}
         placeHolder="어디로 떠나시나요?"
+        onChangeMode={changeMode}
+        onSubmit={onSubmitHandler}
         onChange={handleChange}
         ref={lastTerm}
       />
@@ -32,11 +29,7 @@ function SearchResults({ searchId, items, children }) {
         transition={{ duration: 0.8 }}
         className="w-3/4"
       >
-        {searchResults.map((item, isClicked) => (
-          <motion.li layout key={item.id ? item.id : item.citySeq}>
-            {children(item, isClicked)}
-          </motion.li>
-        ))}
+        {content}
       </motion.ul>
     </div>
   );

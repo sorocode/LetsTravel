@@ -60,9 +60,10 @@ export const scheduleSlice = createSlice({
       if (!existingspot) {
         state.spots.push({
           id: newSpot.id,
-          spotName: newSpot.spotName,
-          spotLatitude: newSpot.latitude, //위도
-          spotLongitude: newSpot.longitude, //경도
+          spotName: newSpot.displayName.text,
+          latitude: newSpot.location.latitude, //위도
+          longitude: newSpot.location.longitude, //경도
+          googleMapsUri: newSpot.googleMapsUri,
         });
       } else {
         alert("이미 추가된 여행지입니다.");

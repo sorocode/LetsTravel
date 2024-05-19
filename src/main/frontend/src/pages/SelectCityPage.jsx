@@ -16,7 +16,6 @@ import BottomSheet from "../components/UI/Bottomsheet/BottomSheet";
 import { useQuery } from "@tanstack/react-query";
 import { fetchCities } from "../util/http";
 import ErrorPage from "../components/UI/Error/ErrorPage";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const SelectCityPage = () => {
@@ -38,8 +37,8 @@ const SelectCityPage = () => {
   const handleAdd = (item) => {
     dispatch(addCity(item));
   };
-  const handleRemove = (id) => {
-    dispatch(removeCity(id));
+  const handleRemove = (item) => {
+    dispatch(removeCity(item.id));
   };
 
   //도시 불러오기 오류 시 인트로 화면으로 돌아갈 수 있게 하는 기능
@@ -50,7 +49,7 @@ const SelectCityPage = () => {
   };
   // 나라 목록 컨텐츠
   let countryContent = (
-    <SearchResults items={countryData}>
+    <SearchResults items={countryData} apiMode={false}>
       {(item, index) => {
         if (index < 10) {
           return (
@@ -133,7 +132,7 @@ const SelectCityPage = () => {
                 subTitle={item.cityName}
                 isSelectMode={true}
                 onClick={() => {
-                  isSelected ? handleRemove(item.citySeq) : handleAdd(item);
+                  isSelected ? handleRemove(item) : handleAdd(item);
                 }}
                 isSelected={isSelected}
               />

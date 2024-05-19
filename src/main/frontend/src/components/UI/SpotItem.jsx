@@ -4,7 +4,14 @@ import blueCheckIcon from "../../assets/icons/blue_check_icon.svg";
 import infoIcon from "../../assets/icons/info_icon.svg";
 import dummyIcon from "../../assets/icons/dummy_image.svg";
 
-function SpotItem({ spotName, longitude, latitude, isSelected, ...props }) {
+function SpotItem({
+  spotName,
+  country,
+  longitude,
+  latitude,
+  isSelected,
+  ...props
+}) {
   const formattedspotName = spotName.replace(/\s/g, "");
 
   return (
@@ -13,9 +20,7 @@ function SpotItem({ spotName, longitude, latitude, isSelected, ...props }) {
         <img src={dummyIcon} alt={formattedspotName} />
         <div className="spotInfo flex flex-col items-start justify-center">
           <p className="spotName font-bold">{spotName.toUpperCase()}</p>
-          <p className="spotLocation text-[#848484]">
-            {`위도: ${latitude} 경도: ${longitude}`}
-          </p>
+          <p className="spotLocation text-[#848484]">{country}</p>
         </div>
       </div>
       {
