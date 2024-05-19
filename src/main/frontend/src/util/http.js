@@ -18,7 +18,7 @@ export const fetchCities = async (countryCode) => {
 };
 
 //Place API 텍스트 검색 관련 로직
-export const fetchSpots = async (searchTerm, city) => {
+export const fetchSpots = async (searhTerm, city) => {
   try {
     const req = await axios.post(
       PLACE_TEXT_URL,
@@ -28,11 +28,10 @@ export const fetchSpots = async (searchTerm, city) => {
           "Content-Type": "application/json",
           "X-Goog-Api-Key": GOOGLE_API_KEY,
           "X-Goog-FieldMask":
-            "places.id,places.displayName,places.location,places.types,places.photos",
+            "places.id,places.displayName,places.location,places.types,places.photos,places.googleMapsUri,places.addressComponents",
         },
       }
     );
-    // console.log(req);
     return req.data;
   } catch (err) {
     const fetchError = new Error("여행지 불러오기 실패");
