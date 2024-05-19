@@ -8,17 +8,20 @@ import org.springframework.stereotype.Service;
 import com.letsTravel.LetsTravel.domain.CityCreateDTO;
 import com.letsTravel.LetsTravel.domain.GoogleMapsPlace;
 import com.letsTravel.LetsTravel.repository.PlaceRepository;
+import com.letsTravel.LetsTravel.repository.TypeRepository;
 
 @Service
 public class PlaceService {
 
 	private final PlaceRepository placeRepository;
 	private final CityService cityService;
+	private final TypeRepository typeRepository;
 
 	@Autowired
-	public PlaceService(PlaceRepository placeRepository, CityService cityService) {
+	public PlaceService(PlaceRepository placeRepository, CityService cityService, TypeRepository typeRepository) {
 		this.placeRepository = placeRepository;
 		this.cityService = cityService;
+		this.typeRepository = typeRepository;
 	}
 
 	public int createPlaces(List<GoogleMapsPlace> GoogleMapsPlaceList) {
@@ -35,6 +38,7 @@ public class PlaceService {
 			result += placeRepository.addPlace(GoogleMapsPlaceList.get(i).getPlaceDetail());
 			
 			// Type 번역
+			typeRepository.modifyTypeNameTranslated(GoogleMapsPlaceList.get(i).getPrimaryTypeDetail());
 		}
 
 		return result;
