@@ -31,7 +31,7 @@ export const useSearch = ({ items, apiMode, lastTerm, children }) => {
     mutate();
   }
   let content;
-  console.log("검색결과", searchResults);
+
   if (!apiMode && searchResults.length >= 1) {
     content = searchResults.map((item, isClicked) => (
       <motion.li layout key={item.id ? item.id : item.citySeq}>
