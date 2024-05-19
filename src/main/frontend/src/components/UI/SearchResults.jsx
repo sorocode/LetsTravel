@@ -3,7 +3,7 @@ import SearchBar from "./SearchBar";
 import { motion } from "framer-motion";
 
 import { useSearch } from "../../hooks/useSearch";
-function SearchResults({ apiMode, searchId, items, children }) {
+function SearchResults({ apiMode, searchId, items, changeMode, children }) {
   const lastTerm = useRef();
 
   const { content, onSubmitHandler, handleChange } = useSearch({
@@ -18,6 +18,7 @@ function SearchResults({ apiMode, searchId, items, children }) {
       <SearchBar
         searchBarId={searchId}
         placeHolder="어디로 떠나시나요?"
+        onChangeMode={changeMode}
         onSubmit={onSubmitHandler}
         onChange={handleChange}
         ref={lastTerm}
