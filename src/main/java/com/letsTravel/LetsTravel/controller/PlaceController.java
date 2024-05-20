@@ -24,7 +24,7 @@ public class PlaceController {
 	
 	// 뭘 반환하지
 	@PostMapping("/place")
-	public int createPlaces(@RequestBody List<GoogleMapsPlace> GoogleMapsPlaceList) {
-		return placeService.createPlaces(GoogleMapsPlaceList);
+	public int createPlaces(@RequestBody List<GoogleMapsPlace> googleMapsPlaceList) {
+		return placeService.createPlaces(googleMapsPlaceList);
 	}
 }
