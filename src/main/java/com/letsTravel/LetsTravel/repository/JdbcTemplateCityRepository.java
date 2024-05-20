@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import com.letsTravel.LetsTravel.domain.CityCreateDTO;
 import com.letsTravel.LetsTravel.domain.CityDTO;
+import com.letsTravel.LetsTravel.domain.PlaceCityCreateDTO;
 
 @Repository
 public class JdbcTemplateCityRepository implements CityRepository {
@@ -41,10 +42,21 @@ public class JdbcTemplateCityRepository implements CityRepository {
 
 	@Override
 	public int addCity(CityCreateDTO cityCreateDTO) {
+		// NOT EXISTS VS IGNORE, 개선해야겠지?
+		// 1. NOT EXISTS: 아직 City의 개수가 적어서 중복된 레코드를 넣을 때 압도적인 성능을 보여줌
+		// 다만 새 레코드를 삽입할 때 SELECT 비용 + INSERT 비용까지 해서 가장 오래 걸림
+		// 2. IGNORE: 대부분의 경우 0.01s > 새 Record insert > 중복 Record ignore
+		// 결론: 이건 IGNORE 하는 게 맞는 듯?
 		String sql = "INSERT INTO City(Country_code, City_name"
 				+ (cityCreateDTO.getCityLanguageCode().equals("ko") ? "_translated" : "")
 				+ ") SELECT ?, ? FROM DUAL WHERE NOT EXISTS (SELECT City_seq FROM City WHERE City_name"
 				+ (cityCreateDTO.getCityLanguageCode().equals("ko") ? "_translated" : "") + " = ?);";
 		return jdbcTemplate.update(sql, cityCreateDTO.getCountryCode(), cityCreateDTO.getCityName(), cityCreateDTO.getCityName());
+	}
+
+	@Override
+	public int addPlaceCity(PlaceCityCreateDTO placeCityCreateDTO) {
+		
+		return 0;
 	}
 }
