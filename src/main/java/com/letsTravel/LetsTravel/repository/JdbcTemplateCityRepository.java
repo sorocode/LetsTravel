@@ -51,12 +51,15 @@ public class JdbcTemplateCityRepository implements CityRepository {
 				+ (cityCreateDTO.getCityLanguageCode().equals("ko") ? "_translated" : "")
 				+ ") SELECT ?, ? FROM DUAL WHERE NOT EXISTS (SELECT City_seq FROM City WHERE City_name"
 				+ (cityCreateDTO.getCityLanguageCode().equals("ko") ? "_translated" : "") + " = ?);";
-		return jdbcTemplate.update(sql, cityCreateDTO.getCountryCode(), cityCreateDTO.getCityName(), cityCreateDTO.getCityName());
+		return jdbcTemplate.update(sql, cityCreateDTO.getCountryCode(), cityCreateDTO.getCityName(),
+				cityCreateDTO.getCityName());
 	}
 
 	@Override
 	public int addPlaceCity(PlaceCityCreateDTO placeCityCreateDTO) {
-		
-		return 0;
+		String sql = "INSERT IGNORE INTO Place_city VALUES(?, (SELECT City_seq FROM City WHERE Country_code = ? AND City_name"
+				+ (placeCityCreateDTO.getCity().getCityLanguageCode().equals("ko") ? "_translated" : "") + " = ?));";
+		return jdbcTemplate.update(sql, placeCityCreateDTO.getPlaceSeq(), placeCityCreateDTO.getCity().getCountryCode(),
+				placeCityCreateDTO.getCity().getCityName());
 	}
 }
