@@ -14,5 +14,5 @@ public class GoogleMapsPlace {
 	private PlaceCreateDTO placeDetail;
 	private List<CityCreateDTO> cities;
 	private List<String> types;
-	private primaryTypeDetailDTO primaryTypeDetail;
+	private PrimaryTypeDetailDTO primaryTypeDetail;
 }

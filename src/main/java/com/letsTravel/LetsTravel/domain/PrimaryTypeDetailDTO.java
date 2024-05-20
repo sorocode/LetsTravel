@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class primaryTypeDetailDTO {
+public class PrimaryTypeDetailDTO {
 
 	private String primaryTypeDisplayName;
 	private String primaryType;
