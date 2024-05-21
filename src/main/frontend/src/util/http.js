@@ -18,7 +18,7 @@ export const fetchCities = async (countryCode) => {
 };
 
 //Place API 텍스트 검색 관련 로직
-export const fetchSpots = async (searhTerm, city) => {
+export const fetchSpots = async (searchTerm, city) => {
   try {
     const req = await axios.post(
       PLACE_TEXT_URL,
