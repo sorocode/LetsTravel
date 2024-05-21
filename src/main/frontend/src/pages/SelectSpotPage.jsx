@@ -8,14 +8,19 @@ import BottomSheet from "../components/UI/Bottomsheet/BottomSheet";
 import { useDispatch, useSelector } from "react-redux";
 import { addSpot, removeSpot } from "../store/schedule/scheduleSlice";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { fetchSpots } from "../util/http";
+import { fetchSpots, generateCase } from "../util/http";
 import ErrorPage from "../components/UI/Error/ErrorPage";
 import { useEffect, useState } from "react";
+import Spinner from "../assets/icons/spinner.gif";
 function SelectSpotPage() {
   const params = useParams();
   const [apiMode, setApiMode] = useState(false);
+  const cities = useSelector((state) => state.schedule.cities);
   const spots = useSelector((state) => state.schedule.spots);
+  const dates = useSelector((state) => state.schedule.dateDif);
   const dispatch = useDispatch();
+
+  //관광지 불러오기
   const { data, mutate, isPending, isError, error } = useMutation({
     mutationKey: ["recommend"],
     mutationFn: () => fetchSpots("관광지", params.city),
@@ -25,6 +30,17 @@ function SelectSpotPage() {
     mutate();
   }, [mutate]);
 
+  //관광지 동선 짜기
+  const {
+    data: gptData,
+    mutate: gptMutate,
+    isPending: isGptPending,
+    isError: isGptError,
+    error: gptError,
+  } = useMutation({
+    mutationKey: ["gpt"],
+    mutationFn: () => generateCase(cities[0], spots, dates),
+  });
   const handleAddSpot = (item) => {
     dispatch(addSpot(item));
   };
@@ -34,6 +50,7 @@ function SelectSpotPage() {
   const changeMode = () => {
     setApiMode(true);
   };
+
   let content;
   if (isPending) {
     content = <p>여행지를 불러오는 중</p>;
@@ -108,6 +125,17 @@ function SelectSpotPage() {
               </motion.span>
             ))}
           </AnimatePresence>
+        </div>
+        <div className="flex justify-center">
+          <Button onClick={gptMutate} color="">
+            {isGptPending ? (
+              <div>
+                <img src={Spinner} alt="spinner" /> <span>동선 생성중...</span>
+              </div>
+            ) : (
+              "🧞‍♂️동선추천"
+            )}
+          </Button>
         </div>
         <div className="flex justify-center">
           <Button color="#FCD4FF" to=".">
