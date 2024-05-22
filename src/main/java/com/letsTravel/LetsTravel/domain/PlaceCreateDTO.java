@@ -11,6 +11,7 @@ public class PlaceCreateDTO {
 
 	private String id;
 	private String displayName;
+	private String languageCode;
 	private String formattedAddress;
 	private Location location;
 	private String googleMapsUri;
