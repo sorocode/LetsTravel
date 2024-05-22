@@ -13,5 +13,4 @@ public class CityCreateDTO {
 
 	private String countryCode;
 	private String cityName;
-	private String cityLanguageCode;
 }
