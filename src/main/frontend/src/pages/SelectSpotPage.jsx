@@ -15,7 +15,6 @@ function SelectSpotPage() {
   const params = useParams();
   const [apiMode, setApiMode] = useState(false);
   const cities = useSelector((state) => state.schedule.cities);
-  const country = useSelector((state) => state.schedule.country);
   const spots = useSelector((state) => state.schedule.spots);
   const dates = useSelector((state) => state.schedule.dateDif);
   const dispatch = useDispatch();
@@ -23,7 +22,7 @@ function SelectSpotPage() {
   //관광지 불러오기
   const { data, mutate, isPending, isError, error } = useMutation({
     mutationKey: ["recommend"],
-    mutationFn: () => fetchSpots(country.countryCode, "관광지", params.city),
+    mutationFn: () => fetchSpots("관광지", params.city),
   });
   //TODO: 추천 목록 추가
   useEffect(() => {
