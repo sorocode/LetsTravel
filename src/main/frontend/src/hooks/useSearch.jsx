@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { fetchSpots } from "../util/http";
 import { useParams } from "react-router-dom";
 import ErrorPage from "../components/UI/Error/ErrorPage";
@@ -32,12 +32,15 @@ export const useSearch = ({ items, apiMode, lastTerm, children }) => {
     mutate();
   }
 
-  //FIXME:2번 눌러야만 검색되는 버그 해결하기
+  useEffect(() => {
+    mutate();
+  }, [searchTerm, mutate]);
+
   // 버튼 눌러서 검색할 때
   function onQuickSearchHandler(searchValue) {
     setSearchTerm(searchValue);
-    mutate();
   }
+
   let content;
 
   if (!apiMode && searchResults.length >= 1) {
