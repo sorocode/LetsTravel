@@ -1,17 +1,27 @@
 import { useRef } from "react";
 import SearchBar from "./SearchBar";
 import { motion } from "framer-motion";
-
+import ButtonSmall from "./Buttons/ButtonSmall";
 import { useSearch } from "../../hooks/useSearch";
-function SearchResults({ apiMode, searchId, items, changeMode, children }) {
+import QuickSearchButton from "./Buttons/QuickSearchButton";
+function SearchResults({
+  spotMode,
+  apiMode,
+  searchId,
+  items,
+  changeMode,
+  cityName,
+  children,
+}) {
   const lastTerm = useRef();
 
-  const { content, onSubmitHandler, handleChange } = useSearch({
-    items,
-    apiMode,
-    lastTerm,
-    children,
-  });
+  const { content, onSubmitHandler, handleChange, onQuickSearchHandler } =
+    useSearch({
+      items,
+      apiMode,
+      lastTerm,
+      children,
+    });
 
   return (
     <div className="flex flex-col items-center">
@@ -23,6 +33,34 @@ function SearchResults({ apiMode, searchId, items, changeMode, children }) {
         onChange={handleChange}
         ref={lastTerm}
       />
+      {(apiMode || spotMode) && (
+        <div className="flex justify-center items-center mb-4 gap-4">
+          <QuickSearchButton
+            emoji="🏨"
+            title="호텔"
+            cityName={cityName}
+            onQuickSearchHandler={onQuickSearchHandler}
+          />
+          <QuickSearchButton
+            emoji="🍽️"
+            title="맛집"
+            cityName={cityName}
+            onQuickSearchHandler={onQuickSearchHandler}
+          />
+          <QuickSearchButton
+            emoji="☕️"
+            title="카페"
+            cityName={cityName}
+            onQuickSearchHandler={onQuickSearchHandler}
+          />
+          <QuickSearchButton
+            emoji="🔥"
+            title="핫플"
+            cityName={cityName}
+            onQuickSearchHandler={onQuickSearchHandler}
+          />
+        </div>
+      )}
       <motion.ul
         initial={{ opacity: 0.5, y: 100 }}
         animate={{ opacity: 1, y: 0 }}

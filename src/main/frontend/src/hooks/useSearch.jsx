@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { fetchSpots } from "../util/http";
 import { useParams } from "react-router-dom";
 import ErrorPage from "../components/UI/Error/ErrorPage";
@@ -8,6 +8,7 @@ import ErrorPage from "../components/UI/Error/ErrorPage";
 export const useSearch = ({ items, apiMode, lastTerm, children }) => {
   const params = useParams();
   const [searchTerm, setSearchTerm] = useState("");
+
   function handleChange(event) {
     if (lastTerm.current) {
       clearTimeout();
@@ -27,9 +28,19 @@ export const useSearch = ({ items, apiMode, lastTerm, children }) => {
   });
   function onSubmitHandler(event) {
     event.preventDefault();
-    setSearchTerm(event.target.searchTerm.value);
+    setSearchTerm(event.target.searchTerm.value || event.target.value);
     mutate();
   }
+
+  useEffect(() => {
+    mutate();
+  }, [searchTerm, mutate]);
+
+  // 버튼 눌러서 검색할 때
+  function onQuickSearchHandler(searchValue) {
+    setSearchTerm(searchValue);
+  }
+
   let content;
 
   if (!apiMode && searchResults.length >= 1) {
@@ -56,8 +67,10 @@ export const useSearch = ({ items, apiMode, lastTerm, children }) => {
           {children(item, isClicked)}
         </motion.li>
       ));
+    } else if (isPending) {
+      content = <p>검색중</p>;
     } else {
-      content = <p>검색 결과가 없습니다.</p>;
+      content = <p>검색 결과가 없습니다</p>;
     }
   }
   return {
@@ -69,6 +82,7 @@ export const useSearch = ({ items, apiMode, lastTerm, children }) => {
     mutate,
     content,
     onSubmitHandler,
+    onQuickSearchHandler,
     isPending,
     isError,
     error,

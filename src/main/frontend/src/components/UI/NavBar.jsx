@@ -31,26 +31,30 @@ const NavBar = () => {
           alt="earth_filled"
         />
       </NavLink>
-      <NavLink to="/term">
+      <NavLink to="select/term">
         <img
           className={
-            location.pathname == "/term"
+            location.pathname == "select/term"
               ? "shadow-lg rounded-xl border-gray-300 border-[0.5px]"
               : undefined
           }
-          src={location.pathname == "/term" ? calendar_filled : calendar_blank}
+          src={
+            location.pathname == "select/term"
+              ? calendar_filled
+              : calendar_blank
+          }
           alt="navigator_blank"
         />
       </NavLink>
-      <NavLink to={firstCityName && `/spot/${firstCityName}`}>
+      <NavLink to={firstCityName && `select/spot/${firstCityName}`}>
         <img
           className={
-            location.pathname == `/spot/${firstCityName}`
+            location.pathname == `select/spot/${firstCityName}`
               ? "shadow-lg rounded-xl"
               : undefined
           }
           src={
-            location.pathname == `/spot/${params.city}`
+            location.pathname == `select/spot/${params.city}`
               ? map_indicator_filled
               : map_indicator_blank
           }
