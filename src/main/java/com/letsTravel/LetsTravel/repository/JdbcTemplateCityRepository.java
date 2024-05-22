@@ -26,7 +26,9 @@ public class JdbcTemplateCityRepository implements CityRepository {
 	@Override
 	public List<CityDTO> findCities(String countryCode) {
 		return jdbcTemplate.query(
-				"SELECT C.City_seq, C.City_name, C.City_name_translated FROM CITY C WHERE C.Country_code = ?",
+				"SELECT C.City_seq AS id, IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name) AS cityName, IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name_translated) AS cityNameTranslated "
+						+ "FROM City C LEFT JOIN City_standard CS ON C.City_standard_seq = CS.City_standard_seq "
+						+ "WHERE C.Country_code = ?;",
 				new RowMapper<CityDTO>() {
 					@Override
 					public CityDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
