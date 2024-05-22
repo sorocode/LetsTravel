@@ -21,11 +21,14 @@ export const fetchCities = async (countryCode) => {
 };
 
 //Place API 텍스트 검색 관련 로직
-export const fetchSpots = async (searchTerm, city) => {
+export const fetchSpots = async (countryCode, searchTerm, city) => {
   try {
     const req = await axios.post(
       PLACE_TEXT_URL,
-      { textQuery: `${city}의 ${searchTerm}`, languageCode: "ko" },
+      {
+        textQuery: `${countryCode} ${city}의 ${searchTerm}`,
+        languageCode: "ko",
+      },
       {
         headers: {
           "Content-Type": "application/json",
