@@ -67,12 +67,14 @@ function SelectSpotPage() {
   }
   if (data) {
     content = (
-      <div>
+      <>
         <SearchResults
           items={data.places}
           searchId="spots"
+          spotMode
           apiMode={apiMode}
           changeMode={changeMode}
+          cityName={params.city}
         >
           {(item) => {
             const isSelected = JSON.stringify(spots).includes(item.id);
@@ -98,7 +100,7 @@ function SelectSpotPage() {
             );
           }}
         </SearchResults>
-      </div>
+      </>
     );
   }
   let bsContent;
@@ -126,7 +128,7 @@ function SelectSpotPage() {
     console.log("bsContent", bsContent);
   }
   return (
-    <div>
+    <>
       {content}
       <BottomSheet title={<h2>일정 고르기</h2>}>
         <div className="flex flex-col gap-2 justify-center items-center mt-2">
@@ -186,7 +188,7 @@ function SelectSpotPage() {
           )}
         </div>
       </BottomSheet>
-    </div>
+    </>
   );
 }
 

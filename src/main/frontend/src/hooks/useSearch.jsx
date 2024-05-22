@@ -8,6 +8,7 @@ import ErrorPage from "../components/UI/Error/ErrorPage";
 export const useSearch = ({ items, apiMode, lastTerm, children }) => {
   const params = useParams();
   const [searchTerm, setSearchTerm] = useState("");
+
   function handleChange(event) {
     if (lastTerm.current) {
       clearTimeout();
@@ -27,7 +28,14 @@ export const useSearch = ({ items, apiMode, lastTerm, children }) => {
   });
   function onSubmitHandler(event) {
     event.preventDefault();
-    setSearchTerm(event.target.searchTerm.value);
+    setSearchTerm(event.target.searchTerm.value || event.target.value);
+    mutate();
+  }
+
+  //FIXME:2번 눌러야만 검색되는 버그 해결하기
+  // 버튼 눌러서 검색할 때
+  function onQuickSearchHandler(searchValue) {
+    setSearchTerm(searchValue);
     mutate();
   }
   let content;
@@ -56,8 +64,10 @@ export const useSearch = ({ items, apiMode, lastTerm, children }) => {
           {children(item, isClicked)}
         </motion.li>
       ));
+    } else if (isPending) {
+      content = <p>검색중</p>;
     } else {
-      content = <p>검색 결과가 없습니다.</p>;
+      content = <p>검색 결과가 없습니다</p>;
     }
   }
   return {
@@ -69,6 +79,7 @@ export const useSearch = ({ items, apiMode, lastTerm, children }) => {
     mutate,
     content,
     onSubmitHandler,
+    onQuickSearchHandler,
     isPending,
     isError,
     error,
