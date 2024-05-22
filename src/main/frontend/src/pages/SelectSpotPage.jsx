@@ -140,7 +140,7 @@ function SelectSpotPage() {
                 </Button>
               </div>
             ) : (
-              <p>여행지를 추가해주세요</p>
+              <p>여행지를 4개 이상 추가해주세요</p>
             )}
             {gptData && (
               <div className="flex justify-center">
