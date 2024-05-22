@@ -149,7 +149,6 @@ function SelectSpotPage() {
             )}
           </div>
           <AnimatePresence>
-            TODO: 아래 주석 참고해서 선택 아이템 표시
             {isGptPending || gptData
               ? null
               : spots.map((spot, index) => (
