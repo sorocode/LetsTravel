@@ -1,16 +1,16 @@
 package com.letsTravel.LetsTravel.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
-@Setter
-public class CityDTO {
+public class CityCreateDTO {
 
-	private int id;
 	private String countryCode;
 	private String cityName;
-	private String cityNameTranslated;
 }
