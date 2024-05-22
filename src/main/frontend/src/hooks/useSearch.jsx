@@ -61,7 +61,7 @@ export const useSearch = ({ items, apiMode, lastTerm, children }) => {
         />
       );
     }
-    if (data) {
+    if (data && data.places != undefined) {
       content = data.places.map((item, isClicked) => (
         <motion.li layout key={item.id ? item.id : item.citySeq}>
           {children(item, isClicked)}
