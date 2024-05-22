@@ -46,19 +46,15 @@ public class JdbcTemplateCityRepository implements CityRepository {
 		// 1. NOT EXISTS: 아직 City의 개수가 적어서 중복된 레코드를 넣을 때 압도적인 성능을 보여줌
 		// 다만 새 레코드를 삽입할 때 SELECT 비용 + INSERT 비용까지 해서 가장 오래 걸림
 		// 2. IGNORE: 대부분의 경우 0.01s > 새 Record insert > 중복 Record ignore
-		// 결론: 이건 IGNORE 하는 게 맞는 듯?
-		String sql = "INSERT INTO City(Country_code, City_name"
-				+ (cityCreateDTO.getCityLanguageCode().equals("ko") ? "_translated" : "")
-				+ ") SELECT ?, ? FROM DUAL WHERE NOT EXISTS (SELECT City_seq FROM City WHERE City_name"
-				+ (cityCreateDTO.getCityLanguageCode().equals("ko") ? "_translated" : "") + " = ?);";
+		// 결론: 이건 IGNORE 하는 게 맞는 듯? 아닌가
+		String sql = "INSERT INTO City(Country_code, City_name) SELECT ?, ? FROM DUAL WHERE NOT EXISTS (SELECT City_seq FROM City WHERE City_name = ?);";
 		return jdbcTemplate.update(sql, cityCreateDTO.getCountryCode(), cityCreateDTO.getCityName(),
 				cityCreateDTO.getCityName());
 	}
 
 	@Override
 	public int addPlaceCity(PlaceCityCreateDTO placeCityCreateDTO) {
-		String sql = "INSERT IGNORE INTO Place_city VALUES(?, (SELECT City_seq FROM City WHERE Country_code = ? AND City_name"
-				+ (placeCityCreateDTO.getCity().getCityLanguageCode().equals("ko") ? "_translated" : "") + " = ?));";
+		String sql = "INSERT IGNORE INTO Place_city VALUES(?, (SELECT City_seq FROM City WHERE Country_code = ? AND City_name = ?));";
 		return jdbcTemplate.update(sql, placeCityCreateDTO.getPlaceSeq(), placeCityCreateDTO.getCity().getCountryCode(),
 				placeCityCreateDTO.getCity().getCityName());
 	}
