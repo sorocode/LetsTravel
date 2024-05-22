@@ -49,6 +49,8 @@ export const useSearch = ({ items, apiMode, lastTerm, children }) => {
         {children(item, isClicked)}
       </motion.li>
     ));
+  } else if (searchResults.length == 0) {
+    content = <p>검색 결과가 없습니다</p>;
   } else {
     if (isPending) {
       content = <p>데이터를 가져오는 중입니다...</p>;
