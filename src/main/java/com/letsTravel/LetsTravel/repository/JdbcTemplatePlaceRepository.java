@@ -18,7 +18,7 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 
 	// Stored Procedure를 쓰는 게 맞나?
 	public JdbcTemplatePlaceRepository(DataSource dataSource) {
-		this.simpleJdbcCall = new SimpleJdbcCall(dataSource).withProcedureName("add_place_proc");
+		this.simpleJdbcCall = new SimpleJdbcCall(dataSource).withProcedureName("add_Place_Proc");
 	}
 
 	@Override
@@ -27,6 +27,7 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 		SqlParameterSource in = new MapSqlParameterSource()
 				.addValue("in_id", placeCreateDTO.getId())
 				.addValue("in_name", placeCreateDTO.getDisplayName())
+				.addValue("in_name_language_code", placeCreateDTO.getLanguageCode())
 				.addValue("in_formatted_address", placeCreateDTO.getFormattedAddress())
 				.addValue("in_latitude", placeCreateDTO.getLocation().getLatitude())
 				.addValue("in_longitude", placeCreateDTO.getLocation().getLongitude())
