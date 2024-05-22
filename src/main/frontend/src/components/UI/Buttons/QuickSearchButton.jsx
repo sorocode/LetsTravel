@@ -7,7 +7,7 @@ const QuickSearchButton = ({
   onQuickSearchHandler,
 }) => {
   return (
-    <ButtonSmall onClick={() => onQuickSearchHandler(`${title}`)}>
+    <ButtonSmall onClick={() => onQuickSearchHandler(title)}>
       <div className="flex flex-col justify-center items-center">
         <div>{emoji}</div>
         <div>{title}</div>
