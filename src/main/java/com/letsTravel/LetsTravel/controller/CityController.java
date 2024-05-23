@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.letsTravel.LetsTravel.domain.CityDTO;
+import com.letsTravel.LetsTravel.domain.CityReadDTO;
 import com.letsTravel.LetsTravel.service.CityService;
 
 @RestController
@@ -23,8 +23,8 @@ public class CityController {
 	}
 
 	@GetMapping("/city/{countryCode}")
-	public List<CityDTO> readCityByCountryCode(@PathVariable("countryCode") String countryCode) {
-		List<CityDTO> cities = cityService.findCities(countryCode);
+	public List<CityReadDTO> readCityByCountryCode(@PathVariable("countryCode") String countryCode) {
+		List<CityReadDTO> cities = cityService.findCities(countryCode);
 		return cities;
 	}
 }
