@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.letsTravel.LetsTravel.domain.CityCreateDTO;
-import com.letsTravel.LetsTravel.domain.CityDTO;
+import com.letsTravel.LetsTravel.domain.CityReadDTO;
 import com.letsTravel.LetsTravel.repository.CityRepository;
 
 @Service
@@ -19,7 +19,7 @@ public class CityService {
 		this.cityRepository = cityRepository;
 	}
 
-	public List<CityDTO> findCities(String countryCode) {
+	public List<CityReadDTO> findCities(String countryCode) {
 		return cityRepository.findCities(countryCode);
 	}
 
