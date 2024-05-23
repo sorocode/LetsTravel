@@ -11,7 +11,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import com.letsTravel.LetsTravel.domain.CityCreateDTO;
-import com.letsTravel.LetsTravel.domain.CityDTO;
+import com.letsTravel.LetsTravel.domain.CityReadDTO;
 import com.letsTravel.LetsTravel.domain.PlaceCityCreateDTO;
 
 @Repository
@@ -24,20 +24,20 @@ public class JdbcTemplateCityRepository implements CityRepository {
 	}
 
 	@Override
-	public List<CityDTO> findCities(String countryCode) {
+	public List<CityReadDTO> findCities(String countryCode) {
 		return jdbcTemplate.query(
 				"SELECT C.City_seq AS id, IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name) AS cityName, IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name_translated) AS cityNameTranslated "
 						+ "FROM City C LEFT JOIN City_standard CS ON C.City_standard_seq = CS.City_standard_seq "
 						+ "WHERE C.Country_code = ?;",
-				new RowMapper<CityDTO>() {
+				new RowMapper<CityReadDTO>() {
 					@Override
-					public CityDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
-						CityDTO cityDTO = new CityDTO();
-						cityDTO.setId(rs.getInt(1));
-						cityDTO.setCountryCode(countryCode);
-						cityDTO.setCityName(rs.getString(2));
-						cityDTO.setCityNameTranslated(rs.getString(3));
-						return cityDTO;
+					public CityReadDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
+						CityReadDTO cityReadDTO = new CityReadDTO();
+						cityReadDTO.setId(rs.getInt(1));
+						cityReadDTO.setCountryCode(countryCode);
+						cityReadDTO.setCityName(rs.getString(2));
+						cityReadDTO.setCityNameTranslated(rs.getString(3));
+						return cityReadDTO;
 					}
 				}, countryCode);
 	}
