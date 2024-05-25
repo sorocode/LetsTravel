@@ -61,7 +61,7 @@ const NavBar = () => {
           alt="home blank"
         />
       </NavLink>
-      <NavLink to="/map">
+      <NavLink to="select/map">
         <img
           className={
             location.pathname == "map"
