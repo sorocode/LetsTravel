@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.letsTravel.LetsTravel.domain.CityCreateDTO;
 import com.letsTravel.LetsTravel.domain.GoogleMapsPlace;
 import com.letsTravel.LetsTravel.domain.PlaceCityCreateDTO;
+import com.letsTravel.LetsTravel.domain.PlaceReadDTO;
 import com.letsTravel.LetsTravel.domain.PlaceTypeCreateDTO;
 import com.letsTravel.LetsTravel.domain.PrimaryTypeUpdateDTO;
 import com.letsTravel.LetsTravel.repository.CityRepository;
@@ -58,5 +59,9 @@ public class PlaceService {
 		}
 
 		return 200;
+	}
+
+	public List<PlaceReadDTO> findPlaces(String countryCode, List<Integer> city, List<Integer> type, String keyword) {
+		return placeRepository.findPlaces(countryCode, city, type, keyword);
 	}
 }
