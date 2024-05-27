@@ -10,6 +10,60 @@ const initialState = {
   country: [],
   cities: [], //도시 리스트
   spots: [], //여행지 리스트
+  selectedSchedule: {
+    day1: [
+      {
+        id: "ChIJVze90XnzImARoRp3YqEpbtU",
+        spotName: "나리타 국제공항",
+        latitude: 35.770178,
+        longitude: 140.3843215,
+      },
+      {
+        id: "ChIJaZF5wHmLGGARycW1JhshDjY",
+        spotName: "日本料理 龍吟",
+        latitude: 35.6742704,
+        longitude: 139.7592781,
+      },
+      {
+        id: "ChIJ9fcZgFWJGGARba-URZY-YKw",
+        spotName: "Tapas Molecular Bar",
+        latitude: 35.6870501,
+        longitude: 139.77304949999998,
+      },
+      {
+        id: "ChIJzxA2KWWLGGARDmDYTOuQ_jc",
+        spotName: "House",
+        latitude: 35.661057,
+        longitude: 139.721872,
+      },
+      {
+        id: "ChIJAW9ZwviNGGARtucA2V4IOwU",
+        spotName: "Shibuya spot",
+        latitude: 35.659404200000004,
+        longitude: 139.6997233,
+      },
+      {
+        id: "ChIJ1cz1KtbyGGARvFXyNAgoMz0",
+        spotName: "APA 호텔 & 리조트 니시신주쿠-고초메-에키 타워",
+        latitude: 35.6896389,
+        longitude: 139.68356,
+      },
+    ],
+    day2: [
+      {
+        id: "ChIJ1cz1KtbyGGARvFXyNAgoMz0",
+        spotName: "APA 호텔 & 리조트 니시신주쿠-고초메-에키 타워",
+        latitude: 35.6896389,
+        longitude: 139.68356,
+      },
+      {
+        id: "ChIJVze90XnzImARoRp3YqEpbtU",
+        spotName: "나리타 국제공항",
+        latitude: 35.770178,
+        longitude: 140.3843215,
+      },
+    ],
+  },
   startDate: toMySQLDate(today), //시작일 오늘로 설정
   endDate: toMySQLDate(tomorrow), //종료일 내일로 설정
   dateDif: 1, // 종료일과 시작일 사이의 날짜 차이
