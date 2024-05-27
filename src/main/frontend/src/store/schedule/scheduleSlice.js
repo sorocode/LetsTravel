@@ -11,7 +11,8 @@ const initialState = {
   cities: [], //도시 리스트
   spots: [], //여행지 리스트
   selectedSchedule: {
-    day1: [
+    //FIXME: 하드코딩 수정하기
+    1: [
       {
         id: "ChIJVze90XnzImARoRp3YqEpbtU",
         spotName: "나리타 국제공항",
@@ -49,7 +50,7 @@ const initialState = {
         longitude: 139.68356,
       },
     ],
-    day2: [
+    2: [
       {
         id: "ChIJ1cz1KtbyGGARvFXyNAgoMz0",
         spotName: "APA 호텔 & 리조트 니시신주쿠-고초메-에키 타워",
