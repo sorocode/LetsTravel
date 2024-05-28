@@ -1,6 +1,7 @@
 import MapContainer from "../components/UI/MapContainer";
 import { AdvancedMarker } from "@vis.gl/react-google-maps";
 import { useSelector } from "react-redux";
+import BottomSheet from "../components/UI/Bottomsheet/BottomSheet";
 
 function MapPage() {
   const scheduleData = useSelector((state) => state.schedule.selectedSchedule);
@@ -49,6 +50,7 @@ function MapPage() {
           })
         )}
       </MapContainer>
+      <BottomSheet></BottomSheet>
     </>
   );
 }
