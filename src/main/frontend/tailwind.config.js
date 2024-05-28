@@ -4,7 +4,7 @@ export default {
   theme: {
     extend: {},
     fontFamily: {
-      ShadowsIntoLight: ["Shadows Into Light"],
+      ShadowsIntoLight: ["Shadows Into Light", "cursive"],
     },
   },
   plugins: [],
