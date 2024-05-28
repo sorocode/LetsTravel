@@ -148,6 +148,9 @@ export const scheduleSlice = createSlice({
           ? "-"
           : getDaysDifference(state.startDate, state.endDate);
     },
+    acceptSchedule: (state, action) => {
+      state.selectedSchedule = action.payload;
+    },
   },
 });
 
@@ -162,6 +165,7 @@ export const {
   setStartDate,
   setEndDate,
   setDateDif,
+  acceptSchedule,
 } = scheduleSlice.actions;
 
 export default scheduleSlice.reducer;
