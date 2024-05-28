@@ -1,4 +1,3 @@
-import Button from "../components/UI/Buttons/Button";
 import IntroImage from "../assets/images/plainview.jpg";
 import { Link } from "react-router-dom";
 const IntroPage = () => {
@@ -12,11 +11,11 @@ const IntroPage = () => {
       }}
     >
       <Link to="select">
-        <div className="flex flex-col justify-center items-center">
+        <div className="flex flex-col justify-center items-center gap-2">
           <span className="text-2xl font-semibold font-ShadowsIntoLight">
             LetsTravel
           </span>
-          <span>여행도 스마트하게</span>
+          <span className="text-xs">여행도 스마트하게</span>
         </div>
       </Link>
     </div>
