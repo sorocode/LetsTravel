@@ -47,7 +47,7 @@ function MapPage() {
                         style={{ backgroundColor: bgColor }}
                         className="rounded-[86px] border-solid border-[#000000] border p-2.5 flex flex-col gap-2.5 items-center justify-center shrink-0 w-[30px] h-[30px] relative "
                       >
-                        <span>{day}</span>
+                        <span>{scheduleData[day].indexOf(spot) + 1}</span>
                       </div>
                     </AdvancedMarker>
                   </div>
