@@ -15,7 +15,7 @@ const ProfilePage = () => {
           <span className="font-bold text-xl">강봉수</span>
           <p className="flex gap-1">
             <img src={goldTier} alt="goldTier" width="20px" />
-            <span>GOLD Tier</span>
+            <span>GOLD 등급</span>
           </p>
         </div>
       </div>
