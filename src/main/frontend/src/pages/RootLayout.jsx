@@ -4,11 +4,16 @@ import Header from "../components/UI/Header";
 
 const RootLayout = () => {
   const location = useLocation();
-  console.log("location", location);
+  let header;
+  if (location.pathname === "/" || location.pathname === "/select/map") {
+    header = null;
+  } else {
+    header = <Header />;
+  }
+
   return (
     <>
-      {location.pathname !== "/" ||
-        (location.pathname !== "/select/map" && <Header />)}
+      {header}
       <main>
         <Outlet />
       </main>
