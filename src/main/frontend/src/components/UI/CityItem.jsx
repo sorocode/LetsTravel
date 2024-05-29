@@ -56,7 +56,7 @@ function CityItem({
   }
 
   return (
-    <div className="container flex justify-between my-2">
+    <div className="container flex justify-between my-2 py-2">
       <div className="leftSide flex gap-6">
         <img src={thumbnail} alt={formattedCityName} />
         <div className={cssClass}>
