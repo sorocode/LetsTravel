@@ -58,6 +58,7 @@ function BottomSheet({ title, children }) {
             setIsClose(true);
             setIsOpen(false);
           }}
+          isClose={isClose}
         >
           {title}
         </SheetHeader>
