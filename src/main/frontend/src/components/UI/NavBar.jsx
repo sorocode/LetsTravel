@@ -20,14 +20,14 @@ const NavBar = () => {
   // console.log(params);
   return (
     <div className="container flex justify-evenly items-center w-screen max-w-screen-2xl h-[50px] bg-white z-[200]">
-      <NavLink to="/">
+      <NavLink to="/select">
         <img
           className={
-            location.pathname == "/"
+            location.pathname == "/select"
               ? "shadow-lg rounded-xl border-gray-300 border-[0.5px]"
               : undefined
           }
-          src={location.pathname == "/" ? earth_filled : earth_blank}
+          src={location.pathname == "/select" ? earth_filled : earth_blank}
           alt="earth_filled"
         />
       </NavLink>
