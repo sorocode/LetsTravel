@@ -14,7 +14,8 @@ import { useMutation } from "@tanstack/react-query";
 import { fetchSpots, generateCase } from "../util/http";
 import ErrorPage from "../components/UI/Error/ErrorPage";
 import { useEffect, useState } from "react";
-import Spinner from "../assets/icons/spinner.gif";
+import gptIcon from "../assets/icons/gptIcon.svg";
+import { LinearProgress } from "@mui/material";
 function SelectSpotPage() {
   const params = useParams();
   const [apiMode, setApiMode] = useState(false);
@@ -61,7 +62,9 @@ function SelectSpotPage() {
 
   let content;
   if (isPending) {
-    content = <p>여행지를 불러오는 중</p>;
+    content = (
+      <p className="flex justify-center items-center">여행지를 불러오는 중</p>
+    );
   }
   if (isError) {
     content = (
@@ -116,7 +119,8 @@ function SelectSpotPage() {
   if (isGptPending) {
     bsContent = (
       <div>
-        <img src={Spinner} alt="spinner" /> <span>동선 생성중...</span>
+        <span>동선 생성중...</span>
+        <LinearProgress color="success" />
       </div>
     );
   }
@@ -144,8 +148,15 @@ function SelectSpotPage() {
           <div className="flex gap-4">
             {spots.length > 3 ? (
               <div className="flex justify-center">
-                <Button onClick={gptMutate} color="">
-                  {isGptPending ? bsContent : "🧞‍♂️동선추천"}
+                <Button onClick={gptMutate} color="#7ac9dc">
+                  {isGptPending ? (
+                    bsContent
+                  ) : (
+                    <div className="flex flex-col items-center justify-center">
+                      <img src={gptIcon} alt="gptIcon" width="20px" />
+                      <span className="text-white">동선추천</span>
+                    </div>
+                  )}
                 </Button>
               </div>
             ) : (
