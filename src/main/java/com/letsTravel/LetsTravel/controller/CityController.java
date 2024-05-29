@@ -22,8 +22,8 @@ public class CityController {
 		this.cityService = cityService;
 	}
 
-	@GetMapping("/city/{countryCode}")
-	public List<CityReadDTO> readCityByCountryCode(@PathVariable("countryCode") String countryCode) {
+	@GetMapping("/city/{country-code}")
+	public List<CityReadDTO> readCityByCountryCode(@PathVariable("country-code") String countryCode) {
 		List<CityReadDTO> cities = cityService.findCities(countryCode);
 		return cities;
 	}
