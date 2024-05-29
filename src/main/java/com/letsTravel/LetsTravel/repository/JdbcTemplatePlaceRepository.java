@@ -47,6 +47,7 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 	}
 
 	// 한 달 지난 거면 Places API 재호출해야 함
+	// 국가, 도시 정보도 보내줘야할 듯
 	@Override
 	public List<PlaceReadDTO> findPlaces(String countryCode, List<Integer> city, List<Integer> type, String keyword) {
 		StringBuilder sql = new StringBuilder(
@@ -105,18 +106,26 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 			}
 		}
 
-		return jdbcTemplate.query(sql.toString(), new RowMapper<PlaceReadDTO>() {
-			@Override
-			public PlaceReadDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
-				PlaceReadDTO placeReadDTO = new PlaceReadDTO();
-				placeReadDTO.setId(rs.getInt(1));
-				placeReadDTO.setDisplayName(rs.getString(2));
-				placeReadDTO.setFormattedAddress(rs.getString(3));
-				placeReadDTO.setLocation(new Location(rs.getFloat(4), rs.getFloat(5)));
-				placeReadDTO.setGoogleMapsUri(rs.getString(6));
-				return placeReadDTO;
-			}
-		}, sqlArgs.toArray());
+		return jdbcTemplate.query(sql.toString(), placeReadDTORowMapper, sqlArgs.toArray());
 	}
 
+	// 국가, 도시 정보도 보내줘야할 듯
+	@Override
+	public List<PlaceReadDTO> findPlaceByPlaceSeq(int placeSeq) {
+		String sql = "SELECT P.Place_seq, PN.Display_name AS Place_name, P.Place_formatted_address, P.Place_latitude, P.Place_longitude, P.Place_gmap_uri FROM Place P, Place_name PN WHERE P.Place_seq = PN.Place_seq AND P.Place_seq = ?";
+		return jdbcTemplate.query(sql, placeReadDTORowMapper, placeSeq);
+	}
+
+	private final RowMapper<PlaceReadDTO> placeReadDTORowMapper = new RowMapper<PlaceReadDTO>() {
+		@Override
+		public PlaceReadDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
+			PlaceReadDTO placeReadDTO = new PlaceReadDTO();
+			placeReadDTO.setId(rs.getInt(1));
+			placeReadDTO.setDisplayName(rs.getString(2));
+			placeReadDTO.setFormattedAddress(rs.getString(3));
+			placeReadDTO.setLocation(new Location(rs.getFloat(4), rs.getFloat(5)));
+			placeReadDTO.setGoogleMapsUri(rs.getString(6));
+			return placeReadDTO;
+		}
+	};
 }

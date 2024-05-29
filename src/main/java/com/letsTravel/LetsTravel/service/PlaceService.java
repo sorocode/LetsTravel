@@ -29,39 +29,41 @@ public class PlaceService {
 		this.cityRepository = cityRepository;
 		this.typeRepository = typeRepository;
 	}
-	
+
 	@Transactional
-	public int createPlaces(List<GoogleMapsPlace> googleMapsPlaceList) {
-		for (int placeIndex = 0; placeIndex < googleMapsPlaceList.size(); placeIndex++) {
-			// City 저장(없으면 저장, 있으면 패스)
-			List<CityCreateDTO> cityCreateDTOList = googleMapsPlaceList.get(placeIndex).getCities();
-			for (int cityIndex = 0; cityIndex < cityCreateDTOList.size(); cityIndex++)
-				cityRepository.addCity(cityCreateDTOList.get(cityIndex));
+	public int createPlace(GoogleMapsPlace googleMapsPlace) {
+		// City 저장(없으면 저장, 있으면 패스)
+		List<CityCreateDTO> cityCreateDTOList = googleMapsPlace.getCities();
+		for (int cityIndex = 0; cityIndex < cityCreateDTOList.size(); cityIndex++)
+			cityRepository.addCity(cityCreateDTOList.get(cityIndex));
 
-			// Place 저장
-			int placeSeq = placeRepository.addPlace(googleMapsPlaceList.get(placeIndex).getPlaceDetail());
+		// Place 저장
+		int placeSeq = placeRepository.addPlace(googleMapsPlace.getPlaceDetail());
 
-			// Place의 City 저장
-			for (int cityIndex = 0; cityIndex < cityCreateDTOList.size(); cityIndex++)
-				cityRepository.addPlaceCity(new PlaceCityCreateDTO(placeSeq, cityCreateDTOList.get(cityIndex)));
+		// Place의 City 저장
+		for (int cityIndex = 0; cityIndex < cityCreateDTOList.size(); cityIndex++)
+			cityRepository.addPlaceCity(new PlaceCityCreateDTO(placeSeq, cityCreateDTOList.get(cityIndex)));
 
-			// Place의 Type 저장
-			List<String> types = googleMapsPlaceList.get(placeIndex).getTypes();
-			for (int typeIndex = 0; typeIndex < types.size(); typeIndex++)
-				typeRepository.addPlaceType(new PlaceTypeCreateDTO(placeSeq, types.get(typeIndex)));
+		// Place의 Type 저장
+		List<String> types = googleMapsPlace.getTypes();
+		for (int typeIndex = 0; typeIndex < types.size(); typeIndex++)
+			typeRepository.addPlaceType(new PlaceTypeCreateDTO(placeSeq, types.get(typeIndex)));
 
-			// Place의 Primary Type 설정
-			typeRepository.modifyPrimaryType(new PrimaryTypeUpdateDTO(placeSeq,
-					googleMapsPlaceList.get(placeIndex).getPrimaryTypeDetail().getPrimaryType()));
+		// Place의 Primary Type 설정
+		typeRepository.modifyPrimaryType(
+				new PrimaryTypeUpdateDTO(placeSeq, googleMapsPlace.getPrimaryTypeDetail().getPrimaryType()));
 
-			// Type 번역
-			typeRepository.modifyTypeNameTranslated(googleMapsPlaceList.get(placeIndex).getPrimaryTypeDetail());
-		}
+		// Type 번역
+		typeRepository.modifyTypeNameTranslated(googleMapsPlace.getPrimaryTypeDetail());
 
-		return 200;
+		return placeSeq;
 	}
 
-	public List<PlaceReadDTO> findPlaces(String countryCode, List<Integer> city, List<Integer> type, String keyword) {
+	public List<PlaceReadDTO> readPlaces(String countryCode, List<Integer> city, List<Integer> type, String keyword) {
 		return placeRepository.findPlaces(countryCode, city, type, keyword);
+	}
+
+	public List<PlaceReadDTO> readPlaceByPlaceSeq(int placeSeq) {
+		return placeRepository.findPlaceByPlaceSeq(placeSeq);
 	}
 }
