@@ -3,6 +3,7 @@ import { AdvancedMarker } from "@vis.gl/react-google-maps";
 import { useSelector } from "react-redux";
 import BottomSheet from "../components/UI/Bottomsheet/BottomSheet";
 import Button from "../components/UI/Buttons/Button";
+import logoIcon from "../../public/logo.png";
 
 import Itinery from "../components/UI/Itinery";
 function MapPage() {
@@ -59,7 +60,11 @@ function MapPage() {
           </BottomSheet>
         </div>
       ) : (
-        <div className="flex flex-col items-center justify-center mt-20">
+        <div className="flex flex-col items-center justify-center mt-20 gap-4">
+          <div className="flex flex-col justify-center items-center">
+            <img src={logoIcon} alt="logo icon" width="30%" />
+            <span className="font-ShadowsIntoLight text-xl">LetsTravel</span>
+          </div>
           <p>지도를 보려면 여행지를 추가해주세요!</p>
           <Button to="/select">바로가기</Button>
         </div>
