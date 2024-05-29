@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import logoIcon from "../../../public/logo.png";
+import logoIcon from "/logo.png";
 const Header = () => {
   return (
     <Link to="/select">

@@ -3,7 +3,7 @@ import { AdvancedMarker } from "@vis.gl/react-google-maps";
 import { useSelector } from "react-redux";
 import BottomSheet from "../components/UI/Bottomsheet/BottomSheet";
 import Button from "../components/UI/Buttons/Button";
-import logoIcon from "../../public/logo.png";
+import logoIcon from "/logo.png";
 
 import Itinery from "../components/UI/Itinery";
 function MapPage() {
