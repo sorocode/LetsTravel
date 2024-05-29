@@ -37,25 +37,25 @@ function SearchResults({
         <div className="flex justify-center items-center mb-4 gap-4">
           <QuickSearchButton
             emoji="🏨"
-            title="호텔"
+            title="Hotel"
             cityName={cityName}
             onQuickSearchHandler={onQuickSearchHandler}
           />
           <QuickSearchButton
             emoji="🍽️"
-            title="맛집"
+            title="Restaurant"
             cityName={cityName}
             onQuickSearchHandler={onQuickSearchHandler}
           />
           <QuickSearchButton
             emoji="☕️"
-            title="카페"
+            title="Cafe"
             cityName={cityName}
             onQuickSearchHandler={onQuickSearchHandler}
           />
           <QuickSearchButton
             emoji="🔥"
-            title="핫플"
+            title="Hotspot"
             cityName={cityName}
             onQuickSearchHandler={onQuickSearchHandler}
           />
