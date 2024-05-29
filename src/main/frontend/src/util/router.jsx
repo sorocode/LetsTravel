@@ -36,11 +36,11 @@ export const router = createBrowserRouter([
             path: "map",
             element: <MapPage />, // 지도가 나타나는 페이지입니다.
           },
-          {
-            path: "profile",
-            element: <ProfilePage />,
-          },
         ],
+      },
+      {
+        path: "profile",
+        element: <ProfilePage />,
       },
     ],
   },
