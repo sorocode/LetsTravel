@@ -39,6 +39,21 @@ export default function Itinery({ days, scheduleData }) {
               {scheduleData[parseInt(day)].map((spot) => {
                 const spotId = spot.spotId;
                 const spotName = spot.spotName;
+                let placeType;
+                if (
+                  spotName.toLowerCase().includes("hotel") ||
+                  spotName.includes("호텔")
+                ) {
+                  placeType = "호텔";
+                } else if (
+                  spotName.toLowerCase().includes("airport") ||
+                  spotName.toLowerCase().includes("air port") ||
+                  spotName.includes("공항")
+                ) {
+                  placeType = "공항";
+                } else {
+                  placeType = "관광명소";
+                }
                 console.log(spotName);
                 return (
                   <>
@@ -64,7 +79,7 @@ export default function Itinery({ days, scheduleData }) {
                         <Typography variant="h6" component="span">
                           {spotName}
                         </Typography>
-                        <Typography>관광명소</Typography>
+                        <Typography>{placeType}</Typography>
                       </TimelineContent>
                     </TimelineItem>
                   </>
