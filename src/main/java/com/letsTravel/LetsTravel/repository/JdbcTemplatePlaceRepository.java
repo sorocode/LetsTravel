@@ -106,7 +106,6 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 		}
 
 		return jdbcTemplate.query(sql.toString(), new RowMapper<PlaceReadDTO>() {
-			// 가독성 해결해야 할 듯
 			@Override
 			public PlaceReadDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
 				PlaceReadDTO placeReadDTO = new PlaceReadDTO();
