@@ -6,6 +6,7 @@ import Button from "../components/UI/Buttons/Button";
 import logoIcon from "/logo.png";
 
 import Itinery from "../components/UI/Itinery";
+import CustomMarker from "../components/UI/CustomMarker";
 function MapPage() {
   const scheduleData = useSelector((state) => state.schedule.selectedSchedule);
 
@@ -43,18 +44,18 @@ function MapPage() {
                 return (
                   <div key={spotId}>
                     <AdvancedMarker position={pos}>
-                      <div
-                        style={{ backgroundColor: bgColor }}
-                        className="rounded-[86px] border-solid border-[#000000] border p-2.5 flex flex-col gap-2.5 items-center justify-center shrink-0 w-[30px] h-[30px] relative "
-                      >
-                        <span>{scheduleData[day].indexOf(spot) + 1}</span>
-                      </div>
+                      <CustomMarker color={bgColor}>
+                        {scheduleData[day].indexOf(spot) + 1}
+                      </CustomMarker>
                     </AdvancedMarker>
                   </div>
                 );
               })
             )}
           </MapContainer>
+          <BottomSheet>
+            <Itinery scheduleData={scheduleData} days={days} />
+          </BottomSheet>
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center mt-20 gap-4">
@@ -65,9 +66,6 @@ function MapPage() {
           <p>지도를 보려면 여행지를 추가해주세요!</p>
           <Button to="/select">바로가기</Button>
           {/* FIXME: 개발편의를 위해 여기 뒀지만 나중에는 MapContainer 아래로 올릴 것 */}
-          <BottomSheet>
-            <Itinery />
-          </BottomSheet>
         </div>
       )}
     </>
