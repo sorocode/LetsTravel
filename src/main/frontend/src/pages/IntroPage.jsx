@@ -6,7 +6,7 @@ const IntroPage = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       navigate("select");
-    }, 2000);
+    }, 1000);
     return () => {
       clearTimeout(timer);
     };
