@@ -55,9 +55,6 @@ function MapPage() {
               })
             )}
           </MapContainer>
-          <BottomSheet>
-            <Itinery />
-          </BottomSheet>
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center mt-20 gap-4">
@@ -67,6 +64,10 @@ function MapPage() {
           </div>
           <p>지도를 보려면 여행지를 추가해주세요!</p>
           <Button to="/select">바로가기</Button>
+          {/* FIXME: 개발편의를 위해 여기 뒀지만 나중에는 MapContainer 아래로 올릴 것 */}
+          <BottomSheet>
+            <Itinery />
+          </BottomSheet>
         </div>
       )}
     </>
