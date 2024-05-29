@@ -3,7 +3,6 @@ import { useBottomSheet } from "../../../hooks/useBottomSheet";
 import { createPortal } from "react-dom";
 import DragHandleEdge from "./DragHandleEdge";
 import SheetHeader from "./SheetHeader";
-import NonClickBtn from "../Buttons/NonClickBtn";
 import up_icon from "../../../assets/icons/up_rounded.svg";
 function BottomSheet({ title, children }) {
   const {
@@ -44,9 +43,9 @@ function BottomSheet({ title, children }) {
         variants={{
           // hidden: { y: "calc(100% - 256px)" },
           // visible: { y: "10%" },
-          visible: { y: "-80%" },
-          hidden: { y: "-200px" },
-          closed: { y: "100%" },
+          visible: { y: "-110%" },
+          hidden: { y: "-400px" },
+          closed: { y: "-200px" },
         }}
         dragConstraints={{ top: "-60%" }}
         dragElastic={0.2}
