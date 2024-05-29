@@ -1,6 +1,16 @@
+import { useEffect } from "react";
 import IntroImage from "../assets/images/plainview.jpg";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 const IntroPage = () => {
+  const navigate = useNavigate();
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      navigate("select");
+    }, 2000);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [navigate]);
   return (
     <div
       className="flex flex-col justify-center items-center h-screen"
