@@ -1,10 +1,17 @@
 import { useSelector } from "react-redux";
 import CityItem from "./CityItem";
+import { Button } from "@mui/material";
+import { Link } from "react-router-dom";
 
 const SelectedCityList = () => {
   const cities = useSelector((state) => state.schedule.cities);
   const fallBackTxt = (
-    <span className="font-semibold">선택된 도시가 없습니다.</span>
+    <div className="flex flex-col items-center">
+      <p className="font-semibold">선택된 도시가 없습니다.</p>
+      <Link to="/select">
+        <Button>선택하기</Button>
+      </Link>
+    </div>
   );
   return (
     <article>

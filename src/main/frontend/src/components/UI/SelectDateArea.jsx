@@ -41,14 +41,12 @@ const SelectDateArea = () => {
         총 {dateDif !== "-" ? dateDif + 1 : "-"}일
       </div>
       <div className="flex justify-evenly gap-5 items-center">
-        <Button color="#7BC9FF" to="..">
-          이전
-        </Button>
+        <Button to="..">이전</Button>
         <Button
-          color="#FCD4FF"
+          color="#7ac9dc"
           to={firstCityName && `/select/spot/${firstCityName}`}
         >
-          다음
+          <span className="text-white">다음</span>
         </Button>
       </div>
     </div>

@@ -6,11 +6,18 @@ import SelectSpotPage from "../pages/SelectSpotPage";
 import MapPage from "../pages/MapPage";
 import ProfilePage from "../pages/ProfilePage";
 import IntroPage from "../pages/IntroPage";
+import ErrorPage from "../components/UI/Error/ErrorPage";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <RootLayout />,
+    errorElement: (
+      <ErrorPage
+        title="에러 발생"
+        message="알 수 없는 에러가 발생했습니다. 다시 시도해주십시오."
+      />
+    ),
     children: [
       {
         index: "true",
@@ -36,11 +43,11 @@ export const router = createBrowserRouter([
             path: "map",
             element: <MapPage />, // 지도가 나타나는 페이지입니다.
           },
-          {
-            path: "profile",
-            element: <ProfilePage />,
-          },
         ],
+      },
+      {
+        path: "profile",
+        element: <ProfilePage />,
       },
     ],
   },

@@ -54,8 +54,8 @@ function SearchResults({
             onQuickSearchHandler={onQuickSearchHandler}
           />
           <QuickSearchButton
-            emoji="🔥"
-            title="Hotspot"
+            emoji="✈️"
+            title="Airport"
             cityName={cityName}
             onQuickSearchHandler={onQuickSearchHandler}
           />

@@ -10,6 +10,7 @@ const initialState = {
   country: [],
   cities: [], //도시 리스트
   spots: [], //여행지 리스트
+  selectedSchedule: undefined,
   startDate: toMySQLDate(today), //시작일 오늘로 설정
   endDate: toMySQLDate(tomorrow), //종료일 내일로 설정
   dateDif: 1, // 종료일과 시작일 사이의 날짜 차이
@@ -93,6 +94,9 @@ export const scheduleSlice = createSlice({
           ? "-"
           : getDaysDifference(state.startDate, state.endDate);
     },
+    acceptSchedule: (state, action) => {
+      state.selectedSchedule = action.payload;
+    },
   },
 });
 
@@ -107,6 +111,7 @@ export const {
   setStartDate,
   setEndDate,
   setDateDif,
+  acceptSchedule,
 } = scheduleSlice.actions;
 
 export default scheduleSlice.reducer;

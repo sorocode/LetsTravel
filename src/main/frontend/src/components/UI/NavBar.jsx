@@ -20,33 +20,33 @@ const NavBar = () => {
   // console.log(params);
   return (
     <div className="container flex justify-evenly items-center w-screen max-w-screen-2xl h-[50px] bg-white z-[200]">
-      <NavLink to="/">
+      <NavLink to="/select">
         <img
           className={
-            location.pathname == "/"
+            location.pathname == "/select"
               ? "shadow-lg rounded-xl border-gray-300 border-[0.5px]"
               : undefined
           }
-          src={location.pathname == "/" ? earth_filled : earth_blank}
+          src={location.pathname == "/select" ? earth_filled : earth_blank}
           alt="earth_filled"
         />
       </NavLink>
       <NavLink to="select/term">
         <img
           className={
-            location.pathname == "select/term"
+            location.pathname == "/select/term"
               ? "shadow-lg rounded-xl border-gray-300 border-[0.5px]"
               : undefined
           }
           src={
-            location.pathname == "select/term"
+            location.pathname == "/select/term"
               ? calendar_filled
               : calendar_blank
           }
           alt="navigator_blank"
         />
       </NavLink>
-      <NavLink to={firstCityName && `select/spot/${firstCityName}`}>
+      {/* <NavLink to={firstCityName && `select/spot/${firstCityName}`}>
         <img
           className={
             location.pathname == `select/spot/${firstCityName}`
@@ -60,15 +60,15 @@ const NavBar = () => {
           }
           alt="home blank"
         />
-      </NavLink>
-      <NavLink to="select/map">
+      </NavLink> */}
+      <NavLink to="/select/map">
         <img
           className={
-            location.pathname == "map"
+            location.pathname == "/select/map"
               ? "shadow-lg rounded-xl border-gray-300 border-[0.5px]"
               : undefined
           }
-          src={location.pathname == "/map" ? map_filled : map__blank}
+          src={location.pathname == "/select/map" ? map_filled : map__blank}
           alt="heart blank"
         />
       </NavLink>

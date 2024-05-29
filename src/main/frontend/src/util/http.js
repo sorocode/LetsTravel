@@ -62,10 +62,10 @@ export const generateCase = async (city, userSpots, totalDates) => {
               })}
               모든 쓸데없는 말과 해당 여행지에 대한 정보나 설명을 생략하고 결과값을 json형태로 줘(마크다운 문법은 생략해줘.). 예시는 다음과 같아.
               {
-                "day1":[{"id": "ChIJVze90XnzImARoRp3YqEpbtU", "spotName": "나리타공항", "latitude":35.770178, "longitude":140.3843215}, {"id": "ChIJVze90XnzImARoRp3YqEpbtU", "spotName": "나리타공항", "latitude":35.770178, "longitude":140.3843215}],
-              "day2": [{"id": "ChIJVze90XnzImARoRp3YqEpbtU", "spotName": "나리타공항", "latitude":35.770178, "longitude":140.3843215}, {"id": "ChIJVze90XnzImARoRp3YqEpbtU", "spotName": "나리타공항", "latitude":35.770178, "longitude":140.3843215}]
+                "1":[{"id": "ChIJVze90XnzImARoRp3YqEpbtU", "spotName": "나리타공항", "latitude":35.770178, "longitude":140.3843215}, {"id": "ChIJVze90XnzImARoRp3YqEpbtU", "spotName": "나리타공항", "latitude":35.770178, "longitude":140.3843215}],
+              "2": [{"id": "ChIJVze90XnzImARoRp3YqEpbtU", "spotName": "나리타공항", "latitude":35.770178, "longitude":140.3843215}, {"id": "ChIJVze90XnzImARoRp3YqEpbtU", "spotName": "나리타공항", "latitude":35.770178, "longitude":140.3843215}]
             }
-              공항 입력시에는 첫날 첫 여행지와 마지막날 마지막 여행지는 공항 혹은 항구로 넣어줘. 호텔 등 숙소 입력시에는 마지막날을 제외한 매일의 마지막 일정으로 넣어줘.
+              key값 1,2,3..은 1일차 2일차 3일차를 뜻해.공항 입력시에는 첫날 첫 여행지와 마지막날 마지막 여행지는 공항 혹은 항구로 넣어줘. 호텔 등 숙소 입력시에는 마지막날을 제외한 매일의 마지막 일정으로 넣어줘.
               그리고 내가 선택한 여행지 외에는 절대 넣지마. `,
       },
     ],

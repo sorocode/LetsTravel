@@ -107,7 +107,7 @@ const SelectCityPage = () => {
     cityContent = (
       <>
         <motion.div
-          className="flex flex-col items-start w-"
+          className="flex flex-col items-start my-10"
           initial={{ opacity: 0, x: "30%", y: 50 }}
           animate={{ opacity: 1, x: "12%", y: 50 }}
           exit={{ opacity: 0, x: "30%", y: 50 }}
@@ -119,7 +119,7 @@ const SelectCityPage = () => {
             subTitle="의 도시 선택 중"
             isSelectMode={false}
           />
-          <button onClick={changeMode}>국가재선택</button>
+          <button onClick={changeMode}>재선택</button>
         </motion.div>
         <SearchResults items={data}>
           {(item) => {
@@ -179,8 +179,8 @@ const SelectCityPage = () => {
             </AnimatePresence>
           </div>
           <div className="flex justify-center">
-            <Button color="#FCD4FF" to="term">
-              다음 단계
+            <Button color="#7ac9dc" to="term">
+              <span className="text-white">다음 단계</span>
             </Button>
           </div>
         </BottomSheet>

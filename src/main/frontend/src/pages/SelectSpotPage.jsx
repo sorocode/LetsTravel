@@ -5,7 +5,11 @@ import SpotItem from "../components/UI/SpotItem";
 import { AnimatePresence, motion } from "framer-motion";
 import BottomSheet from "../components/UI/Bottomsheet/BottomSheet";
 import { useDispatch, useSelector } from "react-redux";
-import { addSpot, removeSpot } from "../store/schedule/scheduleSlice";
+import {
+  addSpot,
+  removeSpot,
+  acceptSchedule,
+} from "../store/schedule/scheduleSlice";
 import { useMutation } from "@tanstack/react-query";
 import { fetchSpots, generateCase } from "../util/http";
 import ErrorPage from "../components/UI/Error/ErrorPage";
@@ -48,6 +52,11 @@ function SelectSpotPage() {
   };
   const changeMode = () => {
     setApiMode(true);
+  };
+
+  // 제안 승날하기
+  const acceptProposal = (schedule) => {
+    dispatch(acceptSchedule(schedule));
   };
 
   let content;
@@ -144,7 +153,11 @@ function SelectSpotPage() {
             )}
             {gptData && (
               <div className="flex justify-center">
-                <Button color="#FCD4FF" to=".">
+                <Button
+                  color="#FCD4FF"
+                  onClick={() => acceptProposal(bsContent)}
+                  to="/select/map"
+                >
                   OK
                 </Button>
               </div>
@@ -175,7 +188,7 @@ function SelectSpotPage() {
               {Object.keys(bsContent).map((day, index) => {
                 return (
                   <li key={index}>
-                    <b>{day}</b>
+                    <b>Day {day}</b>
                     <div className="flex flex-col">
                       {bsContent[day].map((item) => {
                         return <p key={item.id}>{item.spotName}</p>;

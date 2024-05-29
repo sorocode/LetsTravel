@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import addIcon from "../../assets/icons/add_icon.svg";
 import blueCheckIcon from "../../assets/icons/blue_check_icon.svg";
-import infoIcon from "../../assets/icons/info_icon.svg";
+// import infoIcon from "../../assets/icons/info_icon.svg";
 import dummyIcon from "../../assets/icons/dummy_image.svg";
 
 function SpotItem({
@@ -40,9 +40,9 @@ function SpotItem({
             />
           </motion.button>
 
-          <button>
+          {/* <button>
             <img src={infoIcon} alt={infoIcon} />
-          </button>
+          </button> */}
         </div>
       }
     </div>
