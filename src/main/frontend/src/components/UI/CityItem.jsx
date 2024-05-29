@@ -1,8 +1,7 @@
 import { motion } from "framer-motion";
 import addIcon from "../../assets/icons/add_icon.svg";
-import checkIcon from "../../assets/icons/check_icon.svg";
 import blueCheckIcon from "../../assets/icons/blue_check_icon.svg";
-import infoIcon from "../../assets/icons/info_icon.svg";
+// import infoIcon from "../../assets/icons/info_icon.svg";
 import tokyo from "../../assets/images/tokyo.svg";
 import bangkok from "../../assets/images/bangkok.svg";
 import osaka from "../../assets/images/osaka.svg";
@@ -83,9 +82,9 @@ function CityItem({
             />
           </motion.button>
 
-          <button>
+          {/* <button>
             <img src={infoIcon} alt={infoIcon} />
-          </button>
+          </button> */}
         </div>
       )}
     </div>
