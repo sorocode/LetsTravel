@@ -43,7 +43,7 @@ function BottomSheet({ title, children }) {
         variants={{
           // hidden: { y: "calc(100% - 256px)" },
           // visible: { y: "10%" },
-          visible: { y: "-110%" },
+          visible: { y: "-100%" },
           hidden: { y: "-400px" },
           closed: { y: "-200px" },
         }}

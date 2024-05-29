@@ -179,8 +179,8 @@ const SelectCityPage = () => {
             </AnimatePresence>
           </div>
           <div className="flex justify-center">
-            <Button color="#FCD4FF" to="term">
-              다음 단계
+            <Button color="#7ac9dc" to="term">
+              <span className="text-white">다음 단계</span>
             </Button>
           </div>
         </BottomSheet>
