@@ -6,12 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.letsTravel.LetsTravel.domain.CityCreateDTO;
-import com.letsTravel.LetsTravel.domain.GoogleMapsPlace;
-import com.letsTravel.LetsTravel.domain.PlaceCityCreateDTO;
-import com.letsTravel.LetsTravel.domain.PlaceReadDTO;
-import com.letsTravel.LetsTravel.domain.PlaceTypeCreateDTO;
-import com.letsTravel.LetsTravel.domain.PrimaryTypeUpdateDTO;
+import com.letsTravel.LetsTravel.domain.city.CityCreateDTO;
+import com.letsTravel.LetsTravel.domain.city.PlaceCityCreateDTO;
+import com.letsTravel.LetsTravel.domain.place.GoogleMapsPlace;
+import com.letsTravel.LetsTravel.domain.place.PlaceReadDTO;
+import com.letsTravel.LetsTravel.domain.type.PlaceTypeCreateDTO;
+import com.letsTravel.LetsTravel.domain.type.PrimaryTypeUpdateDTO;
 import com.letsTravel.LetsTravel.repository.CityRepository;
 import com.letsTravel.LetsTravel.repository.PlaceRepository;
 import com.letsTravel.LetsTravel.repository.TypeRepository;

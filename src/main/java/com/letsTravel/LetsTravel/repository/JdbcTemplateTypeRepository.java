@@ -5,9 +5,9 @@ import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import com.letsTravel.LetsTravel.domain.PlaceTypeCreateDTO;
-import com.letsTravel.LetsTravel.domain.PrimaryTypeUpdateDTO;
-import com.letsTravel.LetsTravel.domain.PrimaryTypeDetailDTO;
+import com.letsTravel.LetsTravel.domain.type.PlaceTypeCreateDTO;
+import com.letsTravel.LetsTravel.domain.type.PrimaryTypeDetailDTO;
+import com.letsTravel.LetsTravel.domain.type.PrimaryTypeUpdateDTO;
 
 @Repository
 public class JdbcTemplateTypeRepository implements TypeRepository {

@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.letsTravel.LetsTravel.domain.GoogleMapsPlace;
-import com.letsTravel.LetsTravel.domain.PlaceReadDTO;
+import com.letsTravel.LetsTravel.domain.place.GoogleMapsPlace;
+import com.letsTravel.LetsTravel.domain.place.PlaceReadDTO;
 import com.letsTravel.LetsTravel.service.PlaceService;
 
 @RestController

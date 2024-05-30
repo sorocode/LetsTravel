@@ -16,8 +16,8 @@ import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 
 import com.letsTravel.LetsTravel.domain.Location;
-import com.letsTravel.LetsTravel.domain.PlaceCreateDTO;
-import com.letsTravel.LetsTravel.domain.PlaceReadDTO;
+import com.letsTravel.LetsTravel.domain.place.PlaceCreateDTO;
+import com.letsTravel.LetsTravel.domain.place.PlaceReadDTO;
 
 @Repository
 public class JdbcTemplatePlaceRepository implements PlaceRepository {

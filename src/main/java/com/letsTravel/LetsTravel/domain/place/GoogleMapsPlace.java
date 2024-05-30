@@ -1,6 +1,9 @@
-package com.letsTravel.LetsTravel.domain;
+package com.letsTravel.LetsTravel.domain.place;
 
 import java.util.List;
+
+import com.letsTravel.LetsTravel.domain.city.CityCreateDTO;
+import com.letsTravel.LetsTravel.domain.type.PrimaryTypeDetailDTO;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
