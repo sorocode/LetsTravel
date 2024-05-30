@@ -4,9 +4,12 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.letsTravel.LetsTravel.domain.ScheduleCreateDTO;
-import com.letsTravel.LetsTravel.domain.TravelPlan;
+import com.letsTravel.LetsTravel.domain.plan.PlanBasicInfoReadDTO;
+import com.letsTravel.LetsTravel.domain.plan.PlanDetailReadDTO;
+import com.letsTravel.LetsTravel.domain.plan.TravelPlan;
+import com.letsTravel.LetsTravel.domain.schedule.ScheduleCreateDTO;
 import com.letsTravel.LetsTravel.repository.PlanRepository;
 import com.letsTravel.LetsTravel.repository.ScheduleRepository;
 
@@ -22,10 +25,11 @@ public class PlanService {
 		this.scheduleRepository = scheduleRepository;
 	}
 
+	@Transactional
 	public int createPlan(TravelPlan travelPlan) {
 		int planSeq = planRepository.addPlan(travelPlan.getPlan());
 
-		List<ScheduleCreateDTO> scheduleList = travelPlan.getPlaceList();
+		List<ScheduleCreateDTO> scheduleList = travelPlan.getSchedules();
 		for (int i = 0; i < scheduleList.size(); i++) {
 			scheduleList.get(i).setPlanSeq(planSeq);
 			scheduleRepository.addSchedule(scheduleList.get(i));
@@ -33,4 +37,11 @@ public class PlanService {
 		return planSeq;
 	}
 
+	public List<PlanBasicInfoReadDTO> readPlanByMemberSeq(int memberSeq) {
+		return planRepository.findPlanByMemberSeq(memberSeq);
+	}
+
+	public PlanDetailReadDTO readPlanByPlanSeq(int planSeq) {
+		return planRepository.findPlanByPlanSeq(planSeq);
+	}
 }
