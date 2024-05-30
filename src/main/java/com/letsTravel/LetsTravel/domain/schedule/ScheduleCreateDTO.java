@@ -1,4 +1,4 @@
-package com.letsTravel.LetsTravel.domain;
+package com.letsTravel.LetsTravel.domain.schedule;
 
 import java.sql.Time;
 
@@ -12,7 +12,7 @@ import lombok.Setter;
 public class ScheduleCreateDTO {
 
 	private int planSeq;
-	private String placeName;
+	private String placeId;
 	private int dateSeq;
 	private int visitSeq;
 	private Time visitTime;

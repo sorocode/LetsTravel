@@ -1,4 +1,6 @@
-package com.letsTravel.LetsTravel.domain;
+package com.letsTravel.LetsTravel.domain.place;
+
+import com.letsTravel.LetsTravel.domain.Location;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
