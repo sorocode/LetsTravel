@@ -1,6 +1,6 @@
 package com.letsTravel.LetsTravel.repository;
 
-import com.letsTravel.LetsTravel.domain.ScheduleCreateDTO;
+import com.letsTravel.LetsTravel.domain.schedule.ScheduleCreateDTO;
 
 public interface ScheduleRepository {
 
