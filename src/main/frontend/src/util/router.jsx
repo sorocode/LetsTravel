@@ -7,6 +7,7 @@ import MapPage from "../pages/MapPage";
 import ProfilePage from "../pages/ProfilePage";
 import IntroPage from "../pages/IntroPage";
 import ErrorPage from "../components/UI/Error/ErrorPage";
+import MyTripsPage from "../pages/MyTripsPage";
 
 export const router = createBrowserRouter([
   {
@@ -44,6 +45,10 @@ export const router = createBrowserRouter([
             element: <MapPage />, // 지도가 나타나는 페이지입니다.
           },
         ],
+      },
+      {
+        path: "trips",
+        element: <MyTripsPage />,
       },
       {
         path: "profile",
