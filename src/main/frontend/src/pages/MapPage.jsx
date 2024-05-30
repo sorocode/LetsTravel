@@ -21,6 +21,7 @@ function MapPage() {
     mutationKey: ["newPlan"],
     mutationFn: () => addNewPlan(scheduleSlice),
   });
+  // TODO:pending, error 관련 UI 추가하기
   const addPlanHandler = () => {
     mutate();
   };
@@ -64,7 +65,7 @@ function MapPage() {
             )}
           </MapContainer>
           <BottomSheet>
-            <Button onClick={addPlanHandler}>일정 확정</Button>
+            <button onClick={addPlanHandler}>일정 확정</button>
             <Itinery scheduleData={scheduleData} days={days} />
           </BottomSheet>
         </div>
@@ -73,7 +74,6 @@ function MapPage() {
           <Logo />
           <p>지도를 보려면 여행지를 추가해주세요!</p>
           <Button to="/select">바로가기</Button>
-          {/* FIXME: 개발편의를 위해 여기 뒀지만 나중에는 MapContainer 아래로 올릴 것 */}
         </div>
       )}
     </>
