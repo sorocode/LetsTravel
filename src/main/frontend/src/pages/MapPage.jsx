@@ -24,9 +24,7 @@ function MapPage() {
                   lat: spot.latitude,
                   lng: spot.longitude,
                 };
-                console.log("pos", pos);
                 let bgColor;
-                console.log("day", day);
                 switch (parseInt(day)) {
                   case 1:
                     bgColor = "#F3B385";
