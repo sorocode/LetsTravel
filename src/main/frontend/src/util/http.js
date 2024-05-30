@@ -65,7 +65,7 @@ export const addNewPlan = async (schedules) => {
     let newPlan = {
       plan: {
         memSeq: -1,
-        planName: "도쿄 여행",
+        // planName: "도쿄 여행",
         countryCode: schedules.country,
         planStart: schedules.startDate,
         planNDays: schedules.dateDif + 1,
@@ -73,10 +73,26 @@ export const addNewPlan = async (schedules) => {
       schedules: schedulesArray,
     };
     const data = JSON.stringify(newPlan);
-    const req = await axios.post(URL + "/plan", data);
+    const req = await axios.post(URL + "/plan", data, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
     return req.data;
+  } catch (err) {
+    const postError = new Error("저장 실패");
+    throw postError;
+  }
+};
+
+//모든 플랜 가져오기 API
+export const fetchAllPlans = async (memSeq) => {
+  try {
+    const res = await axios(URL + "/member/" + memSeq + "/plan");
+    return res.data;
   } catch {
-    //
+    const fetchError = new Error("플랜 가져오기 실패");
+    throw fetchError;
   }
 };
 
