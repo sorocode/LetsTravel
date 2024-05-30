@@ -28,7 +28,6 @@ import com.letsTravel.LetsTravel.domain.member.MemberBasicInfoReadDTO;
 import com.letsTravel.LetsTravel.domain.plan.PlanBasicInfoReadDTO;
 import com.letsTravel.LetsTravel.domain.plan.PlanCreateDTO;
 import com.letsTravel.LetsTravel.domain.plan.PlanDetailReadDTO;
-import com.letsTravel.LetsTravel.domain.schedule.ScheduleCreateDTO;
 import com.letsTravel.LetsTravel.domain.schedule.ScheduleReadDTO;
 
 @Repository
@@ -105,7 +104,9 @@ public class JdbcTemplatePlanRepository implements PlanRepository {
 				+ "    LEFT JOIN Place_type AS PT ON PL.Place_seq = PT.Place_seq\r\n"
 				+ "    LEFT JOIN Type AS T ON PT.Type_seq = T.Type_seq\r\n"
 				+ "WHERE \r\n"
-				+ "    P.Plan_seq = ?;";
+				+ "    P.Plan_seq = ?\r\n"
+				+ "ORDER BY\r\n"
+				+ "    S.Date_seq ASC, S.Visit_seq ASC;";
 		return jdbcTemplate.query(sql, new ResultSetExtractor<PlanDetailReadDTO>() {
 
 			@Override
