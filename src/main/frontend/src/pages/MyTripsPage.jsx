@@ -15,6 +15,9 @@ const MyTripsPage = () => {
         <CardSkeleton />
         <CardSkeleton />
         <CardSkeleton />
+        <CardSkeleton />
+        <CardSkeleton />
+        <CardSkeleton />
       </>
     );
   } else if (isError) {
@@ -46,10 +49,10 @@ const MyTripsPage = () => {
     );
   }
   return (
-    <>
+    <div className="overflow-y-scroll">
       <p className="mx-6 mt-2">나의 여행</p>
       {content}
-    </>
+    </div>
   );
 };
 
