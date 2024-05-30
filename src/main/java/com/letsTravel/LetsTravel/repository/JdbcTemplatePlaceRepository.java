@@ -47,30 +47,16 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 	}
 
 	// 한 달 지난 거면 Places API 재호출해야 함
-	// 국가, 도시 정보도 보내줘야할 듯
+	// City가 2개면 어카지
 	@Override
 	public List<PlaceReadDTO> findPlaces(String countryCode, List<Integer> city, List<Integer> type, String keyword) {
 		StringBuilder sql = new StringBuilder(
-				"SELECT P.Place_seq, PN.Display_name AS Place_name, P.Place_formatted_address, P.Place_latitude, P.Place_longitude, P.Place_gmap_uri FROM Place P, Place_name PN ");
+				"SELECT P.Place_seq, P.Place_id, PN.Display_name, C.Country_code, IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name_translated) AS City_name, P.Place_formatted_address,  P.Place_latitude, P.Place_longitude, T.Type_name_translated, P.Place_gmap_uri "
+						+ "FROM Place P, Place_name PN, Place_city PC, City C LEFT JOIN City_standard CS ON C.City_standard_seq = CS.City_standard_seq, Place_type PT, Type T "
+						+ "WHERE P.Place_seq = PN.Place_seq " + "AND P.Place_seq = PC.Place_seq "
+						+ "AND C.City_seq = PC.City_seq " + "AND P.Place_seq = PT.Place_seq "
+						+ "AND T.Type_seq = PT.Type_seq ");
 		List<String> sqlArgs = new ArrayList<>();
-
-		if (countryCode != null || city != null) {
-			sql.append(", Place_city PC, City C ");
-		}
-
-		if (type != null) {
-			sql.append(", Place_type PT, Type T ");
-		}
-
-		sql.append("WHERE P.Place_seq = PN.Place_seq ");
-
-		if (countryCode != null || city != null) {
-			sql.append("AND P.Place_seq = PC.Place_seq " + "AND C.City_seq = PC.City_seq ");
-		}
-
-		if (type != null) {
-			sql.append("AND P.Place_seq = PT.Place_seq " + "AND T.Type_seq = PT.Type_seq ");
-		}
 
 		if (keyword != null) {
 			sql.append("AND PN.Display_name LIKE ? ");
@@ -105,26 +91,37 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 				sql.append(", ");
 			}
 		}
-
+		
 		return jdbcTemplate.query(sql.toString(), placeReadDTORowMapper, sqlArgs.toArray());
 	}
 
-	// 국가, 도시 정보도 보내줘야할 듯
+	// City가 2개면 어카지
 	@Override
 	public List<PlaceReadDTO> findPlaceByPlaceSeq(int placeSeq) {
-		String sql = "SELECT P.Place_seq, PN.Display_name AS Place_name, P.Place_formatted_address, P.Place_latitude, P.Place_longitude, P.Place_gmap_uri FROM Place P, Place_name PN WHERE P.Place_seq = PN.Place_seq AND P.Place_seq = ?";
+		String sql = "SELECT P.Place_seq, P.Place_id, PN.Display_name, C.Country_code, IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name_translated) AS City_name, P.Place_formatted_address,  P.Place_latitude, P.Place_longitude, T.Type_name_translated, P.Place_gmap_uri "
+				+ "FROM Place P, Place_name PN, Place_city PC, City C LEFT JOIN City_standard CS ON C.City_standard_seq = CS.City_standard_seq, Place_type PT, Type T "
+				+ "WHERE P.Place_seq = PN.Place_seq AND P.Place_seq = PC.Place_seq "
+				+ "AND C.City_seq = PC.City_seq AND P.Place_seq = PT.Place_seq "
+				+ "AND T.Type_seq = PT.Type_seq AND P.Place_seq = ?";
 		return jdbcTemplate.query(sql, placeReadDTORowMapper, placeSeq);
 	}
 
+	// P.Place_seq, P.Place_id, PN.Display_name, C.Country_code, 
+	// IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name_translated) AS City_name, 
+	// P.Place_formatted_address,  P.Place_latitude, P.Place_longitude, T.Type_name_translated, P.Place_gmap_uri
 	private final RowMapper<PlaceReadDTO> placeReadDTORowMapper = new RowMapper<PlaceReadDTO>() {
 		@Override
 		public PlaceReadDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
 			PlaceReadDTO placeReadDTO = new PlaceReadDTO();
-			placeReadDTO.setId(rs.getInt(1));
-			placeReadDTO.setDisplayName(rs.getString(2));
-			placeReadDTO.setFormattedAddress(rs.getString(3));
-			placeReadDTO.setLocation(new Location(rs.getFloat(4), rs.getFloat(5)));
-			placeReadDTO.setGoogleMapsUri(rs.getString(6));
+			placeReadDTO.setPlaceSeq(rs.getInt("P.Place_seq"));
+			placeReadDTO.setPlaceId(rs.getString("P.Place_id"));
+			placeReadDTO.setDisplayName(rs.getString("PN.Display_name"));
+			placeReadDTO.setCountryCode(rs.getString("C.Country_code"));
+			placeReadDTO.setCity(rs.getString("City_name"));
+			placeReadDTO.setFormattedAddress(rs.getString("P.Place_formatted_address"));
+			placeReadDTO.setLocation(new Location(rs.getFloat("P.Place_latitude"), rs.getFloat("P.Place_longitude")));
+			placeReadDTO.setPrimaryType(rs.getString("T.Type_name_translated"));
+			placeReadDTO.setGoogleMapsUri(rs.getString("P.Place_gmap_uri"));
 			return placeReadDTO;
 		}
 	};

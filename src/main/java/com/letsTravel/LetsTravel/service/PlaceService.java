@@ -1,5 +1,6 @@
 package com.letsTravel.LetsTravel.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.letsTravel.LetsTravel.domain.city.CityCreateDTO;
 import com.letsTravel.LetsTravel.domain.city.PlaceCityCreateDTO;
 import com.letsTravel.LetsTravel.domain.place.GoogleMapsPlace;
+import com.letsTravel.LetsTravel.domain.place.PlaceInfoDTO;
 import com.letsTravel.LetsTravel.domain.place.PlaceReadDTO;
 import com.letsTravel.LetsTravel.domain.type.PlaceTypeCreateDTO;
 import com.letsTravel.LetsTravel.domain.type.PrimaryTypeUpdateDTO;
@@ -31,7 +33,9 @@ public class PlaceService {
 	}
 
 	@Transactional
-	public int createPlace(GoogleMapsPlace googleMapsPlace) {
+	public List<PlaceInfoDTO> createPlace(GoogleMapsPlace googleMapsPlace) {
+		List<PlaceInfoDTO> placeInfoList = new ArrayList<>();
+
 		// City 저장(없으면 저장, 있으면 패스)
 		List<CityCreateDTO> cityCreateDTOList = googleMapsPlace.getCities();
 		for (int cityIndex = 0; cityIndex < cityCreateDTOList.size(); cityIndex++)
@@ -39,6 +43,21 @@ public class PlaceService {
 
 		// Place 저장
 		int placeSeq = placeRepository.addPlace(googleMapsPlace.getPlaceDetail());
+		PlaceInfoDTO placeInfo = new PlaceInfoDTO();
+		placeInfo.setPlaceSeq(placeSeq);
+		placeInfo.setPlaceId(googleMapsPlace.getPlaceDetail().getId());
+		placeInfo.setDisplayName(googleMapsPlace.getPlaceDetail().getDisplayName());
+		placeInfo.setCountryCode(googleMapsPlace.getCities().get(0).getCountryCode());
+		List<String> cityList = new ArrayList<String>();
+		for (int i = 0; i < googleMapsPlace.getCities().size(); i++) {
+			cityList.add(googleMapsPlace.getCities().get(i).getCityName());
+		}
+		placeInfo.setCity(cityList);
+		placeInfo.setFormattedAddress(googleMapsPlace.getPlaceDetail().getFormattedAddress());
+		placeInfo.setLocation(googleMapsPlace.getPlaceDetail().getLocation());
+		placeInfo.setPrimaryType(googleMapsPlace.getPrimaryTypeDetail().getPrimaryTypeDisplayName());
+		placeInfo.setGoogleMapsUri(googleMapsPlace.getPlaceDetail().getGoogleMapsUri());
+		placeInfoList.add(placeInfo);
 
 		// Place의 City 저장
 		for (int cityIndex = 0; cityIndex < cityCreateDTOList.size(); cityIndex++)
@@ -56,7 +75,7 @@ public class PlaceService {
 		// Type 번역
 		typeRepository.modifyTypeNameTranslated(googleMapsPlace.getPrimaryTypeDetail());
 
-		return placeSeq;
+		return placeInfoList;
 	}
 
 	public List<PlaceReadDTO> readPlaces(String countryCode, List<Integer> city, List<Integer> type, String keyword) {

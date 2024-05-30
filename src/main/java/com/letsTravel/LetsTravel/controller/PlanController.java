@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.letsTravel.LetsTravel.domain.plan.PlanBasicInfoReadDTO;
 import com.letsTravel.LetsTravel.domain.plan.PlanDetailReadDTO;
+import com.letsTravel.LetsTravel.domain.plan.PlanSeqReturnDTO;
 import com.letsTravel.LetsTravel.domain.plan.TravelPlan;
 import com.letsTravel.LetsTravel.service.PlanService;
 
@@ -37,7 +38,7 @@ public class PlanController {
 	}
 	
 	@PostMapping("/plan")
-	public int createPlan(@RequestBody TravelPlan travelPlan) {
+	public PlanSeqReturnDTO createPlan(@RequestBody TravelPlan travelPlan) {
 		return planService.createPlan(travelPlan);
 	}
 }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.letsTravel.LetsTravel.domain.place.GoogleMapsPlace;
+import com.letsTravel.LetsTravel.domain.place.PlaceInfoDTO;
 import com.letsTravel.LetsTravel.domain.place.PlaceReadDTO;
 import com.letsTravel.LetsTravel.service.PlaceService;
 
@@ -28,7 +29,7 @@ public class PlaceController {
 
 	// 뭘 반환하지
 	@PostMapping("/place")
-	public int createPlace(@RequestBody GoogleMapsPlace googleMapsPlaceList) {
+	public List<PlaceInfoDTO> createPlace(@RequestBody GoogleMapsPlace googleMapsPlaceList) {
 		return placeService.createPlace(googleMapsPlaceList);
 	}
 
