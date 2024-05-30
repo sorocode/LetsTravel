@@ -1,10 +1,23 @@
 import { Skeleton } from "@mui/material";
 import tokyoImage from "../../../assets/images/tokyo.svg";
 import { getEndDate } from "../../../util/getEndDate";
+import { useNavigate } from "react-router-dom";
 
-export const Card = ({ planName, countryCode, startDate, planNDays }) => {
+export const Card = ({
+  planName,
+  countryCode,
+  startDate,
+  planNDays,
+  planSeq,
+}) => {
+  const navigate = useNavigate();
   return (
-    <div>
+    <div
+      onClick={() => {
+        console.log(planSeq);
+        navigate(`${planSeq}`);
+      }}
+    >
       <div className="flex justify-evenly items-center py-3 shadow-md mx-6 rounded-lg my-2">
         <img src={tokyoImage} alt="tokyo image" />
         <div className="flex flex-col">

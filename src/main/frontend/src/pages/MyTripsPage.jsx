@@ -24,10 +24,7 @@ const MyTripsPage = () => {
     content = (
       <ErrorPage
         title="여행 가져오기 실패"
-        message={
-          error.info?.message ||
-          "여행을 가져오는 데 실패했습니다. 나중에 다시 시도해주세요."
-        }
+        message={error.info?.message || "나중에 다시 시도해주세요."}
       />
     );
   } else if (data) {
@@ -41,6 +38,7 @@ const MyTripsPage = () => {
                 countryCode={item.countryCode}
                 startDate={item.planStart}
                 planNDays={item.planNDays}
+                planSeq={item.planSeq}
               />
             </li>
           );

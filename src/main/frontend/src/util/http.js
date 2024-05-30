@@ -95,6 +95,16 @@ export const fetchAllPlans = async (memSeq) => {
     throw fetchError;
   }
 };
+// 특정 플랜 가져오기 API
+export const fetchPlan = async (planSeq) => {
+  try {
+    const res = await axios(`${URL}/plan/${planSeq}`);
+    return res.data;
+  } catch {
+    const fetchError = new Error("플랜 가져오기 실패");
+    throw fetchError;
+  }
+};
 
 //Open AI API
 const openai = new OpenAI({ apiKey: GPT_KEY, dangerouslyAllowBrowser: true });

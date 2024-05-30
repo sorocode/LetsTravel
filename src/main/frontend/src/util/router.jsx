@@ -8,6 +8,7 @@ import ProfilePage from "../pages/ProfilePage";
 import IntroPage from "../pages/IntroPage";
 import ErrorPage from "../components/UI/Error/ErrorPage";
 import MyTripsPage from "../pages/MyTripsPage";
+import TripPage from "../pages/TripPage";
 
 export const router = createBrowserRouter([
   {
@@ -48,7 +49,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "trips",
-        element: <MyTripsPage />,
+
+        children: [
+          { index: true, element: <MyTripsPage /> },
+          { path: ":planSeq", element: <TripPage /> },
+        ],
       },
       {
         path: "profile",
