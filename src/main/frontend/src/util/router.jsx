@@ -54,6 +54,10 @@ export const router = createBrowserRouter([
         path: "profile",
         element: <ProfilePage />,
       },
+      {
+        path: "error",
+        element: <ErrorPage title="에러 발생" />,
+      },
     ],
   },
 ]);
