@@ -82,17 +82,13 @@ public class JdbcTemplatePlanRepository implements PlanRepository {
 
 	@Override
 	public PlanDetailReadDTO findPlanByPlanSeq(int planSeq) {
-		String sql = "SELECT \r\n"
-				+ "    P.Plan_seq, P.Plan_name, P.Country_code, P.Plan_start, P.Plan_ndays, \r\n"
+		String sql = "SELECT \r\n" + "    P.Plan_seq, P.Plan_name, P.Country_code, P.Plan_start, P.Plan_ndays, \r\n"
 				+ "    M.Mem_seq, M.Nickname, \r\n"
 				+ "    IF(CS.City_name_translated IS NULL, C.City_name, CS.City_name_translated) AS City_name, \r\n"
-				+ "    S.Schedule_seq, S.Place_seq, \r\n"
-				+ "    PN.Display_name, \r\n"
+				+ "    S.Schedule_seq, S.Place_seq, \r\n" + "    PN.Display_name, \r\n"
 				+ "    PL.Place_latitude, PL.Place_longitude, \r\n"
 				+ "    IF(T.Type_name_translated IS NULL, T.Type_name, T.Type_name_translated) AS Primary_type, \r\n"
-				+ "    S.Date_seq, S.Visit_seq, S.Visit_time\r\n"
-				+ "FROM \r\n"
-				+ "    Plan AS P\r\n"
+				+ "    S.Date_seq, S.Visit_seq, S.Visit_time\r\n" + "FROM \r\n" + "    Plan AS P\r\n"
 				+ "    LEFT JOIN Plan_share AS PS ON P.Plan_seq = PS.Plan_seq\r\n"
 				+ "    LEFT JOIN Member AS M ON PS.Mem_seq = M.Mem_seq\r\n"
 				+ "    LEFT JOIN Plan_city AS PC ON P.Plan_seq = PC.Plan_seq\r\n"
@@ -102,11 +98,8 @@ public class JdbcTemplatePlanRepository implements PlanRepository {
 				+ "    LEFT JOIN Place AS PL ON S.Place_seq = PL.Place_seq\r\n"
 				+ "    LEFT JOIN Place_name AS PN ON PL.Place_seq = PN.Place_seq\r\n"
 				+ "    LEFT JOIN Place_type AS PT ON PL.Place_seq = PT.Place_seq\r\n"
-				+ "    LEFT JOIN Type AS T ON PT.Type_seq = T.Type_seq\r\n"
-				+ "WHERE \r\n"
-				+ "    P.Plan_seq = ?\r\n"
-				+ "ORDER BY\r\n"
-				+ "    S.Date_seq ASC, S.Visit_seq ASC;";
+				+ "    LEFT JOIN Type AS T ON PT.Type_seq = T.Type_seq\r\n" + "WHERE \r\n" + "    P.Plan_seq = ?\r\n"
+				+ "ORDER BY\r\n" + "    S.Date_seq ASC, S.Visit_seq ASC;";
 		return jdbcTemplate.query(sql, new ResultSetExtractor<PlanDetailReadDTO>() {
 
 			@Override
@@ -115,7 +108,7 @@ public class JdbcTemplatePlanRepository implements PlanRepository {
 				Map<Integer, MemberBasicInfoReadDTO> planShareMember = new HashMap<>();
 				Set<String> planCities = new HashSet<>();
 				Map<Integer, ScheduleReadDTO> schedules = new HashMap<Integer, ScheduleReadDTO>();
-				
+
 				while (rs.next()) {
 					if (planDetail == null) {
 						planDetail = new PlanDetailReadDTO();
@@ -129,7 +122,7 @@ public class JdbcTemplatePlanRepository implements PlanRepository {
 					}
 
 					Integer shareMemberSeq = rs.getInt("M.Mem_seq");
-					if (shareMemberSeq != null) {
+					if (shareMemberSeq != 0) {
 						MemberBasicInfoReadDTO memberBasicInfo = new MemberBasicInfoReadDTO();
 						memberBasicInfo.setMemSeq(shareMemberSeq);
 						memberBasicInfo.setNickName(rs.getString("M.Nickname"));
