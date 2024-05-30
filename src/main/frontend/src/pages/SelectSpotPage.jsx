@@ -119,7 +119,7 @@ function SelectSpotPage() {
   if (isGptPending) {
     bsContent = (
       <div>
-        <span>동선 생성중...</span>
+        <span className="text-white">동선 생성중...</span>
         <LinearProgress color="success" />
       </div>
     );
@@ -154,7 +154,7 @@ function SelectSpotPage() {
                   ) : (
                     <div className="flex flex-col items-center justify-center">
                       <img src={gptIcon} alt="gptIcon" width="20px" />
-                      <span className="text-white">동선추천</span>
+                      <span className="text-white">AI동선추천</span>
                     </div>
                   )}
                 </Button>
@@ -169,7 +169,7 @@ function SelectSpotPage() {
                   onClick={() => acceptProposal(bsContent)}
                   to="/select/map"
                 >
-                  OK
+                  <span className="text-white">지도보기</span>
                 </Button>
               </div>
             )}

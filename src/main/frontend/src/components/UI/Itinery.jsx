@@ -35,7 +35,7 @@ export default function Itinery({ days, scheduleData }) {
           }
           return (
             <>
-              <span className="text-xl">Day{day}</span>
+              <span className="font-semibold">Day{day}</span>
               {scheduleData[parseInt(day)].map((spot) => {
                 const spotId = spot.spotId;
                 const spotName = spot.spotName;
@@ -63,9 +63,7 @@ export default function Itinery({ days, scheduleData }) {
                         align="right"
                         variant="body2"
                         color="text.secondary"
-                      >
-                        9:30 am
-                      </TimelineOppositeContent>
+                      ></TimelineOppositeContent>
                       <TimelineSeparator>
                         <TimelineConnector />
                         {/* <TimelineDot> */}
@@ -76,10 +74,10 @@ export default function Itinery({ days, scheduleData }) {
                         <TimelineConnector />
                       </TimelineSeparator>
                       <TimelineContent sx={{ py: "12px", px: 2 }}>
-                        <Typography variant="h6" component="span">
-                          {spotName}
+                        <Typography component="p">{spotName}</Typography>
+                        <Typography component="p">
+                          <span className="text-xs">{placeType}</span>
                         </Typography>
-                        <Typography>{placeType}</Typography>
                       </TimelineContent>
                     </TimelineItem>
                   </>
