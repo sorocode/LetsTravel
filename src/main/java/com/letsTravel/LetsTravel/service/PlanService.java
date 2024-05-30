@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.letsTravel.LetsTravel.domain.plan.PlanBasicInfoReadDTO;
 import com.letsTravel.LetsTravel.domain.plan.PlanDetailReadDTO;
+import com.letsTravel.LetsTravel.domain.plan.PlanSeqReturnDTO;
 import com.letsTravel.LetsTravel.domain.plan.TravelPlan;
 import com.letsTravel.LetsTravel.domain.schedule.ScheduleCreateDTO;
 import com.letsTravel.LetsTravel.repository.PlanRepository;
@@ -26,7 +27,7 @@ public class PlanService {
 	}
 
 	@Transactional
-	public int createPlan(TravelPlan travelPlan) {
+	public PlanSeqReturnDTO createPlan(TravelPlan travelPlan) {
 		int planSeq = planRepository.addPlan(travelPlan.getPlan());
 
 		List<ScheduleCreateDTO> scheduleList = travelPlan.getSchedules();
@@ -34,7 +35,7 @@ public class PlanService {
 			scheduleList.get(i).setPlanSeq(planSeq);
 			scheduleRepository.addSchedule(scheduleList.get(i));
 		}
-		return planSeq;
+		return new PlanSeqReturnDTO(planSeq);
 	}
 
 	public List<PlanBasicInfoReadDTO> readPlanByMemberSeq(int memberSeq) {
