@@ -7,11 +7,23 @@ import Button from "../components/UI/Buttons/Button";
 import Itinery from "../components/UI/Itinery";
 import CustomMarker from "../components/UI/CustomMarker";
 import Logo from "../components/UI/Logo";
+import { useMutation } from "@tanstack/react-query";
+import { addNewPlan } from "../util/http";
 function MapPage() {
-  const scheduleData = useSelector((state) => state.schedule.selectedSchedule);
+  const scheduleSlice = useSelector((state) => state.schedule);
+  const scheduleData = scheduleSlice.selectedSchedule;
 
+  console.log("scheduleData", scheduleData);
   const days =
     scheduleData !== undefined ? Object.keys(scheduleData) : undefined;
+  // 일정 확정 mutate
+  const { mutate } = useMutation({
+    mutationKey: ["newPlan"],
+    mutationFn: () => addNewPlan(scheduleSlice),
+  });
+  const addPlanHandler = () => {
+    mutate();
+  };
   return (
     <>
       {days !== undefined ? (
@@ -52,6 +64,7 @@ function MapPage() {
             )}
           </MapContainer>
           <BottomSheet>
+            <Button onClick={addPlanHandler}>일정 확정</Button>
             <Itinery scheduleData={scheduleData} days={days} />
           </BottomSheet>
         </div>

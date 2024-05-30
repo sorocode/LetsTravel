@@ -46,18 +46,14 @@ export const fetchSpots = async (searchTerm, city) => {
 };
 
 // Plan 추가 API
-export const addNewPlan = async (
-  countryCode,
-  startDate,
-  dateDif,
-  selectedSchedule
-) => {
+export const addNewPlan = async (schedules) => {
+  const selectedSchedule = schedules.selectedSchedule;
   try {
-    const schedules = [];
+    const schedulesArray = [];
     // 각 날짜와 그에 해당하는 장소 리스트를 순회
     Object.keys(selectedSchedule).forEach((dateSeq) => {
       selectedSchedule[dateSeq].forEach((spot, index) => {
-        schedules.push({
+        schedulesArray.push({
           placeId: spot.id,
           dateSeq: parseInt(dateSeq), // 날짜 시퀀스
           visitSeq: index + 1, // 방문 시퀀스 (인덱스는 0부터 시작하므로 1을 더함)
@@ -70,14 +66,14 @@ export const addNewPlan = async (
       plan: {
         memSeq: -1,
         planName: "도쿄 여행",
-        countryCode,
-        planStart: startDate,
-        planNDays: dateDif + 1,
+        countryCode: schedules.country,
+        planStart: schedules.startDate,
+        planNDays: schedules.dateDif + 1,
       },
-      schedules,
+      schedules: schedulesArray,
     };
     const data = JSON.stringify(newPlan);
-    const req = await axios.post(URL, data);
+    const req = await axios.post(URL + "/plan", data);
     return req.data;
   } catch {
     //
