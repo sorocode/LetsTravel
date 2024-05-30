@@ -45,6 +45,45 @@ export const fetchSpots = async (searchTerm, city) => {
   }
 };
 
+// Plan 추가 API
+export const addNewPlan = async (
+  countryCode,
+  startDate,
+  dateDif,
+  selectedSchedule
+) => {
+  try {
+    const schedules = [];
+    // 각 날짜와 그에 해당하는 장소 리스트를 순회
+    Object.keys(selectedSchedule).forEach((dateSeq) => {
+      selectedSchedule[dateSeq].forEach((spot, index) => {
+        schedules.push({
+          placeId: spot.id,
+          dateSeq: parseInt(dateSeq), // 날짜 시퀀스
+          visitSeq: index + 1, // 방문 시퀀스 (인덱스는 0부터 시작하므로 1을 더함)
+          visitTime: "00:00:00", // 방문 시간 (적당한 값으로 설정)
+        });
+      });
+    });
+    // 서버로 보낼 데이터
+    let newPlan = {
+      plan: {
+        memSeq: -1,
+        planName: "도쿄 여행",
+        countryCode,
+        planStart: startDate,
+        planNDays: dateDif + 1,
+      },
+      schedules,
+    };
+    const data = JSON.stringify(newPlan);
+    const req = await axios.post(URL, data);
+    return req.data;
+  } catch {
+    //
+  }
+};
+
 //Open AI API
 const openai = new OpenAI({ apiKey: GPT_KEY, dangerouslyAllowBrowser: true });
 
