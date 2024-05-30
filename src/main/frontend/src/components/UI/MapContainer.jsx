@@ -13,8 +13,8 @@ const MapContainer = ({ children }) => {
           {/* TODO:지도 드래그해서 이동할 수 있도록 만들기 */}
           <Map
             mapId={import.meta.env.VITE_GOOGLE_MAP_ID}
-            defaultZoom={7}
-            defaultCenter={{ lat: 35.5074468, lng: 139.1104969 }}
+            defaultZoom={10}
+            defaultCenter={{ lat: 35.6797786, lng: 139.7642446 }}
             disableDefaultUI
           >
             {children}
