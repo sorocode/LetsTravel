@@ -1,10 +1,11 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 
 import logoIcon from "/logo.png";
 
 import SuitCase from "/suitcase.svg";
 
 const Header = () => {
+  const location = useLocation();
   return (
     <div className="flex items-center mx-8">
       <NavLink to="/">
@@ -22,11 +23,13 @@ const Header = () => {
         </div>
       </NavLink>
 
-      <NavLink to="/trips">
-        <div className="w-8">
-          <img src={SuitCase} alt="suitcase" />
-        </div>
-      </NavLink>
+      {location.pathname !== "/trips" && (
+        <NavLink to="/trips">
+          <div className="w-8">
+            <img src={SuitCase} alt="suitcase" />
+          </div>
+        </NavLink>
+      )}
     </div>
   );
 };
