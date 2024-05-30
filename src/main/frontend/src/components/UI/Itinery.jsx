@@ -10,85 +10,85 @@ import LaptopMacIcon from "@mui/icons-material/LaptopMac";
 import HotelIcon from "@mui/icons-material/Hotel";
 import RepeatIcon from "@mui/icons-material/Repeat";
 import Typography from "@mui/material/Typography";
+import CustomMarker from "./CustomMarker";
 
-export default function Itinery() {
+export default function Itinery({ days, scheduleData }) {
   return (
-    <Timeline position="alternate">
-      <TimelineItem>
-        <TimelineOppositeContent
-          sx={{ m: "auto 0" }}
-          align="right"
-          variant="body2"
-          color="text.secondary"
-        >
-          9:30 am
-        </TimelineOppositeContent>
-        <TimelineSeparator>
-          <TimelineConnector />
-          <TimelineDot>
-            <FastfoodIcon />
-          </TimelineDot>
-          <TimelineConnector />
-        </TimelineSeparator>
-        <TimelineContent sx={{ py: "12px", px: 2 }}>
-          <Typography variant="h6" component="span">
-            Eat
-          </Typography>
-          <Typography>Because you need strength</Typography>
-        </TimelineContent>
-      </TimelineItem>
-      <TimelineItem>
-        <TimelineOppositeContent
-          sx={{ m: "auto 0" }}
-          variant="body2"
-          color="text.secondary"
-        >
-          10:00 am
-        </TimelineOppositeContent>
-        <TimelineSeparator>
-          <TimelineConnector />
-          <TimelineDot color="primary">
-            <LaptopMacIcon />
-          </TimelineDot>
-          <TimelineConnector />
-        </TimelineSeparator>
-        <TimelineContent sx={{ py: "12px", px: 2 }}>
-          <Typography variant="h6" component="span">
-            Code
-          </Typography>
-          <Typography>Because it&apos;s awesome!</Typography>
-        </TimelineContent>
-      </TimelineItem>
-      <TimelineItem>
-        <TimelineSeparator>
-          <TimelineConnector />
-          <TimelineDot color="primary" variant="outlined">
-            <HotelIcon />
-          </TimelineDot>
-          <TimelineConnector sx={{ bgcolor: "secondary.main" }} />
-        </TimelineSeparator>
-        <TimelineContent sx={{ py: "12px", px: 2 }}>
-          <Typography variant="h6" component="span">
-            Sleep
-          </Typography>
-          <Typography>Because you need rest</Typography>
-        </TimelineContent>
-      </TimelineItem>
-      <TimelineItem>
-        <TimelineSeparator>
-          <TimelineConnector sx={{ bgcolor: "secondary.main" }} />
-          <TimelineDot color="secondary">
-            <RepeatIcon />
-          </TimelineDot>
-          <TimelineConnector />
-        </TimelineSeparator>
-        <TimelineContent sx={{ py: "12px", px: 2 }}>
-          <Typography variant="h6" component="span">
-            Repeat
-          </Typography>
-          <Typography>Because this is the life you love!</Typography>
-        </TimelineContent>
-      </TimelineItem>
-    </Timeline>
+    <>
+      <Timeline position="alternate">
+        {days.map((day) => {
+          let bgColor;
+          console.log("day", day);
+          switch (parseInt(day)) {
+            case 1:
+              bgColor = "#F3B385";
+              break;
+            case 2:
+              bgColor = "#c985f3";
+              break;
+            case 3:
+              bgColor = "#85F389";
+              break;
+            default:
+              bgColor = "#7BC9FF";
+              break;
+          }
+          return (
+            <>
+              <span className="font-semibold">Day{day}</span>
+              {scheduleData[parseInt(day)].map((spot) => {
+                const spotId = spot.spotId;
+                const spotName = spot.spotName;
+                let placeType;
+                if (
+                  spotName.toLowerCase().includes("hotel") ||
+                  spotName.includes("호텔")
+                ) {
+                  placeType = "호텔";
+                } else if (
+                  spotName.toLowerCase().includes("airport") ||
+                  spotName.toLowerCase().includes("air port") ||
+                  spotName.includes("공항")
+                ) {
+                  placeType = "공항";
+                } else {
+                  placeType = "관광명소";
+                }
+                console.log(spotName);
+                return (
+                  <>
+                    <TimelineItem key={spotId}>
+                      <TimelineOppositeContent
+                        sx={{ m: "auto 0" }}
+                        align="right"
+                        variant="body2"
+                        color="text.secondary"
+                      ></TimelineOppositeContent>
+                      <TimelineSeparator>
+                        <TimelineConnector />
+                        {/* <TimelineDot> */}
+                        <CustomMarker color={bgColor}>
+                          {scheduleData[day].indexOf(spot) + 1}
+                        </CustomMarker>
+                        {/* </TimelineDot> */}
+                        <TimelineConnector />
+                      </TimelineSeparator>
+                      <TimelineContent sx={{ py: "12px", px: 2 }}>
+                        <Typography component="p">
+                          <span className="font-semibold">{spotName}</span>
+                        </Typography>
+                        <Typography component="p">
+                          <span className="text-xs">{placeType}</span>
+                        </Typography>
+                      </TimelineContent>
+                    </TimelineItem>
+                  </>
+                );
+              })}
+            </>
+          );
+        })}
+      </Timeline>
+    </>
   );
 }
