@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 import logoIcon from "/logo.png";
 
@@ -7,7 +7,7 @@ import SuitCase from "/suitcase.svg";
 const Header = () => {
   return (
     <div className="flex items-center mx-8">
-      <Link to="/">
+      <NavLink to="/">
         <div className="flex justify-start gap-2 mt-5 mb-2">
           <img
             src={logoIcon}
@@ -20,13 +20,13 @@ const Header = () => {
             LetsTravel
           </span>
         </div>
-      </Link>
+      </NavLink>
 
-      <Link to="/trips">
+      <NavLink to="/trips">
         <div className="w-8">
           <img src={SuitCase} alt="suitcase" />
         </div>
-      </Link>
+      </NavLink>
     </div>
   );
 };
