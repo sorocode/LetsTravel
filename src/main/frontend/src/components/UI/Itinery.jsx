@@ -74,7 +74,9 @@ export default function Itinery({ days, scheduleData }) {
                         <TimelineConnector />
                       </TimelineSeparator>
                       <TimelineContent sx={{ py: "12px", px: 2 }}>
-                        <Typography component="p">{spotName}</Typography>
+                        <Typography component="p">
+                          <span className="font-semibold">{spotName}</span>
+                        </Typography>
                         <Typography component="p">
                           <span className="text-xs">{placeType}</span>
                         </Typography>
