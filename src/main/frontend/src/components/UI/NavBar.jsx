@@ -19,7 +19,7 @@ const NavBar = () => {
 
   // console.log(params);
   return (
-    <div className="container flex justify-evenly items-center w-screen max-w-screen-2xl h-[50px] bg-white z-[200]">
+    <div className="container flex justify-evenly items-center w-screen max-w-screen-2xl h-[50px] bg-white z-[200] py-7">
       <NavLink to="/select">
         <img
           className={
