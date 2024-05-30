@@ -3,7 +3,7 @@ import logoIcon from "/logo.png";
 const Header = () => {
   return (
     <Link to="/select">
-      <div className="flex justify-start mx-11 gap-2 mt-2">
+      <div className="flex justify-start mx-8 gap-2 mt-5 mb-2">
         <img src={logoIcon} alt="logoIcon" width="10%" height="8%" />
         <span className="text-xl font-semibold font-ShadowsIntoLight">
           LetsTravel
