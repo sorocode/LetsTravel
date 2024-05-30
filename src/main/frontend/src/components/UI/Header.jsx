@@ -1,6 +1,22 @@
 import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import logoIcon from "/logo.png";
+import { fetchAllPlans } from "../../util/http";
+import { useState } from "react";
+
 const Header = () => {
+  const [isClicked, setIsClicked] = useState(false);
+  const { data, isPending, isError, error } = useQuery({
+    queryKey: ["trips"],
+    queryFn: () => fetchAllPlans(-1),
+    enabled: isClicked,
+  });
+  const onClickIconHandler = () => {
+    setIsClicked(true);
+  };
+  if (data) {
+    console.log(data);
+  }
   return (
     <div className="flex items-center mx-8">
       <Link to="/">
@@ -18,7 +34,11 @@ const Header = () => {
         </div>
       </Link>
 
-      <img src="/suitcase.svg" alt="suitcase" width="10%" />
+      <Link onClick={onClickIconHandler} to="/trips">
+        <div className="w-8">
+          <img src="/suitcase.svg" alt="suitcase" />
+        </div>
+      </Link>
     </div>
   );
 };
