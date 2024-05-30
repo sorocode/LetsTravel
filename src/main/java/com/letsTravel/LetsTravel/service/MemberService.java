@@ -5,8 +5,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.letsTravel.LetsTravel.domain.LoginDTO;
-import com.letsTravel.LetsTravel.domain.MemberBasicInfoReadDTO;
+import com.letsTravel.LetsTravel.domain.member.LoginDTO;
+import com.letsTravel.LetsTravel.domain.member.MemberBasicInfoReadDTO;
 import com.letsTravel.LetsTravel.repository.MemberRepository;
 
 @Service

@@ -10,9 +10,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import com.letsTravel.LetsTravel.domain.CityCreateDTO;
-import com.letsTravel.LetsTravel.domain.CityReadDTO;
-import com.letsTravel.LetsTravel.domain.PlaceCityCreateDTO;
+import com.letsTravel.LetsTravel.domain.city.CityCreateDTO;
+import com.letsTravel.LetsTravel.domain.city.CityReadDTO;
+import com.letsTravel.LetsTravel.domain.city.PlaceCityCreateDTO;
 
 @Repository
 public class JdbcTemplateCityRepository implements CityRepository {

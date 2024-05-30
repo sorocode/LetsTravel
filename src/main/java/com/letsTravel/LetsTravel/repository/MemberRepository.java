@@ -2,8 +2,8 @@ package com.letsTravel.LetsTravel.repository;
 
 import java.util.Optional;
 
-import com.letsTravel.LetsTravel.domain.LoginDTO;
-import com.letsTravel.LetsTravel.domain.MemberBasicInfoReadDTO;
+import com.letsTravel.LetsTravel.domain.member.LoginDTO;
+import com.letsTravel.LetsTravel.domain.member.MemberBasicInfoReadDTO;
 
 public interface MemberRepository {
 

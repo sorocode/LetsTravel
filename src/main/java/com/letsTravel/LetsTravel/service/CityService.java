@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.letsTravel.LetsTravel.domain.CityCreateDTO;
-import com.letsTravel.LetsTravel.domain.CityReadDTO;
+import com.letsTravel.LetsTravel.domain.city.CityCreateDTO;
+import com.letsTravel.LetsTravel.domain.city.CityReadDTO;
 import com.letsTravel.LetsTravel.repository.CityRepository;
 
 @Service

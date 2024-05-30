@@ -1,12 +1,12 @@
-package com.letsTravel.LetsTravel.domain;
+package com.letsTravel.LetsTravel.domain.city;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class PrimaryTypeUpdateDTO {
+public class PlaceCityCreateDTO {
 
 	private int placeSeq;
-	private String primaryType;
+	private CityCreateDTO city;
 }
