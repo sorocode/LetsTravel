@@ -113,12 +113,12 @@ function SelectSpotPage() {
       />
     );
   }
-  if (data) {
-    console.log("data", data);
+  if (dbData) {
+    console.log("data", dbData);
     content = (
       <>
         <SearchResults
-          items={data.places}
+          items={dbData.places}
           searchId="spots"
           spotMode
           apiMode={apiMode}
