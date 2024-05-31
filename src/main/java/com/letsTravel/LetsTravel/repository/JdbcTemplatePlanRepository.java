@@ -10,7 +10,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeMap;
 
 import javax.sql.DataSource;
 
@@ -28,6 +30,7 @@ import com.letsTravel.LetsTravel.domain.member.MemberBasicInfoReadDTO;
 import com.letsTravel.LetsTravel.domain.plan.PlanBasicInfoReadDTO;
 import com.letsTravel.LetsTravel.domain.plan.PlanCreateDTO;
 import com.letsTravel.LetsTravel.domain.plan.PlanDetailReadDTO;
+import com.letsTravel.LetsTravel.domain.schedule.ScheduleDetailDTO;
 import com.letsTravel.LetsTravel.domain.schedule.ScheduleReadDTO;
 
 @Repository
@@ -107,7 +110,8 @@ public class JdbcTemplatePlanRepository implements PlanRepository {
 				PlanDetailReadDTO planDetail = null;
 				Map<Integer, MemberBasicInfoReadDTO> planShareMember = new HashMap<>();
 				Set<String> planCities = new HashSet<>();
-				Map<Integer, ScheduleReadDTO> schedules = new HashMap<Integer, ScheduleReadDTO>();
+				TreeMap<Integer, List<ScheduleDetailDTO>> scheduleMap = new TreeMap<Integer, List<ScheduleDetailDTO>>();
+				List<ScheduleReadDTO> scheduleList = new ArrayList<>();
 
 				while (rs.next()) {
 					if (planDetail == null) {
@@ -134,28 +138,35 @@ public class JdbcTemplatePlanRepository implements PlanRepository {
 						planCities.add(cityName);
 					}
 
-					Integer scheduleSeq = rs.getInt("S.Schedule_seq");
-					if (scheduleSeq != null) {
-						ScheduleReadDTO scheduleDetail = new ScheduleReadDTO();
-						scheduleDetail.setScheduleSeq(scheduleSeq);
-						scheduleDetail.setPlaceSeq(rs.getInt("S.Place_seq"));
-						scheduleDetail.setPlaceName(rs.getString("PN.Display_name"));
-						scheduleDetail.setLocation(
-								new Location(rs.getFloat("PL.Place_latitude"), rs.getFloat("PL.Place_longitude")));
-						scheduleDetail.setDateSeq(rs.getInt("S.Date_seq"));
-						scheduleDetail.setVisitSeq(rs.getInt("S.Visit_seq"));
-						if (rs.getTime("S.Visit_time") != null)
-							scheduleDetail.setVisitTime(rs.getTime("S.Visit_time"));
-						if (rs.getString("Primary_type") != null)
-							scheduleDetail.setPrimaryType(rs.getString("Primary_type"));
-						schedules.put(scheduleSeq, scheduleDetail);
+					Integer dateSeq = rs.getInt("S.Date_seq");
+					if (!scheduleMap.containsKey(dateSeq)) {
+						List<ScheduleDetailDTO> scheduleDetailList = new ArrayList<ScheduleDetailDTO>();
+						scheduleMap.put(dateSeq, scheduleDetailList);
+
 					}
+
+					ScheduleDetailDTO scheduleDetailDTO = new ScheduleDetailDTO();
+					scheduleDetailDTO.setScheduleSeq(rs.getInt("S.Schedule_seq"));
+					scheduleDetailDTO.setPlaceSeq(rs.getInt("S.Place_seq"));
+					scheduleDetailDTO.setPlaceName(rs.getString("PN.Display_name"));
+					scheduleDetailDTO.setLocation(
+							new Location(rs.getFloat("PL.Place_latitude"), rs.getFloat("PL.Place_longitude")));
+					scheduleDetailDTO.setVisitSeq(rs.getInt("S.Visit_seq"));
+					if (rs.getTime("S.Visit_time") != null)
+						scheduleDetailDTO.setVisitTime(rs.getTime("S.Visit_time"));
+					if (rs.getString("Primary_type") != null)
+						scheduleDetailDTO.setPrimaryType(rs.getString("Primary_type"));
+					scheduleMap.get(dateSeq).add(scheduleDetailDTO);
 				}
 
 				if (planDetail != null) {
 					planDetail.setPlanShareMembers(new ArrayList<>(planShareMember.values()));
 					planDetail.setPlanCities(new ArrayList<>(planCities));
-					planDetail.setSchedules(new ArrayList<>(schedules.values()));
+
+					for(Integer k : scheduleMap.keySet()) {
+						scheduleList.add(new ScheduleReadDTO(k,scheduleMap.get(k)) );
+					}
+					planDetail.setSchedules(scheduleList);
 				}
 				return planDetail;
 			}
