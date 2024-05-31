@@ -161,6 +161,18 @@ export const addNewPlace = async (placeData) => {
     throw new Error(err);
   }
 };
+
+//Place 조회 API
+export const fetchPlace = async (countryCode, citySeq) => {
+  try {
+    const response = await axios.get(
+      `${URL}/place?country-code=${countryCode}&city=${citySeq}`
+    );
+    return response.data;
+  } catch (err) {
+    throw new Error(err);
+  }
+};
 // Plan 추가 API
 export const addNewPlan = async (planName, schedules) => {
   const selectedSchedule = schedules.selectedSchedule;
