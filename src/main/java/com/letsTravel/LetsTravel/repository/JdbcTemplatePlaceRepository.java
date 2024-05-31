@@ -48,6 +48,7 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 
 	// 한 달 지난 거면 Places API 재호출해야 함
 	// City가 2개면 어카지
+	// Primary type이 없으면 안 보내는 문제
 	@Override
 	public List<PlaceReadDTO> findPlaces(String countryCode, List<Integer> city, List<Integer> type, String keyword) {
 		StringBuilder sql = new StringBuilder(
@@ -55,7 +56,7 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 						+ "FROM Place P, Place_name PN, Place_city PC, City C LEFT JOIN City_standard CS ON C.City_standard_seq = CS.City_standard_seq, Place_type PT, Type T "
 						+ "WHERE P.Place_seq = PN.Place_seq " + "AND P.Place_seq = PC.Place_seq "
 						+ "AND C.City_seq = PC.City_seq " + "AND P.Place_seq = PT.Place_seq "
-						+ "AND T.Type_seq = PT.Type_seq ");
+						+ "AND T.Type_seq = PT.Type_seq AND PT.Is_Primary_type = 1 ");
 		List<String> sqlArgs = new ArrayList<>();
 
 		if (keyword != null) {
@@ -73,7 +74,7 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 			for (int cityIndex = 0; cityIndex < city.size(); cityIndex++) {
 				sql.append(city.get(cityIndex));
 				if (cityIndex == city.size() - 1) {
-					sql.append(");");
+					sql.append(") ");
 					break;
 				}
 				sql.append(", ");
@@ -85,13 +86,13 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 			for (int typeIndex = 0; typeIndex < type.size(); typeIndex++) {
 				sql.append(type.get(typeIndex));
 				if (typeIndex == type.size() - 1) {
-					sql.append(");");
+					sql.append(") ");
 					break;
 				}
 				sql.append(", ");
 			}
 		}
-		
+		sql.append(";");
 		return jdbcTemplate.query(sql.toString(), placeReadDTORowMapper, sqlArgs.toArray());
 	}
 
@@ -106,9 +107,11 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 		return jdbcTemplate.query(sql, placeReadDTORowMapper, placeSeq);
 	}
 
-	// P.Place_seq, P.Place_id, PN.Display_name, C.Country_code, 
-	// IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name_translated) AS City_name, 
-	// P.Place_formatted_address,  P.Place_latitude, P.Place_longitude, T.Type_name_translated, P.Place_gmap_uri
+	// P.Place_seq, P.Place_id, PN.Display_name, C.Country_code,
+	// IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name_translated) AS
+	// City_name,
+	// P.Place_formatted_address, P.Place_latitude, P.Place_longitude,
+	// T.Type_name_translated, P.Place_gmap_uri
 	private final RowMapper<PlaceReadDTO> placeReadDTORowMapper = new RowMapper<PlaceReadDTO>() {
 		@Override
 		public PlaceReadDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
