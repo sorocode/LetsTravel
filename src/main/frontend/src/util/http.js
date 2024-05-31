@@ -34,7 +34,7 @@ export const fetchSpots = async (searchTerm, city) => {
           "Content-Type": "application/json",
           "X-Goog-Api-Key": GOOGLE_API_KEY,
           "X-Goog-FieldMask":
-            "places.id,places.displayName,places.location,places.types,places.photos,places.googleMapsUri,places.addressComponents",
+            "places.id,places.displayName,places.location,places.types,places.googleMapsUri,places.addressComponents,places.primaryType,places.primaryTypeDisplayName",
         },
       }
     );
