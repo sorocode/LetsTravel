@@ -219,7 +219,7 @@ function SelectSpotPage() {
   return (
     <>
       {content}
-      {/* <BottomSheet title={<h2>일정 고르기</h2>}>
+      <BottomSheet title={<h2>일정 고르기</h2>}>
         <div className="flex flex-col gap-2 justify-center items-center mt-2">
           <div className="flex gap-4">
             {spots.length > 3 ? (
@@ -265,7 +265,7 @@ function SelectSpotPage() {
                     animate="visible"
                     exit={{ opacity: 0, scale: 0.5 }}
                   >
-                    {spot.displayName.toUpperCase()}
+                    {spot.spotName.toUpperCase()}
                   </motion.span>
                 ))}
           </AnimatePresence>
@@ -287,7 +287,7 @@ function SelectSpotPage() {
             </ul>
           )}
         </div>
-      </BottomSheet> */}
+      </BottomSheet>
     </>
   );
 }

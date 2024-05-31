@@ -6,9 +6,12 @@ import { getEndDate } from "../util/getEndDate";
 import MapContainer from "../components/UI/MapContainer";
 import { AdvancedMarker } from "@vis.gl/react-google-maps";
 import CustomMarker from "../components/UI/CustomMarker";
+import BottomSheet from "../components/UI/Bottomsheet/BottomSheet";
+import TimeLine from "../components/UI/TimeLine";
 const TripPage = () => {
   const params = useParams();
   console.log(params.planSeq);
+  let days = [];
 
   const { data, isPending, isError, error } = useQuery({
     queryKey: ["plan", params.planSeq],
@@ -27,21 +30,21 @@ const TripPage = () => {
     );
   }
   if (data) {
-    const days = Object.keys(data.schedules);
     console.log("plan", data.schedules);
-
+    data.schedules.map((item) => {
+      days.push(item.dateSeq);
+    });
     content = (
       <>
         <MapContainer>
-          {days.map((day) =>
-            data.schedules[day].map((spot) => {
-              const spotId = spot.id;
+          {data.schedules.map((day) =>
+            day.scheduleDetail.map((spot, index) => {
               const pos = {
                 lat: spot.location.latitude,
                 lng: spot.location.longitude,
               };
               let bgColor;
-              switch (parseInt(day)) {
+              switch (parseInt(day.dateSeq)) {
                 case 1:
                   bgColor = "#F3B385";
                   break;
@@ -56,11 +59,9 @@ const TripPage = () => {
                   break;
               }
               return (
-                <div key={spotId}>
+                <div key={index}>
                   <AdvancedMarker position={pos}>
-                    <CustomMarker color={bgColor}>
-                      {data.schedules[day].indexOf(spot) + 1}
-                    </CustomMarker>
+                    <CustomMarker color={bgColor}>{spot.visitSeq}</CustomMarker>
                   </AdvancedMarker>
                 </div>
               );
@@ -80,7 +81,14 @@ const TripPage = () => {
       </>
     );
   }
-  return <>{content}</>;
+  return (
+    <>
+      {content}
+      <BottomSheet>
+        <TimeLine scheduleData={data?.schedules} days={days} />
+      </BottomSheet>
+    </>
+  );
 };
 
 export default TripPage;

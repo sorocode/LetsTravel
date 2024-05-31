@@ -37,8 +37,8 @@ export default function Itinery({ days, scheduleData }) {
             <>
               <span className="font-semibold">Day{day}</span>
               {scheduleData[parseInt(day)].map((spot) => {
-                const spotId = spot.spotId;
-                const spotName = spot.spotName;
+                const spotId = spot.spotId || spot.placeName;
+                const spotName = spot.spotName || spot.placeName;
                 let placeType;
                 if (
                   spotName.toLowerCase().includes("hotel") ||
