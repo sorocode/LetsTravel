@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const ErrorPage = ({ title, message, onClick }) => {
   return (
@@ -7,9 +7,9 @@ const ErrorPage = ({ title, message, onClick }) => {
         <h1 className="text-xl">{title}</h1>
         <h2 className="font-semibold">{message}</h2>
       </div>
-      <button onClick={onClick} className="text-blue-700">
+      <Link onClick={onClick} to=".." className="text-blue-700">
         돌아가기
-      </button>
+      </Link>
     </div>
   );
 };

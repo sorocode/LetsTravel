@@ -78,6 +78,7 @@ function SelectSpotPage() {
     );
   }
   if (data) {
+    console.log(data);
     content = (
       <>
         <SearchResults

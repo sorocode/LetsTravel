@@ -7,7 +7,7 @@ const tomorrow = new Date(today);
 tomorrow.setDate(today.getDate() + 1);
 
 const initialState = {
-  country: "JP",
+  country: { countryCode: "JP", countryName: "일본" },
   cities: [], //도시 리스트
   spots: [], //여행지 리스트
   selectedSchedule: {

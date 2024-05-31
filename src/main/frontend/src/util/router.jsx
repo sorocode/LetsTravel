@@ -7,6 +7,8 @@ import MapPage from "../pages/MapPage";
 import ProfilePage from "../pages/ProfilePage";
 import IntroPage from "../pages/IntroPage";
 import ErrorPage from "../components/UI/Error/ErrorPage";
+import MyTripsPage from "../pages/MyTripsPage";
+import TripPage from "../pages/TripPage";
 
 export const router = createBrowserRouter([
   {
@@ -46,8 +48,20 @@ export const router = createBrowserRouter([
         ],
       },
       {
+        path: "trips",
+
+        children: [
+          { index: true, element: <MyTripsPage /> },
+          { path: ":planSeq", element: <TripPage /> },
+        ],
+      },
+      {
         path: "profile",
         element: <ProfilePage />,
+      },
+      {
+        path: "error",
+        element: <ErrorPage title="에러 발생" />,
       },
     ],
   },

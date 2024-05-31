@@ -34,7 +34,7 @@ export const fetchSpots = async (searchTerm, city) => {
           "Content-Type": "application/json",
           "X-Goog-Api-Key": GOOGLE_API_KEY,
           "X-Goog-FieldMask":
-            "places.id,places.displayName,places.location,places.types,places.photos,places.googleMapsUri,places.addressComponents",
+            "places.id,places.displayName,places.location,places.types,places.googleMapsUri,places.addressComponents,places.primaryType,places.primaryTypeDisplayName",
         },
       }
     );
@@ -46,7 +46,7 @@ export const fetchSpots = async (searchTerm, city) => {
 };
 
 // Plan 추가 API
-export const addNewPlan = async (schedules) => {
+export const addNewPlan = async (planName, schedules) => {
   const selectedSchedule = schedules.selectedSchedule;
   try {
     const schedulesArray = [];
@@ -65,18 +65,44 @@ export const addNewPlan = async (schedules) => {
     let newPlan = {
       plan: {
         memSeq: -1,
-        planName: "도쿄 여행",
-        countryCode: schedules.country,
+        planName: planName || `나의 ${schedules.country} 여행`,
+        countryCode: schedules.country.countryCode,
         planStart: schedules.startDate,
         planNDays: schedules.dateDif + 1,
       },
       schedules: schedulesArray,
     };
     const data = JSON.stringify(newPlan);
-    const req = await axios.post(URL + "/plan", data);
+    const req = await axios.post(URL + "/plan", data, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
     return req.data;
+  } catch (err) {
+    const postError = new Error("저장 실패");
+    throw postError;
+  }
+};
+
+//모든 플랜 가져오기 API
+export const fetchAllPlans = async (memSeq) => {
+  try {
+    const res = await axios(URL + "/member/" + memSeq + "/plan");
+    return res.data;
   } catch {
-    //
+    const fetchError = new Error("플랜 가져오기 실패");
+    throw fetchError;
+  }
+};
+// 특정 플랜 가져오기 API
+export const fetchPlan = async (planSeq) => {
+  try {
+    const res = await axios(`${URL}/plan/${planSeq}`);
+    return res.data;
+  } catch {
+    const fetchError = new Error("플랜 가져오기 실패");
+    throw fetchError;
   }
 };
 
