@@ -11,7 +11,7 @@ import {
   acceptSchedule,
 } from "../store/schedule/scheduleSlice";
 import { useMutation } from "@tanstack/react-query";
-import { fetchSpots, generateCase } from "../util/http";
+import { addNewPlace, fetchSpots, generateCase } from "../util/http";
 import ErrorPage from "../components/UI/Error/ErrorPage";
 import { useEffect, useState } from "react";
 import gptIcon from "../assets/icons/gptIcon.svg";
@@ -29,10 +29,27 @@ function SelectSpotPage() {
     mutationKey: ["recommend"],
     mutationFn: () => fetchSpots("관광지", params.city),
   });
+  //Place 추가하기
+  const {
+    data: placeData,
+    mutate: placeMutate,
+    isPending: isPlacePending,
+    isError: isPlaceError,
+    error: placeError,
+  } = useMutation({
+    mutationKey: ["places"],
+    mutationFn: addNewPlace,
+  });
+
   //TODO: 추천 목록 추가
   useEffect(() => {
     mutate();
   }, [mutate]);
+  useEffect(() => {
+    data?.places.map((place) => {
+      placeMutate(place);
+    });
+  }, [data, placeMutate]);
 
   //관광지 동선 짜기
   const {
@@ -78,7 +95,7 @@ function SelectSpotPage() {
     );
   }
   if (data) {
-    console.log(data);
+    console.log("data", data);
     content = (
       <>
         <SearchResults

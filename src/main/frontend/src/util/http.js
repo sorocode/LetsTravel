@@ -2,6 +2,7 @@ import axios from "axios";
 import OpenAI from "openai";
 
 import { QueryClient } from "@tanstack/react-query";
+import { transformPlaceData } from "./transformPlaceData";
 export const queryClient = new QueryClient();
 
 const URL = "http://localhost:8080/api";
@@ -34,7 +35,7 @@ export const fetchSpots = async (searchTerm, city) => {
           "Content-Type": "application/json",
           "X-Goog-Api-Key": GOOGLE_API_KEY,
           "X-Goog-FieldMask":
-            "places.id,places.displayName,places.location,places.types,places.googleMapsUri,places.addressComponents,places.primaryType,places.primaryTypeDisplayName",
+            "places.id,places.displayName,places.location,places.types,places.googleMapsUri,places.addressComponents,places.primaryType,places.primaryTypeDisplayName,places.formattedAddress",
         },
       }
     );
@@ -44,7 +45,122 @@ export const fetchSpots = async (searchTerm, city) => {
     throw fetchError;
   }
 };
+// 기존 데이터 형식
+// {
+//     "id": "ChIJCewJkL2LGGAR3Qmk0vCTGkg",
+//     "types": [
+//         "landmark",
+//         "art_gallery",
+//         "tourist_attraction",
+//         "shopping_mall",
+//         "point_of_interest",
+//         "establishment"
+//     ],
+//     "addressComponents": [
+//         {
+//             "longText": "8",
+//             "shortText": "8",
+//             "types": [
+//                 "premise"
+//             ],
+//             "languageCode": "ko"
+//         },
+//         {
+//             "longText": "2",
+//             "shortText": "2",
+//             "types": [
+//                 "sublocality_level_4",
+//                 "sublocality",
+//                 "political"
+//             ],
+//             "languageCode": "en"
+//         },
+//         {
+//             "longText": "4-chōme",
+//             "shortText": "4-chōme",
+//             "types": [
+//                 "sublocality_level_3",
+//                 "sublocality",
+//                 "political"
+//             ],
+//             "languageCode": "ja-Latn"
+//         },
+//         {
+//             "longText": "Shibakōen",
+//             "shortText": "Shibakōen",
+//             "types": [
+//                 "sublocality_level_2",
+//                 "sublocality",
+//                 "political"
+//             ],
+//             "languageCode": "ja-Latn"
+//         },
+//         {
+//             "longText": "Minato City",
+//             "shortText": "Minato City",
+//             "types": [
+//                 "locality",
+//                 "political"
+//             ],
+//             "languageCode": "en"
+//         },
+//         {
+//             "longText": "Tokyo",
+//             "shortText": "Tokyo",
+//             "types": [
+//                 "administrative_area_level_1",
+//                 "political"
+//             ],
+//             "languageCode": "en"
+//         },
+//         {
+//             "longText": "일본",
+//             "shortText": "JP",
+//             "types": [
+//                 "country",
+//                 "political"
+//             ],
+//             "languageCode": "ko"
+//         },
+//         {
+//             "longText": "105-0011",
+//             "shortText": "105-0011",
+//             "types": [
+//                 "postal_code"
+//             ],
+//             "languageCode": "ko"
+//         }
+//     ],
+//     "location": {
+//         "latitude": 35.6585805,
+//         "longitude": 139.7454329
+//     },
+//     "googleMapsUri": "https://maps.google.com/?cid=5195627782660688349",
+//     "displayName": {
+//         "text": "도쿄 타워",
+//         "languageCode": "ko"
+//     }
+// }
 
+//Place 추가 API
+export const addNewPlace = async (placeData) => {
+  // API 요청 방식에 맞게 데이터 변경
+  const transFormedPlaceData = transformPlaceData(placeData);
+  try {
+    const response = await axios.post(
+      URL + "/place",
+      JSON.stringify(transFormedPlaceData),
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (err) {
+    throw new Error(err);
+  }
+};
 // Plan 추가 API
 export const addNewPlan = async (planName, schedules) => {
   const selectedSchedule = schedules.selectedSchedule;
