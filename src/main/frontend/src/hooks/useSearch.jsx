@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { fetchSpots } from "../util/http";
+import { addNewPlace, fetchSpots } from "../util/http";
 import { useParams } from "react-router-dom";
 import ErrorPage from "../components/UI/Error/ErrorPage";
 
@@ -35,7 +35,22 @@ export const useSearch = ({ items, apiMode, lastTerm, children }) => {
   useEffect(() => {
     mutate();
   }, [searchTerm, mutate]);
-
+  //Place 추가하기
+  const {
+    data: placeData,
+    mutate: placeMutate,
+    isPending: isPlacePending,
+    isError: isPlaceError,
+    error: placeError,
+  } = useMutation({
+    mutationKey: ["places", searchTerm],
+    mutationFn: addNewPlace,
+  });
+  useEffect(() => {
+    data?.places.map((place) => {
+      placeMutate(place);
+    });
+  }, [data, placeMutate]);
   // 버튼 눌러서 검색할 때
   function onQuickSearchHandler(searchValue) {
     setSearchTerm(searchValue);
