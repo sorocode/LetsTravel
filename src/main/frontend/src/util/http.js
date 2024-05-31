@@ -29,6 +29,7 @@ export const fetchSpots = async (searchTerm, city) => {
       {
         textQuery: `${searchTerm} in ${city}`,
         languageCode: "ko",
+        pageSize: 5,
       },
       {
         headers: {
