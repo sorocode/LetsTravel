@@ -163,10 +163,11 @@ export const addNewPlace = async (placeData) => {
 };
 
 //Place 조회 API
-export const fetchPlace = async (countryCode, citySeq) => {
+export const fetchPlace = async (countryCode, citySeq, type) => {
+  // 호텔: 108, 음식점: 73, 카페: 52, 공항: 178
   try {
     const response = await axios.get(
-      `${URL}/place?country-code=${countryCode}&city=${citySeq}`
+      `${URL}/place?country-code=${countryCode}&city=${citySeq}&type=${type}`
     );
     return response.data;
   } catch (err) {
