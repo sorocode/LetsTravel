@@ -35,7 +35,7 @@ export const useSearch = ({ items, apiMode, lastTerm, children }) => {
   useEffect(() => {
     mutate();
   }, [searchTerm, mutate]);
-  //Place 추가하기
+  // //Place 추가하기
   const {
     data: placeData,
     mutate: placeMutate,
@@ -46,10 +46,13 @@ export const useSearch = ({ items, apiMode, lastTerm, children }) => {
     mutationKey: ["places", searchTerm],
     mutationFn: addNewPlace,
   });
+
   useEffect(() => {
-    data?.places.map((place) => {
-      placeMutate(place);
-    });
+    if (data && data.places != undefined) {
+      data.places.map((place) => {
+        placeMutate(place);
+      });
+    }
   }, [data, placeMutate]);
   // 버튼 눌러서 검색할 때
   function onQuickSearchHandler(searchValue) {
@@ -80,11 +83,13 @@ export const useSearch = ({ items, apiMode, lastTerm, children }) => {
       );
     }
     if (data && data.places != undefined) {
-      content = data.places.map((item, isClicked) => (
-        <motion.li layout key={item.id ? item.id : item.citySeq}>
-          {children(item, isClicked)}
-        </motion.li>
-      ));
+      content = data.places.map((item, isClicked) => {
+        return (
+          <motion.li layout key={item.id ? item.id : item.citySeq}>
+            {children(item, isClicked)}
+          </motion.li>
+        );
+      });
     } else if (isPending) {
       content = <p>검색중</p>;
     } else {

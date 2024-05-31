@@ -10,8 +10,13 @@ import {
   removeSpot,
   acceptSchedule,
 } from "../store/schedule/scheduleSlice";
-import { useMutation } from "@tanstack/react-query";
-import { addNewPlace, fetchSpots, generateCase } from "../util/http";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  addNewPlace,
+  fetchPlace,
+  fetchSpots,
+  generateCase,
+} from "../util/http";
 import ErrorPage from "../components/UI/Error/ErrorPage";
 import { useEffect, useState } from "react";
 import gptIcon from "../assets/icons/gptIcon.svg";
@@ -19,12 +24,26 @@ import { LinearProgress } from "@mui/material";
 function SelectSpotPage() {
   const params = useParams();
   const [apiMode, setApiMode] = useState(false);
+  const country = useSelector((state) => state.schedule.country);
   const cities = useSelector((state) => state.schedule.cities);
   const spots = useSelector((state) => state.schedule.spots);
   const dates = useSelector((state) => state.schedule.dateDif);
   const dispatch = useDispatch();
-
-  //관광지 불러오기
+  //DB에서 관광지 불러오기
+  const {
+    data: dbData,
+    isPending: isDbPending,
+    isError: isDbError,
+    error: dbError,
+  } = useQuery({
+    queryKey: ["fetchDb"],
+    queryFn: () => fetchPlace(country.countryCode, cities[0].id),
+    enabled: cities[0] !== undefined && country.countryCode !== undefined,
+  });
+  if (dbData) {
+    console.log(dbData);
+  }
+  //구글맵에서 관광지 불러오기
   const { data, mutate, isPending, isError, error } = useMutation({
     mutationKey: ["recommend"],
     mutationFn: () => fetchSpots("관광지", params.city),
