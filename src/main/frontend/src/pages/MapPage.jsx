@@ -2,15 +2,15 @@ import MapContainer from "../components/UI/MapContainer";
 import { AdvancedMarker } from "@vis.gl/react-google-maps";
 import { useSelector } from "react-redux";
 import BottomSheet from "../components/UI/Bottomsheet/BottomSheet";
-import Button from "../components/UI/Buttons/Button";
 
+import { Button } from "@chakra-ui/react";
 import Itinery from "../components/UI/Itinery";
 import CustomMarker from "../components/UI/CustomMarker";
 import Logo from "../components/UI/Logo";
 import { useMutation } from "@tanstack/react-query";
 import { addNewPlan } from "../util/http";
 import { useState } from "react";
-
+import { Link } from "react-router-dom";
 function MapPage() {
   const scheduleSlice = useSelector((state) => state.schedule);
   const scheduleData = scheduleSlice.selectedSchedule;
@@ -32,12 +32,29 @@ function MapPage() {
       mutate();
     }
   };
-  let msg = "일정 저장";
+  let btn = (
+    <Button color="teal" onClick={addPlanHandler}>
+      일정 저장
+    </Button>
+  );
   if (isPending) {
-    msg = "일정 저장 중...";
+    btn = (
+      <Button
+        isLoading
+        loadingText="일정 저장중"
+        colorScheme="#teal"
+        variant="outline"
+      >
+        Submit
+      </Button>
+    );
   }
   if (data) {
-    msg = "일정 저장 성공!";
+    btn = (
+      <Button color="blue" onClick={addPlanHandler}>
+        일정 저장 성공
+      </Button>
+    );
   }
   return (
     <>
@@ -78,10 +95,7 @@ function MapPage() {
               })
             )}
           </MapContainer>
-          <BottomSheet>
-            <div className="flex justify-end mr-5 mt-1">
-              <button onClick={addPlanHandler}>{msg}</button>
-            </div>
+          <BottomSheet title={btn}>
             <Itinery scheduleData={scheduleData} days={days} />
           </BottomSheet>
         </div>
@@ -89,7 +103,9 @@ function MapPage() {
         <div className="flex flex-col items-center justify-center mt-20 gap-4">
           <Logo />
           <p>지도를 보려면 여행지를 추가해주세요!</p>
-          <Button to="/select">바로가기</Button>
+          <Link to="/select">
+            <Button color="blue">바로가기</Button>
+          </Link>
         </div>
       )}
     </>

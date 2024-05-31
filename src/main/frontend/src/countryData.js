@@ -624,12 +624,12 @@ export const countryData = [
   //   countryName_KR: "세인트키츠 네비스",
   //   countryCode: "KN",
   // },
-  // {
-  //   id: 122,
-  //   countryName: "Republic of Korea",
-  //   countryName_KR: "대한민국",
-  //   countryCode: "KR",
-  // },
+  {
+    id: 122,
+    countryName: "Republic of Korea",
+    countryName_KR: "대한민국",
+    countryCode: "KR",
+  },
   // {
   //   id: 123,
   //   countryName: "Kuwait",

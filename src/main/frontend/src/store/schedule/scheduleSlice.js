@@ -10,36 +10,7 @@ const initialState = {
   country: { countryCode: "JP", countryName: "일본" },
   cities: [], //도시 리스트
   spots: [], //여행지 리스트
-  selectedSchedule: {
-    1: [
-      {
-        id: "ChIJ5SZMmreMGGARcz8QSTiJyo8",
-        spotName: "메이지 신궁",
-        latitude: 35.6763976,
-        longitude: 139.6993259,
-      },
-      {
-        id: "ChIJCewJkL2LGGAR3Qmk0vCTGkg",
-        spotName: "도쿄 타워",
-        latitude: 35.6585805,
-        longitude: 139.7454329,
-      },
-    ],
-    2: [
-      {
-        id: "ChIJPfFaQhOMGGAR-QPbNQoAG6M",
-        spotName: "고쿄 히가시 교엔",
-        latitude: 35.6867824,
-        longitude: 139.75714449999998,
-      },
-      {
-        id: "ChIJ35ov0dCOGGARKvdDH7NPHX0",
-        spotName: "도쿄 스카이트리",
-        latitude: 35.7100627,
-        longitude: 139.81070040000003,
-      },
-    ],
-  },
+  selectedSchedule: undefined,
   startDate: toMySQLDate(today), //시작일 오늘로 설정
   endDate: toMySQLDate(tomorrow), //종료일 내일로 설정
   dateDif: 1, // 종료일과 시작일 사이의 날짜 차이
