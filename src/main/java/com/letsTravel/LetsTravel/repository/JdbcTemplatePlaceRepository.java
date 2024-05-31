@@ -80,7 +80,7 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 				sql.append(", ");
 			}
 		}
-		System.out.println(type.size());
+
 		if (type != null && type.size() != 0) {
 			sql.append("AND PT.Type_Seq IN (");
 			for (int typeIndex = 0; typeIndex < type.size(); typeIndex++) {
