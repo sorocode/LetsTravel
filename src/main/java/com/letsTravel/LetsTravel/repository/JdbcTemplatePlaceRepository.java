@@ -73,7 +73,7 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 			sql.append("AND PC.City_seq IN (");
 			for (int cityIndex = 0; cityIndex < city.size(); cityIndex++) {
 				sql.append(city.get(cityIndex));
-				if (cityIndex == city.size() - 1) {
+				if (cityIndex <= city.size() - 1) {
 					sql.append(") ");
 					break;
 				}
@@ -85,7 +85,7 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 			sql.append("AND PT.Type_Seq IN (");
 			for (int typeIndex = 0; typeIndex < type.size(); typeIndex++) {
 				sql.append(type.get(typeIndex));
-				if (typeIndex == type.size() - 1) {
+				if (typeIndex <= type.size() - 1) {
 					sql.append(") ");
 					break;
 				}
