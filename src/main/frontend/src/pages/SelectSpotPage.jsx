@@ -37,7 +37,7 @@ function SelectSpotPage() {
     error: dbError,
   } = useQuery({
     queryKey: ["fetchDb"],
-    queryFn: () => fetchPlace(country.countryCode, cities[0].id),
+    queryFn: () => fetchPlace(country.countryCode, cities[0].id, ""),
     enabled: cities[0] !== undefined && country.countryCode !== undefined,
   });
   if (dbData) {
@@ -113,12 +113,12 @@ function SelectSpotPage() {
       />
     );
   }
-  if (dbData) {
-    console.log("data", dbData);
+  if (data) {
+    console.log("data", data);
     content = (
       <>
         <SearchResults
-          items={dbData.places}
+          items={data.places}
           searchId="spots"
           spotMode
           apiMode={apiMode}
@@ -152,6 +152,45 @@ function SelectSpotPage() {
       </>
     );
   }
+  // if (dbData) {
+  //   console.log("data", dbData);
+  //   content = (
+  //     <>
+  //       <SearchResults
+  //         items={dbData}
+  //         searchId="spots"
+  //         spotMode
+  //         apiMode={apiMode}
+  //         changeMode={changeMode}
+  //         cityName={params.city}
+  //       >
+  //         {(item) => {
+  //           const isSelected = JSON.stringify(spots).includes(item.id);
+
+  //           // const countryComponent = item.addressComponents.find(
+  //           //   (component) => {
+  //           //     return component.types.includes("country");
+  //           //   }
+  //           // );
+  //           const country = item.countryCode;
+  //           return (
+  //             <SpotItem
+  //               key={item.placeId}
+  //               spotName={item.displayName}
+  //               latitude={item.location.latitude}
+  //               longitude={item.location.longitude}
+  //               country={country}
+  //               onClick={() => {
+  //                 isSelected ? handleRemoveSpot(item) : handleAddSpot(item);
+  //               }}
+  //               isSelected={isSelected}
+  //             />
+  //           );
+  //         }}
+  //       </SearchResults>
+  //     </>
+  //   );
+  // }
   let bsContent;
   if (isGptPending) {
     bsContent = (
@@ -180,7 +219,7 @@ function SelectSpotPage() {
   return (
     <>
       {content}
-      <BottomSheet title={<h2>일정 고르기</h2>}>
+      {/* <BottomSheet title={<h2>일정 고르기</h2>}>
         <div className="flex flex-col gap-2 justify-center items-center mt-2">
           <div className="flex gap-4">
             {spots.length > 3 ? (
@@ -226,7 +265,7 @@ function SelectSpotPage() {
                     animate="visible"
                     exit={{ opacity: 0, scale: 0.5 }}
                   >
-                    {spot.spotName.toUpperCase()}
+                    {spot.displayName.toUpperCase()}
                   </motion.span>
                 ))}
           </AnimatePresence>
@@ -248,7 +287,7 @@ function SelectSpotPage() {
             </ul>
           )}
         </div>
-      </BottomSheet>
+      </BottomSheet> */}
     </>
   );
 }
