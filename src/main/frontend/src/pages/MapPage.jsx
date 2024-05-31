@@ -9,6 +9,8 @@ import CustomMarker from "../components/UI/CustomMarker";
 import Logo from "../components/UI/Logo";
 import { useMutation } from "@tanstack/react-query";
 import { addNewPlan } from "../util/http";
+import { useState } from "react";
+
 function MapPage() {
   const scheduleSlice = useSelector((state) => state.schedule);
   const scheduleData = scheduleSlice.selectedSchedule;
@@ -16,15 +18,27 @@ function MapPage() {
   console.log("scheduleData", scheduleData);
   const days =
     scheduleData !== undefined ? Object.keys(scheduleData) : undefined;
+  const [planName, setPlanName] = useState("");
   // 일정 확정 mutate
-  const { mutate } = useMutation({
+  const { data, mutate, isPending, isError, error } = useMutation({
     mutationKey: ["newPlan"],
-    mutationFn: () => addNewPlan(scheduleSlice),
+    mutationFn: () => addNewPlan(planName, scheduleSlice),
   });
   // TODO:pending, error 관련 UI 추가하기
   const addPlanHandler = () => {
-    mutate();
+    const planNameInput = prompt("여행명을 입력해주세요(예: 도쿄여행)");
+    if (planNameInput !== null) {
+      setPlanName(planNameInput);
+      mutate();
+    }
   };
+  let msg = "일정 저장";
+  if (isPending) {
+    msg = "일정 저장 중...";
+  }
+  if (data) {
+    msg = "일정 저장 성공!";
+  }
   return (
     <>
       {days !== undefined ? (
@@ -65,7 +79,9 @@ function MapPage() {
             )}
           </MapContainer>
           <BottomSheet>
-            <button onClick={addPlanHandler}>일정 확정</button>
+            <div className="flex justify-end mr-5 mt-1">
+              <button onClick={addPlanHandler}>{msg}</button>
+            </div>
             <Itinery scheduleData={scheduleData} days={days} />
           </BottomSheet>
         </div>

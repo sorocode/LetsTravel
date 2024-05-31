@@ -46,7 +46,7 @@ export const fetchSpots = async (searchTerm, city) => {
 };
 
 // Plan 추가 API
-export const addNewPlan = async (schedules) => {
+export const addNewPlan = async (planName, schedules) => {
   const selectedSchedule = schedules.selectedSchedule;
   try {
     const schedulesArray = [];
@@ -65,8 +65,8 @@ export const addNewPlan = async (schedules) => {
     let newPlan = {
       plan: {
         memSeq: -1,
-        // planName: "도쿄 여행",
-        countryCode: schedules.country,
+        planName: planName || `나의 ${schedules.country} 여행`,
+        countryCode: schedules.country.countryCode,
         planStart: schedules.startDate,
         planNDays: schedules.dateDif + 1,
       },
