@@ -17,7 +17,7 @@ const ProfileSection = () => {
             <span>GOLD 등급</span>
           </p>
         </div>
-        <button>로그아웃</button>
+        {/* <button>로그아웃</button> */}
       </div>
     </div>
   );

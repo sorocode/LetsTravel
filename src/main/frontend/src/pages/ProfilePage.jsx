@@ -8,7 +8,7 @@ const ProfilePage = () => {
     <div className="mx-10 my-5">
       <ProfileSection />
       <div className="my-4">
-        <Link to="/select/map">
+        <Link to="/trips">
           <Button>
             <span className="text-xl">나의 여행</span>
           </Button>
