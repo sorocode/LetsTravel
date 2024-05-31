@@ -69,7 +69,7 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 			sqlArgs.add(countryCode);
 		}
 
-		if (city != null) {
+		if (city != null && city.size() != 0) {
 			sql.append("AND PC.City_seq IN (");
 			for (int cityIndex = 0; cityIndex < city.size(); cityIndex++) {
 				sql.append(city.get(cityIndex));
@@ -80,8 +80,8 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 				sql.append(", ");
 			}
 		}
-
-		if (type != null) {
+		System.out.println(type.size());
+		if (type != null && type.size() != 0) {
 			sql.append("AND PT.Type_Seq IN (");
 			for (int typeIndex = 0; typeIndex < type.size(); typeIndex++) {
 				sql.append(type.get(typeIndex));
