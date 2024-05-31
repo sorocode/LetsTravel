@@ -102,6 +102,7 @@ public class JdbcTemplatePlanRepository implements PlanRepository {
 				+ "    LEFT JOIN Place_name AS PN ON PL.Place_seq = PN.Place_seq\r\n"
 				+ "    LEFT JOIN Place_type AS PT ON PL.Place_seq = PT.Place_seq\r\n"
 				+ "    LEFT JOIN Type AS T ON PT.Type_seq = T.Type_seq\r\n" + "WHERE \r\n" + "    P.Plan_seq = ?\r\n"
+				+ "    AND PT.Is_primary_type = 1 " 
 				+ "ORDER BY\r\n" + "    S.Date_seq ASC, S.Visit_seq ASC;";
 		return jdbcTemplate.query(sql, new ResultSetExtractor<PlanDetailReadDTO>() {
 
@@ -163,8 +164,8 @@ public class JdbcTemplatePlanRepository implements PlanRepository {
 					planDetail.setPlanShareMembers(new ArrayList<>(planShareMember.values()));
 					planDetail.setPlanCities(new ArrayList<>(planCities));
 
-					for(Integer k : scheduleMap.keySet()) {
-						scheduleList.add(new ScheduleReadDTO(k,scheduleMap.get(k)) );
+					for (Integer k : scheduleMap.keySet()) {
+						scheduleList.add(new ScheduleReadDTO(k, scheduleMap.get(k)));
 					}
 					planDetail.setSchedules(scheduleList);
 				}
