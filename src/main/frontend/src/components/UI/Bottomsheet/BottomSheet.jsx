@@ -16,7 +16,8 @@ function BottomSheet({ title, children }) {
     handleDoubleClick,
   } = useBottomSheet();
   const location = useLocation();
-  let isMap = location.pathname === "/select/map";
+  let isMap =
+    location.pathname === "/select/map" || location.pathname.includes("/trips");
   return createPortal(
     <div>
       {isClose && (

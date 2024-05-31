@@ -84,7 +84,7 @@ const TripPage = () => {
   return (
     <>
       {content}
-      <BottomSheet>
+      <BottomSheet title={data?.planInfo.planName}>
         <TimeLine scheduleData={data?.schedules} days={days} />
       </BottomSheet>
     </>
