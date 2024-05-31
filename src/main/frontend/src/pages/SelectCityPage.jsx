@@ -123,7 +123,7 @@ const SelectCityPage = () => {
         </motion.div>
         <SearchResults items={data}>
           {(item) => {
-            const isSelected = JSON.stringify(cities).includes(item.cityName);
+            const isSelected = JSON.stringify(cities).includes(item.id);
             return (
               <CityItem
                 btnKey={item.id}
