@@ -5,7 +5,7 @@ import { QueryClient } from "@tanstack/react-query";
 import { transformPlaceData } from "./transformPlaceData";
 export const queryClient = new QueryClient();
 
-const URL = "http://localhost:8080/api";
+const URL = import.meta.env.VITE_GCP_URL + ":8080/api";
 const PLACE_TEXT_URL = "https://places.googleapis.com/v1/places:searchText";
 const GOOGLE_API_KEY = import.meta.env.VITE_GOOGLE_KEY;
 const GPT_KEY = import.meta.env.VITE_GPT_KEY;
