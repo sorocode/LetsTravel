@@ -107,7 +107,7 @@ const SelectCityPage = () => {
     cityContent = (
       <>
         <motion.div
-          className="flex flex-col items-start my-10"
+          className="flex flex-col items-start mb-10"
           initial={{ opacity: 0, x: "30%", y: 50 }}
           animate={{ opacity: 1, x: "12%", y: 50 }}
           exit={{ opacity: 0, x: "30%", y: 50 }}
