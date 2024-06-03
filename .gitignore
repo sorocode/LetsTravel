@@ -43,3 +43,5 @@ out/
 db.json
 
 *.jar
+
+/src/main/resources/static
