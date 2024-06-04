@@ -33,7 +33,7 @@ public class PlaceService {
 		this.typeRepository = typeRepository;
 	}
 
-	@Transactional(isolation = Isolation.READ_COMMITTED)
+	@Transactional
 	public List<PlaceInfoDTO> createPlace(GoogleMapsPlace googleMapsPlace) {
 		List<PlaceInfoDTO> placeInfoList = new ArrayList<>();
 
