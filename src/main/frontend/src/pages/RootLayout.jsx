@@ -12,17 +12,17 @@ const RootLayout = () => {
   }
 
   return (
-    <>
+    <div className="max-w-4xl mx-auto">
       {header}
       <main>
         <Outlet />
       </main>
       {location.pathname !== "/" && (
-        <nav className="fixed bottom-0 z-[1000] flex justify-center items-center min-w-full">
+        <nav className="fixed bottom-0 right-0 z-[1000] flex justify-center items-center min-w-full">
           <NavBar />
         </nav>
       )}
-    </>
+    </div>
   );
 };
 

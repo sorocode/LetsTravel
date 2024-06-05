@@ -9,7 +9,7 @@ const Header = () => {
   return (
     <div className="flex items-center mx-8">
       <NavLink to="/">
-        <div className="flex justify-start gap-2 mt-5 mb-2">
+        <div className="flex justify-start items-center gap-2 mt-5 mb-2">
           <img
             src={logoIcon}
             alt="logoIcon"
