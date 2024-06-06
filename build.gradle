@@ -2,6 +2,13 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.2.5'
 	id 'io.spring.dependency-management' version '1.1.4'
+	id "com.github.node-gradle.node" version "3.4.0"
+}
+
+node {
+	version = '22.2.0' // 사용할 Node.js 버전
+	npmVersion = '10.7.0' // 사용할 npm 버전
+	download = true // 자동 다운로드 설정
 }
 
 group = 'com.letsTravel'
@@ -29,6 +36,7 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
 def frontendDir = "$projectDir/src/main/frontend"
 
 sourceSets {
@@ -40,29 +48,26 @@ sourceSets {
 
 processResources { dependsOn "copyReactBuildFiles" }
 
-task installReact(type: Exec) {
-	workingDir "$frontendDir"
-	inputs.dir "$frontendDir"
+task installReact(type: NpmTask) {
+	workingDir = file(frontendDir)
+	inputs.dir frontendDir
 	group = BasePlugin.BUILD_GROUP
-	if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
-		commandLine "npm.cmd", "audit", "fix"
-		commandLine 'npm.cmd', 'install'
-	} else {
-		commandLine "npm", "audit", "fix"
-		commandLine 'npm', 'install'
-	}
+	args = ['install']
 }
 
-task buildReact(type: Exec) {
-	dependsOn "installReact"
-	workingDir "$frontendDir"
-	inputs.dir "$frontendDir"
+task auditFix(type: NpmTask) {
+	workingDir = file(frontendDir)
+	inputs.dir frontendDir
 	group = BasePlugin.BUILD_GROUP
-	if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
-		commandLine "npm.cmd", "run-script", "build"
-	} else {
-		commandLine "npm", "run-script", "build"
-	}
+	args = ['audit', 'fix']
+}
+
+task buildReact(type: NpmTask) {
+	dependsOn "installReact", "auditFix"
+	workingDir = file(frontendDir)
+	inputs.dir frontendDir
+	group = BasePlugin.BUILD_GROUP
+	args = ['run', 'build']
 }
 
 task copyReactBuildFiles(type: Copy) {
