@@ -33,7 +33,7 @@ public class JdbcTemplateCityRepository implements CityRepository {
 					@Override
 					public CityReadDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
 						CityReadDTO cityReadDTO = new CityReadDTO();
-						cityReadDTO.setId(rs.getInt(1));
+						cityReadDTO.setCitySeq(rs.getInt(1));
 						cityReadDTO.setCountryCode(countryCode);
 						cityReadDTO.setCityName(rs.getString(2));
 						cityReadDTO.setCityNameTranslated(rs.getString(3));
