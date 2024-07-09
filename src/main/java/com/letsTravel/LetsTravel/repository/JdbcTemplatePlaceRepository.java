@@ -16,8 +16,11 @@ import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 
 import com.letsTravel.LetsTravel.domain.Location;
+import com.letsTravel.LetsTravel.domain.place.DisplayName;
+import com.letsTravel.LetsTravel.domain.place.Place;
 import com.letsTravel.LetsTravel.domain.place.PlaceCreateDTO;
 import com.letsTravel.LetsTravel.domain.place.PlaceReadDTO;
+import com.letsTravel.LetsTravel.domain.place.PlaceWrapper;
 
 @Repository
 public class JdbcTemplatePlaceRepository implements PlaceRepository {
@@ -32,15 +35,11 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 	}
 
 	@Override
-	public int addPlace(PlaceCreateDTO placeCreateDTO) {
+	public int addPlace(Place place) {
 		// 이건 ON UPDATE DUPLICATE KEY가 맞음
-		SqlParameterSource in = new MapSqlParameterSource().addValue("in_id", placeCreateDTO.getId())
-				.addValue("in_name", placeCreateDTO.getDisplayName())
-				.addValue("in_name_language_code", placeCreateDTO.getLanguageCode())
-				.addValue("in_formatted_address", placeCreateDTO.getFormattedAddress())
-				.addValue("in_latitude", placeCreateDTO.getLocation().getLatitude())
-				.addValue("in_longitude", placeCreateDTO.getLocation().getLongitude())
-				.addValue("in_gmap_uri", placeCreateDTO.getGoogleMapsUri());
+		SqlParameterSource in = new MapSqlParameterSource().addValue("in_id", place.getId()).addValue("in_name", place.getDisplayName().getText())
+				.addValue("in_name_language_code", place.getDisplayName().getLanguageCode()).addValue("in_formatted_address", place.getFormattedAddress())
+				.addValue("in_latitude", place.getLocation().getLatitude()).addValue("in_longitude", place.getLocation().getLongitude()).addValue("in_gmap_uri", place.getGoogleMapsUri());
 
 		Map out = simpleJdbcCall.execute(in);
 		return (int) out.get("out_place_seq");
@@ -50,12 +49,11 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 	// City가 2개면 어카지
 	// Primary type이 없으면 안 보내는 문제
 	@Override
-	public List<PlaceReadDTO> findPlaces(String countryCode, List<Integer> city, List<Integer> type, String keyword) {
+	public PlaceWrapper findPlaces(String countryCode, List<Integer> city, List<Integer> type, String keyword) {
 		StringBuilder sql = new StringBuilder(
-				"SELECT P.Place_seq, P.Place_id, PN.Display_name, C.Country_code, IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name_translated) AS City_name, P.Place_formatted_address,  P.Place_latitude, P.Place_longitude, T.Type_name_translated, P.Place_gmap_uri "
+				"SELECT P.Place_seq, P.Place_id, PN.Display_name, PN.Display_name_language_code C.Country_code, IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name_translated) AS City_name, P.Place_formatted_address,  P.Place_latitude, P.Place_longitude, T.Type_name, T.Type_name_translated, P.Place_gmap_uri "
 						+ "FROM Place P, Place_name PN, Place_city PC, City C LEFT JOIN City_standard CS ON C.City_standard_seq = CS.City_standard_seq, Place_type PT, Type T "
-						+ "WHERE P.Place_seq = PN.Place_seq " + "AND P.Place_seq = PC.Place_seq "
-						+ "AND C.City_seq = PC.City_seq " + "AND P.Place_seq = PT.Place_seq "
+						+ "WHERE P.Place_seq = PN.Place_seq " + "AND P.Place_seq = PC.Place_seq " + "AND C.City_seq = PC.City_seq " + "AND P.Place_seq = PT.Place_seq "
 						+ "AND T.Type_seq = PT.Type_seq AND PT.Is_Primary_type = 1 ");
 		List<String> sqlArgs = new ArrayList<>();
 
@@ -93,18 +91,17 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 			}
 		}
 		sql.append(";");
-		return jdbcTemplate.query(sql.toString(), placeReadDTORowMapper, sqlArgs.toArray());
+		return new PlaceWrapper(jdbcTemplate.query(sql.toString(), placeRowMapper, sqlArgs.toArray()));
 	}
 
 	// City가 2개면 어카지
 	@Override
-	public List<PlaceReadDTO> findPlaceByPlaceSeq(int placeSeq) {
-		String sql = "SELECT P.Place_seq, P.Place_id, PN.Display_name, C.Country_code, IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name_translated) AS City_name, P.Place_formatted_address,  P.Place_latitude, P.Place_longitude, T.Type_name_translated, P.Place_gmap_uri "
+	public PlaceWrapper findPlaceByPlaceSeq(int placeSeq) {
+		String sql = "SELECT P.Place_seq, P.Place_id, PN.Display_name, PN.Display_name_language_code, C.Country_code, IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name_translated) AS City_name, P.Place_formatted_address,  P.Place_latitude, P.Place_longitude, T.Type_name_translated, P.Place_gmap_uri "
 				+ "FROM Place P, Place_name PN, Place_city PC, City C LEFT JOIN City_standard CS ON C.City_standard_seq = CS.City_standard_seq, Place_type PT, Type T "
-				+ "WHERE P.Place_seq = PN.Place_seq AND P.Place_seq = PC.Place_seq "
-				+ "AND C.City_seq = PC.City_seq AND P.Place_seq = PT.Place_seq "
+				+ "WHERE P.Place_seq = PN.Place_seq AND P.Place_seq = PC.Place_seq " + "AND C.City_seq = PC.City_seq AND P.Place_seq = PT.Place_seq "
 				+ "AND T.Type_seq = PT.Type_seq AND P.Place_seq = ?";
-		return jdbcTemplate.query(sql, placeReadDTORowMapper, placeSeq);
+		return new PlaceWrapper(jdbcTemplate.query(sql, placeRowMapper, placeSeq));
 	}
 
 	// P.Place_seq, P.Place_id, PN.Display_name, C.Country_code,
@@ -112,20 +109,23 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 	// City_name,
 	// P.Place_formatted_address, P.Place_latitude, P.Place_longitude,
 	// T.Type_name_translated, P.Place_gmap_uri
-	private final RowMapper<PlaceReadDTO> placeReadDTORowMapper = new RowMapper<PlaceReadDTO>() {
+	private final RowMapper<Place> placeRowMapper = new RowMapper<Place>() {
 		@Override
-		public PlaceReadDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
-			PlaceReadDTO placeReadDTO = new PlaceReadDTO();
-			placeReadDTO.setPlaceSeq(rs.getInt("P.Place_seq"));
-			placeReadDTO.setPlaceId(rs.getString("P.Place_id"));
-			placeReadDTO.setDisplayName(rs.getString("PN.Display_name"));
-			placeReadDTO.setCountryCode(rs.getString("C.Country_code"));
-			placeReadDTO.setCity(rs.getString("City_name"));
-			placeReadDTO.setFormattedAddress(rs.getString("P.Place_formatted_address"));
-			placeReadDTO.setLocation(new Location(rs.getFloat("P.Place_latitude"), rs.getFloat("P.Place_longitude")));
-			placeReadDTO.setPrimaryType(rs.getString("T.Type_name_translated"));
-			placeReadDTO.setGoogleMapsUri(rs.getString("P.Place_gmap_uri"));
-			return placeReadDTO;
+		public Place mapRow(ResultSet rs, int rowNum) throws SQLException {
+			Place place = new Place();
+			place.setPlaceSeq(rs.getInt("P.Place_seq"));
+			place.setId(rs.getString("P.Place_id"));
+			place.setTypes(null);
+			place.setFormattedAddress(rs.getString("P.Place_formatted_address"));
+			place.setAddressComponents(null);
+			place.setCountryCode(rs.getString("C.Country_code"));
+			place.setLocation(new Location(rs.getFloat("P.Place_latitude"), rs.getFloat("P.Place_longitude")));
+			place.setGoogleMapsUri(rs.getString("P.Place_gmap_uri"));
+			place.setDisplayName(new DisplayName(rs.getString("PN.Display_name"), rs.getString("PN.Display_name_language_code")));
+			place.setPrimaryTypeDisplayName(new DisplayName("T.Type_name_translated", "ko"));
+			place.setPrimaryType(rs.getString("T.Type_name"));
+
+			return place;
 		}
 	};
 }
