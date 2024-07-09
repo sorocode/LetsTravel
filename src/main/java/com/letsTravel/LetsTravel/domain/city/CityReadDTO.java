@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 public class CityReadDTO {
 
-	private int id;
+	private int citySeq;
 	private String countryCode;
 	private String cityName;
 	private String cityNameTranslated;
