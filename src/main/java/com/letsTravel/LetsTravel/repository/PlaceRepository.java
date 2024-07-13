@@ -3,7 +3,6 @@ package com.letsTravel.LetsTravel.repository;
 import java.util.List;
 
 import com.letsTravel.LetsTravel.domain.place.Place;
-import com.letsTravel.LetsTravel.domain.place.PlaceReadDTO;
 import com.letsTravel.LetsTravel.domain.place.PlaceWrapper;
 
 public interface PlaceRepository {
