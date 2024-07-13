@@ -47,62 +47,64 @@ public class PlaceService {
 			List<String> types = place.getTypes();
 
 			// 넘어온 Place가 국가이거나 도시인지 체크
-			boolean isWorthy = true;
 			if (types.contains("country") || types.contains("administrative_area_level_1") || types.contains("administrative_area_level_2")) {
-				isWorthy = false;
 				continue;
 			}
 
-			if (isWorthy) {
-				List<AddressComponent> addressComponentList = place.getAddressComponents();
-				List<String> cityList = new ArrayList<>();
-				for (int addrComponentIndex = 0; addrComponentIndex < addressComponentList.size(); addrComponentIndex++) {
-					String componentType = addressComponentList.get(addrComponentIndex).getTypes().get(0);
-					if (componentType.equals("country")) {
-						place.setCountryCode(addressComponentList.get(addrComponentIndex).getShortText());
-					}
-					if (componentType.equals("administrative_area_level_1") || componentType.equals("administrative_area_level_2")) {
-						cityList.add(addressComponentList.get(addrComponentIndex).getLongText());
-					}
+			List<AddressComponent> addressComponentList = place.getAddressComponents();
+			List<CityCreateDTO> cityList = new ArrayList<>();
+			for (int addrComponentIndex = 0; addrComponentIndex < addressComponentList.size(); addrComponentIndex++) {
+				String componentType = addressComponentList.get(addrComponentIndex).getTypes().get(0);
+				if (componentType.equals("country")) {
+					place.setCountryCode(addressComponentList.get(addrComponentIndex).getShortText());
 				}
-
-				// City 저장(없으면 저장, 있으면 패스)
-				for (int cityIndex = 0; cityIndex < cityList.size(); cityIndex++)
-					cityRepository.addCity(new CityCreateDTO(place.getCountryCode(), cityList.get(cityIndex)));
-
-				// Place 저장
-				int placeSeq = placeRepository.addPlace(place);
-				place.setPlaceSeq(placeSeq);
-
-				// Place의 City 저장
-				for (int cityIndex = 0; cityIndex < cityList.size(); cityIndex++)
-					cityRepository.addPlaceCity(new PlaceCityCreateDTO(placeSeq, new CityCreateDTO(place.getCountryCode(), cityList.get(cityIndex))));
-
-				// Place의 Type 저장
-				types.remove("establishment");
-				types.remove("point_of_interest");
-				if (types.size() == 0) {
-					types.add("etc");
-					place.setPrimaryType("etc");
-					place.setPrimaryTypeDisplayName(new DisplayName("기타", "ko"));
+				if (componentType.equals("administrative_area_level_1") || componentType.equals("administrative_area_level_2")) {
+					CityCreateDTO city = new CityCreateDTO();
+					city.setCityName(addressComponentList.get(addrComponentIndex).getLongText());
+					city.setCityNameLanguageCode(addressComponentList.get(addrComponentIndex).getLanguageCode());
+					city.setType(addressComponentList.get(addrComponentIndex).getTypes().get(0));
+					cityList.add(city);
 				}
-
-				for (int typeIndex = 0; typeIndex < types.size(); typeIndex++)
-					typeRepository.addPlaceType(new PlaceTypeCreateDTO(placeSeq, types.get(typeIndex)));
-
-				// Primary Type 정보가 없으면
-				if (place.getPrimaryType() == null) {
-					place.setPrimaryType(types.get(0));
-				}
-
-				// Place의 Primary Type 설정
-				if (place.getPrimaryTypeDisplayName().getLanguageCode() == "ko")
-					typeRepository.modifyPrimaryType(new PrimaryTypeUpdateDTO(placeSeq, place.getPrimaryType()));
-
-				// Type 번역
-				if (place.getPrimaryTypeDisplayName() != null)
-					typeRepository.modifyTypeNameTranslated(new PrimaryTypeDetailDTO(place.getPrimaryTypeDisplayName().getText(), place.getPrimaryType()));
 			}
+
+			// City 저장(없으면 저장, 있으면 패스)
+			for (int cityIndex = 0; cityIndex < cityList.size(); cityIndex++) {
+				cityList.get(cityIndex).setCountryCode(place.getCountryCode());
+				cityRepository.addCity(cityList.get(cityIndex));
+			}
+
+			// Place 저장
+			int placeSeq = placeRepository.addPlace(place);
+			place.setPlaceSeq(placeSeq);
+
+			// Place의 City 저장
+			for (int cityIndex = 0; cityIndex < cityList.size(); cityIndex++)
+				cityRepository.addPlaceCity(new PlaceCityCreateDTO(placeSeq, cityList.get(cityIndex)));
+
+			// Place의 Type 저장
+			types.remove("establishment");
+			types.remove("point_of_interest");
+			if (types.size() == 0) {
+				types.add("etc");
+				place.setPrimaryType("etc");
+				place.setPrimaryTypeDisplayName(new DisplayName("기타", "ko"));
+			}
+			for (int typeIndex = 0; typeIndex < types.size(); typeIndex++)
+				typeRepository.addPlaceType(new PlaceTypeCreateDTO(placeSeq, types.get(typeIndex)));
+
+			// Primary Type 정보가 없으면
+			if (place.getPrimaryType() == null) {
+				place.setPrimaryType(types.get(0));
+				place.setPrimaryTypeDisplayName(new DisplayName(types.get(0), "en"));
+			}
+
+			// Place의 Primary Type 설정
+			typeRepository.modifyPrimaryType(new PrimaryTypeUpdateDTO(placeSeq, place.getPrimaryType()));
+
+			// Type 번역
+			// Type 번역이 얼추 완료되면 지워도 됨
+			if (place.getPrimaryTypeDisplayName().getLanguageCode().equals("ko"))
+				typeRepository.modifyTypeNameTranslated(new PrimaryTypeDetailDTO(place.getPrimaryTypeDisplayName().getText(), place.getPrimaryType()));
 		}
 
 		return placeWrapper;
