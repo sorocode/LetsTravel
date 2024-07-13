@@ -28,7 +28,6 @@ public class PlaceController {
 		this.placeService = placeService;
 	}
 
-	// 뭘 반환하지
 	@PostMapping("/place")
 	public PlaceWrapper createPlace(@RequestBody PlaceWrapper placeWrapper) {
 		return placeService.createPlace(placeWrapper);
