@@ -96,7 +96,8 @@ public class PlaceService {
 				}
 
 				// Place의 Primary Type 설정
-				typeRepository.modifyPrimaryType(new PrimaryTypeUpdateDTO(placeSeq, place.getPrimaryType()));
+				if (place.getPrimaryTypeDisplayName().getLanguageCode() == "ko")
+					typeRepository.modifyPrimaryType(new PrimaryTypeUpdateDTO(placeSeq, place.getPrimaryType()));
 
 				// Type 번역
 				if (place.getPrimaryTypeDisplayName() != null)
