@@ -27,8 +27,7 @@ public class JdbcTemplateCityRepository implements CityRepository {
 	public List<CityReadDTO> findCities(String countryCode) {
 		return jdbcTemplate.query(
 				"SELECT C.City_seq AS id, IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name) AS cityName, IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name_translated) AS cityNameTranslated "
-						+ "FROM City C LEFT JOIN City_standard CS ON C.City_standard_seq = CS.City_standard_seq "
-						+ "WHERE C.Country_code = ?;",
+						+ "FROM City C LEFT JOIN City_standard CS ON C.City_standard_seq = CS.City_standard_seq " + "WHERE C.Country_code = ?;",
 				new RowMapper<CityReadDTO>() {
 					@Override
 					public CityReadDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -49,15 +48,14 @@ public class JdbcTemplateCityRepository implements CityRepository {
 		// 다만 새 레코드를 삽입할 때 SELECT 비용 + INSERT 비용까지 해서 가장 오래 걸림
 		// 2. IGNORE: 대부분의 경우 0.01s > 새 Record insert > 중복 Record ignore
 		// 결론: 이건 IGNORE 하는 게 맞는 듯? 아닌가
-		String sql = "INSERT INTO City(Country_code, City_name) SELECT ?, ? FROM DUAL WHERE NOT EXISTS (SELECT City_seq FROM City WHERE City_name = ?);";
-		return jdbcTemplate.update(sql, cityCreateDTO.getCountryCode(), cityCreateDTO.getCityName(),
-				cityCreateDTO.getCityName());
+		String sql = "INSERT INTO City(Country_code, Type_seq, City_name, City_name_language_code, Is_admin_checked) SELECT ?, (SELECT Type_seq FROM Type WHERE Type_name = ?), ?, ?, ? FROM DUAL WHERE NOT EXISTS (SELECT City_seq FROM City WHERE City_name = ?);";
+		return jdbcTemplate.update(sql, cityCreateDTO.getCountryCode(), cityCreateDTO.getType(), cityCreateDTO.getCityName(), cityCreateDTO.getCityNameLanguageCode(),
+				cityCreateDTO.getCityNameLanguageCode().equals("ko") ? 1 : 0, cityCreateDTO.getCityName());
 	}
 
 	@Override
 	public int addPlaceCity(PlaceCityCreateDTO placeCityCreateDTO) {
 		String sql = "INSERT IGNORE INTO Place_city VALUES(?, (SELECT City_seq FROM City WHERE Country_code = ? AND City_name = ?));";
-		return jdbcTemplate.update(sql, placeCityCreateDTO.getPlaceSeq(), placeCityCreateDTO.getCity().getCountryCode(),
-				placeCityCreateDTO.getCity().getCityName());
+		return jdbcTemplate.update(sql, placeCityCreateDTO.getPlaceSeq(), placeCityCreateDTO.getCity().getCountryCode(), placeCityCreateDTO.getCity().getCityName());
 	}
 }
