@@ -47,7 +47,7 @@ public class PlaceService {
 			List<String> types = place.getTypes();
 
 			// 넘어온 Place가 국가이거나 도시인지 체크
-			if (types.contains("country") || types.contains("administrative_area_level_1") || types.contains("administrative_area_level_2")) {
+			if (types.contains("country") || types.contains("administrative_area_level_1") || types.contains("administrative_area_level_2") || types.contains("colloquial_area")) {
 				continue;
 			}
 
