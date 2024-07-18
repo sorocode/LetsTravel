@@ -51,7 +51,7 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 
 	// 한 달 지난 거면 Places API 재호출해야 함
 	@Override
-	public PlaceWrapper findPlaces(String countryCode, List<Integer> city, List<Integer> type, String keyword) {
+	public PlaceWrapper findPlaces(String countryCode, List<Integer> city, List<Integer> type, String keyword, List<Integer> place) {
 		StringBuilder sql = new StringBuilder(
 				"SELECT P.Place_seq, P.Place_id, T.Type_name, T.Type_name_translated, PT.Is_Primary_type, P.Place_formatted_address, C.Country_code, IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name_translated) AS City_name, IF(C.City_standard_seq IS NULL, C.City_name_language_code, 'ko') AS City_name_language_code, C.Type_seq, P.Place_latitude, P.Place_longitude, P.Place_gmap_uri, PN.Display_name, PN.Display_name_language_code "
 						+ "FROM Place P, Place_name PN, Place_city PC, City C LEFT JOIN City_standard CS ON C.City_standard_seq = CS.City_standard_seq, Place_type PT, Type T "
@@ -60,7 +60,7 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 		List<String> sqlArgs = new ArrayList<>();
 
 		if (keyword != null) {
-			sql.append("AND PN.Display_name LIKE ? ");
+			sql.append("AND P.Place_seq IN (SELECT Place_seq FROM Place_name WHERE Display_name LIKE ?) ");
 			sqlArgs.add("%" + keyword + "%");
 		}
 
@@ -71,9 +71,39 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 
 		if (city != null && city.size() != 0) {
 			sql.append("AND PC.City_seq IN (");
+			sql.append("SELECT C2.City_seq ");
+			sql.append("FROM City C2 ");
+			sql.append("WHERE (C2.City_standard_seq IS NULL AND C2.City_seq IN (");
 			for (int cityIndex = 0; cityIndex < city.size(); cityIndex++) {
 				sql.append(city.get(cityIndex));
-				if (cityIndex <= city.size() - 1) {
+				if (cityIndex == city.size() - 1) {
+					sql.append(") ");
+					break;
+				}
+				sql.append(", ");
+
+			}
+			sql.append(") OR (C2.City_standard_seq IS NOT NULL AND C2.City_standard_seq IN (");
+			sql.append("SELECT C3.City_standard_seq ");
+			sql.append("FROM City C3 ");
+			sql.append("WHERE C3.City_seq IN (");
+			for (int cityIndex = 0; cityIndex < city.size(); cityIndex++) {
+				sql.append(city.get(cityIndex));
+				if (cityIndex == city.size() - 1) {
+					sql.append(") ");
+					break;
+				}
+				sql.append(", ");
+
+			}
+			sql.append("))) ");
+		}
+
+		if (type != null && type.size() != 0) {
+			sql.append("AND PT.Type_Seq IN (");
+			for (int typeIndex = 0; typeIndex < type.size(); typeIndex++) {
+				sql.append(type.get(typeIndex));
+				if (typeIndex == type.size() - 1) {
 					sql.append(") ");
 					break;
 				}
@@ -81,18 +111,20 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 			}
 		}
 
-		if (type != null && type.size() != 0) {
-			sql.append("AND PT.Type_Seq IN (");
-			for (int typeIndex = 0; typeIndex < type.size(); typeIndex++) {
-				sql.append(type.get(typeIndex));
-				if (typeIndex <= type.size() - 1) {
+		if (place != null && place.size() != 0) {
+			sql.append("AND P.Place_Seq IN (");
+			for (int placeIndex = 0; placeIndex < place.size(); placeIndex++) {
+				sql.append(place.get(placeIndex));
+				if (placeIndex == place.size() - 1) {
 					sql.append(") ");
 					break;
 				}
 				sql.append(", ");
 			}
 		}
+
 		sql.append(";");
+
 		return jdbcTemplate.query(sql.toString(), rs -> {
 			return extractData(rs);
 		}, sqlArgs.toArray());
@@ -103,11 +135,7 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 	public PlaceWrapper findPlaceByPlaceSeq(int placeSeq) {
 		String sql = "SELECT P.Place_seq, P.Place_id, T.Type_name, T.Type_name_translated, PT.Is_Primary_type, P.Place_formatted_address, C.Country_code, IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name_translated) AS City_name, IF(C.City_standard_seq IS NULL, C.City_name_language_code, 'ko') AS City_name_language_code, C.Type_seq, P.Place_latitude, P.Place_longitude, P.Place_gmap_uri, PN.Display_name, PN.Display_name_language_code "
 				+ "FROM Place P, Place_name PN, Place_city PC, City C LEFT JOIN City_standard CS ON C.City_standard_seq = CS.City_standard_seq, Place_type PT, Type T "
-				+ "WHERE P.Place_seq = PN.Place_seq "
-				+ "AND P.Place_seq = PC.Place_seq "
-				+ "AND C.City_seq = PC.City_seq "
-				+ "AND P.Place_seq = PT.Place_seq "
-				+ "AND T.Type_seq = PT.Type_seq "
+				+ "WHERE P.Place_seq = PN.Place_seq " + "AND P.Place_seq = PC.Place_seq " + "AND C.City_seq = PC.City_seq " + "AND P.Place_seq = PT.Place_seq " + "AND T.Type_seq = PT.Type_seq "
 				+ "AND P.Place_seq = ?";
 		return jdbcTemplate.query(sql, rs -> {
 			return extractData(rs);
@@ -123,7 +151,7 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 		DisplayName displayName1 = null;
 		DisplayName displayName2 = null;
 		DisplayName primaryTypeDisplayName = null;
-		String primaryType = null;
+
 		// 어떻게 개선하지
 		while (rs.next()) {
 			if (place == null) {
@@ -139,7 +167,6 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 					displayName1 = null;
 					displayName2 = null;
 					primaryTypeDisplayName = null;
-					primaryType = null;
 					placeList.add(place);
 					place = new Place(rs.getInt("P.Place_seq"), rs.getString("P.Place_id"), rs.getString("P.Place_formatted_address"), rs.getString("C.Country_code"),
 							new Location(rs.getFloat("P.Place_latitude"), rs.getFloat("P.Place_longitude")), rs.getString("P.Place_gmap_uri"));
