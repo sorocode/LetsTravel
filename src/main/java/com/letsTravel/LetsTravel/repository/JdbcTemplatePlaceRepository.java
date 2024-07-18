@@ -3,12 +3,17 @@ package com.letsTravel.LetsTravel.repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.sql.DataSource;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -16,10 +21,9 @@ import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 
 import com.letsTravel.LetsTravel.domain.Location;
+import com.letsTravel.LetsTravel.domain.place.AddressComponent;
 import com.letsTravel.LetsTravel.domain.place.DisplayName;
 import com.letsTravel.LetsTravel.domain.place.Place;
-import com.letsTravel.LetsTravel.domain.place.PlaceCreateDTO;
-import com.letsTravel.LetsTravel.domain.place.PlaceReadDTO;
 import com.letsTravel.LetsTravel.domain.place.PlaceWrapper;
 
 @Repository
@@ -46,15 +50,13 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 	}
 
 	// 한 달 지난 거면 Places API 재호출해야 함
-	// City가 2개면 어카지
-	// Primary type이 없으면 안 보내는 문제
 	@Override
 	public PlaceWrapper findPlaces(String countryCode, List<Integer> city, List<Integer> type, String keyword) {
 		StringBuilder sql = new StringBuilder(
-				"SELECT P.Place_seq, P.Place_id, PN.Display_name, PN.Display_name_language_code C.Country_code, IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name_translated) AS City_name, P.Place_formatted_address,  P.Place_latitude, P.Place_longitude, T.Type_name, T.Type_name_translated, P.Place_gmap_uri "
+				"SELECT P.Place_seq, P.Place_id, T.Type_name, T.Type_name_translated, PT.Is_Primary_type, P.Place_formatted_address, C.Country_code, IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name_translated) AS City_name, IF(C.City_standard_seq IS NULL, C.City_name_language_code, 'ko') AS City_name_language_code, C.Type_seq, P.Place_latitude, P.Place_longitude, P.Place_gmap_uri, PN.Display_name, PN.Display_name_language_code "
 						+ "FROM Place P, Place_name PN, Place_city PC, City C LEFT JOIN City_standard CS ON C.City_standard_seq = CS.City_standard_seq, Place_type PT, Type T "
 						+ "WHERE P.Place_seq = PN.Place_seq " + "AND P.Place_seq = PC.Place_seq " + "AND C.City_seq = PC.City_seq " + "AND P.Place_seq = PT.Place_seq "
-						+ "AND T.Type_seq = PT.Type_seq AND PT.Is_Primary_type = 1 ");
+						+ "AND T.Type_seq = PT.Type_seq ");
 		List<String> sqlArgs = new ArrayList<>();
 
 		if (keyword != null) {
@@ -91,41 +93,94 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 			}
 		}
 		sql.append(";");
-		return new PlaceWrapper(jdbcTemplate.query(sql.toString(), placeRowMapper, sqlArgs.toArray()));
+		return jdbcTemplate.query(sql.toString(), rs -> {
+			return extractData(rs);
+		}, sqlArgs.toArray());
 	}
 
 	// City가 2개면 어카지
 	@Override
 	public PlaceWrapper findPlaceByPlaceSeq(int placeSeq) {
-		String sql = "SELECT P.Place_seq, P.Place_id, PN.Display_name, PN.Display_name_language_code, C.Country_code, IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name_translated) AS City_name, P.Place_formatted_address,  P.Place_latitude, P.Place_longitude, T.Type_name_translated, P.Place_gmap_uri "
+		String sql = "SELECT P.Place_seq, P.Place_id, T.Type_name, T.Type_name_translated, PT.Is_Primary_type, P.Place_formatted_address, C.Country_code, IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name_translated) AS City_name, IF(C.City_standard_seq IS NULL, C.City_name_language_code, 'ko') AS City_name_language_code, C.Type_seq, P.Place_latitude, P.Place_longitude, P.Place_gmap_uri, PN.Display_name, PN.Display_name_language_code "
 				+ "FROM Place P, Place_name PN, Place_city PC, City C LEFT JOIN City_standard CS ON C.City_standard_seq = CS.City_standard_seq, Place_type PT, Type T "
-				+ "WHERE P.Place_seq = PN.Place_seq AND P.Place_seq = PC.Place_seq " + "AND C.City_seq = PC.City_seq AND P.Place_seq = PT.Place_seq "
-				+ "AND T.Type_seq = PT.Type_seq AND P.Place_seq = ?";
-		return new PlaceWrapper(jdbcTemplate.query(sql, placeRowMapper, placeSeq));
+				+ "WHERE P.Place_seq = PN.Place_seq "
+				+ "AND P.Place_seq = PC.Place_seq "
+				+ "AND C.City_seq = PC.City_seq "
+				+ "AND P.Place_seq = PT.Place_seq "
+				+ "AND T.Type_seq = PT.Type_seq "
+				+ "AND P.Place_seq = ?";
+		return jdbcTemplate.query(sql, rs -> {
+			return extractData(rs);
+		}, placeSeq);
 	}
 
-	// P.Place_seq, P.Place_id, PN.Display_name, C.Country_code,
-	// IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name_translated) AS
-	// City_name,
-	// P.Place_formatted_address, P.Place_latitude, P.Place_longitude,
-	// T.Type_name_translated, P.Place_gmap_uri
-	private final RowMapper<Place> placeRowMapper = new RowMapper<Place>() {
-		@Override
-		public Place mapRow(ResultSet rs, int rowNum) throws SQLException {
-			Place place = new Place();
-			place.setPlaceSeq(rs.getInt("P.Place_seq"));
-			place.setId(rs.getString("P.Place_id"));
-			place.setTypes(null);
-			place.setFormattedAddress(rs.getString("P.Place_formatted_address"));
-			place.setAddressComponents(null);
-			place.setCountryCode(rs.getString("C.Country_code"));
-			place.setLocation(new Location(rs.getFloat("P.Place_latitude"), rs.getFloat("P.Place_longitude")));
-			place.setGoogleMapsUri(rs.getString("P.Place_gmap_uri"));
-			place.setDisplayName(new DisplayName(rs.getString("PN.Display_name"), rs.getString("PN.Display_name_language_code")));
-			place.setPrimaryTypeDisplayName(new DisplayName("T.Type_name_translated", "ko"));
-			place.setPrimaryType(rs.getString("T.Type_name"));
+	private PlaceWrapper extractData(ResultSet rs) throws SQLException, DataAccessException {
+		PlaceWrapper placeWrapper = new PlaceWrapper();
+		List<Place> placeList = new ArrayList<Place>();
+		Set<String> typeSet = new LinkedHashSet<String>();
+		Set<AddressComponent> citySet = new LinkedHashSet<AddressComponent>();
+		Place place = null;
+		DisplayName displayName1 = null;
+		DisplayName displayName2 = null;
+		DisplayName primaryTypeDisplayName = null;
+		String primaryType = null;
+		// 어떻게 개선하지
+		while (rs.next()) {
+			if (place == null) {
+				place = new Place(rs.getInt("P.Place_seq"), rs.getString("P.Place_id"), rs.getString("P.Place_formatted_address"), rs.getString("C.Country_code"),
+						new Location(rs.getFloat("P.Place_latitude"), rs.getFloat("P.Place_longitude")), rs.getString("P.Place_gmap_uri"));
+			}
+			else {
+				if (place.getPlaceSeq() != rs.getInt("P.Place_seq")) {
+					place.setTypes(List.copyOf(typeSet));
+					typeSet.clear();
+					place.setAddressComponents(List.copyOf(citySet));
+					citySet.clear();
+					displayName1 = null;
+					displayName2 = null;
+					primaryTypeDisplayName = null;
+					primaryType = null;
+					placeList.add(place);
+					place = new Place(rs.getInt("P.Place_seq"), rs.getString("P.Place_id"), rs.getString("P.Place_formatted_address"), rs.getString("C.Country_code"),
+							new Location(rs.getFloat("P.Place_latitude"), rs.getFloat("P.Place_longitude")), rs.getString("P.Place_gmap_uri"));
+				}
+			}
 
-			return place;
+			typeSet.add(rs.getString("T.Type_name"));
+			AddressComponent addressComponent = new AddressComponent();
+			addressComponent.setLongText(rs.getString("City_name"));
+			addressComponent.setLanguageCode(rs.getString("City_name_language_code"));
+			addressComponent.setTypes(Arrays.asList(rs.getInt("C.Type_seq") == 1 ? "administrative_area_level_1" : "administrative_area_level_2"));
+			citySet.add(addressComponent);
+
+			// displayName1이 없을 때
+			if (displayName1 == null) {
+				displayName1 = new DisplayName(rs.getString("PN.Display_name"), rs.getString("PN.Display_name_language_code"));
+				place.setDisplayName(displayName1);
+			}
+			// displayName1이 있고 displayName2가 없을 때
+			else if (displayName2 == null && rs.getString("PN.Display_name").equals(displayName1.getText()) == false) {
+				displayName2 = new DisplayName(rs.getString("PN.Display_name"), rs.getString("PN.Display_name_language_code"));
+				place.setDisplayName2(displayName2);
+			}
+
+			// primaryType 설정
+			if (primaryTypeDisplayName == null && rs.getInt("PT.Is_primary_type") == 1) {
+				place.setPrimaryType(rs.getString("T.Type_name"));
+				primaryTypeDisplayName = new DisplayName();
+				// 미래에는 Type의 번역이 전부 되어 있겠지만 안 되어 있을 근미래를 위해
+				if (rs.getString("T.Type_name_translated") != null) {
+					primaryTypeDisplayName.setText(rs.getString("T.Type_name_translated"));
+					primaryTypeDisplayName.setLanguageCode("ko");
+					place.setPrimaryTypeDisplayName(primaryTypeDisplayName);
+				}
+			}
 		}
-	};
+
+		place.setTypes(List.copyOf(typeSet));
+		place.setAddressComponents(List.copyOf(citySet));
+		placeList.add(place);
+		placeWrapper.setPlaces(placeList);
+		return placeWrapper;
+	}
 }
