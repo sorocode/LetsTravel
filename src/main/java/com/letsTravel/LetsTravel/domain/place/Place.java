@@ -31,6 +31,6 @@ public class Place {
 		this.formattedAddress = formattedAddress;
 		this.countryCode = countryCode;
 		this.location = location;
-		this.googleMapsUri = this.googleMapsUri;
+		this.googleMapsUri = googleMapsUri;
 	}
 }
