@@ -9,6 +9,6 @@ public interface PlaceRepository {
 
 	// 뭘 반환할까
 	public int addPlace(Place place);
-	public PlaceWrapper findPlaces(String countryCode, List<Integer> city, List<Integer> type, String keyword);
+	public PlaceWrapper findPlaces(String countryCode, List<Integer> city, List<Integer> type, String keyword, List<Integer> place);
 	public PlaceWrapper findPlaceByPlaceSeq(int placeSeq);
 }

@@ -110,8 +110,8 @@ public class PlaceService {
 		return placeWrapper;
 	}
 
-	public PlaceWrapper readPlaces(String countryCode, List<Integer> city, List<Integer> type, String keyword) {
-		return placeRepository.findPlaces(countryCode, city, type, keyword);
+	public PlaceWrapper readPlaces(String countryCode, List<Integer> city, List<Integer> type, String keyword, List<Integer> place) {
+		return placeRepository.findPlaces(countryCode, city, type, keyword, place);
 	}
 
 	public PlaceWrapper readPlaceByPlaceSeq(int placeSeq) {

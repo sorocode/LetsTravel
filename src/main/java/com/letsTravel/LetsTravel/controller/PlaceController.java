@@ -37,8 +37,9 @@ public class PlaceController {
 	public PlaceWrapper readPlaces(@RequestParam(value = "country-code", required = false) String countryCode,
 			@RequestParam(value = "city", required = false) List<Integer> city,
 			@RequestParam(value = "type", required = false) List<Integer> type,
+			@RequestParam(value = "place", required = false) List<Integer> place,
 			@RequestParam(value = "query", required = false) String keyword) {
-		return placeService.readPlaces(countryCode, city, type, keyword);
+		return placeService.readPlaces(countryCode, city, type, keyword, place);
 	}
 
 	@GetMapping("/place/{place-seq}")
