@@ -32,7 +32,7 @@ public class JdbcTemplateCityRepository implements CityRepository {
 					@Override
 					public CityReadDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
 						CityReadDTO cityReadDTO = new CityReadDTO();
-						cityReadDTO.setCitySeq(rs.getInt("id"));
+						cityReadDTO.setCitySeq(rs.getInt("id"));  // 20240725수정
 						cityReadDTO.setCountryCode(countryCode);
 						cityReadDTO.setCityName(rs.getString("cityName"));
 						cityReadDTO.setCityNameTranslated(rs.getString("cityNameTranslated"));
@@ -40,7 +40,7 @@ public class JdbcTemplateCityRepository implements CityRepository {
 					}
 				}, countryCode);
 	}
-
+	
 	@Override
 	public int addCity(CityCreateDTO cityCreateDTO) {
 		// NOT EXISTS VS IGNORE, 개선해야겠지?
