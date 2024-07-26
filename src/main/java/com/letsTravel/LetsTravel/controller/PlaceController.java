@@ -37,13 +37,10 @@ public class PlaceController {
 	public PlaceWrapper readPlaces(@RequestParam(value = "country-code", required = false) String countryCode,
 			@RequestParam(value = "city", required = false) List<Integer> city,
 			@RequestParam(value = "type", required = false) List<Integer> type,
-			@RequestParam(value = "place", required = false) List<Integer> place,
-			@RequestParam(value = "query", required = false) String keyword) {
-		return placeService.readPlaces(countryCode, city, type, keyword, place);
-	}
-
-	@GetMapping("/place/{place-seq}")
-	public PlaceWrapper readPlaceByPlaceSeq(@PathVariable("place-seq") int placeSeq) {
-		return placeService.readPlaceByPlaceSeq(placeSeq);
+			@RequestParam(value = "query", required = false) String keyword,
+			@RequestParam(value = "page", required = false) Integer page,
+			@RequestParam(value = "size", required = false) Integer size,
+			@RequestParam(value = "sort", required = false) String sort) {
+		return placeService.readPlaces(countryCode, city, type, keyword, page, size, sort);
 	}
 }
