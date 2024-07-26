@@ -19,6 +19,8 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
 import com.letsTravel.LetsTravel.domain.Location;
 import com.letsTravel.LetsTravel.domain.place.AddressComponent;
@@ -50,26 +52,24 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 	}
 
 	// 한 달 지난 거면 Places API 재호출해야 함
+	// Paging을 위해 Place_seq만 반환하도록 변경 -- 2024.07.26(강봉수)
 	@Override
-	public PlaceWrapper findPlaces(String countryCode, List<Integer> city, List<Integer> type, String keyword, List<Integer> place) {
-		StringBuilder sql = new StringBuilder(
-				"SELECT P.Place_seq, P.Place_id, T.Type_name, T.Type_name_translated, PT.Is_Primary_type, P.Place_formatted_address, C.Country_code, IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name_translated) AS City_name, IF(C.City_standard_seq IS NULL, C.City_name_language_code, 'ko') AS City_name_language_code, C.Type_seq, P.Place_latitude, P.Place_longitude, P.Place_gmap_uri, PN.Display_name, PN.Display_name_language_code "
-						+ "FROM Place P, Place_name PN, Place_city PC, City C LEFT JOIN City_standard CS ON C.City_standard_seq = CS.City_standard_seq, Place_type PT, Type T "
-						+ "WHERE P.Place_seq = PN.Place_seq " + "AND P.Place_seq = PC.Place_seq " + "AND C.City_seq = PC.City_seq " + "AND P.Place_seq = PT.Place_seq "
-						+ "AND T.Type_seq = PT.Type_seq ");
+	public List<Integer> findPlaces(String countryCode, List<Integer> city, List<Integer> type, String keyword, Integer page, Integer size, String sort) {
+		StringBuilder sql = new StringBuilder("SELECT DISTINCT P.Place_seq " + "FROM Place P, Place_name PN, Place_city PC, Place_type PT, City C " + "WHERE P.Place_seq = PN.Place_seq "
+				+ "AND P.Place_seq = PC.Place_seq " + "AND C.City_seq = PC.City_seq " + "AND P.Place_seq = PT.Place_seq ");
 		List<String> sqlArgs = new ArrayList<>();
 
-		if (keyword != null) {
-			sql.append("AND P.Place_seq IN (SELECT Place_seq FROM Place_name WHERE Display_name LIKE ?) ");
+		if (!ObjectUtils.isEmpty(keyword)) {
+			sql.append("AND PN.Display_name LIKE ? ");
 			sqlArgs.add("%" + keyword + "%");
 		}
 
-		if (countryCode != null) {
+		if (!ObjectUtils.isEmpty(countryCode)) {
 			sql.append("AND C.Country_code = ? ");
 			sqlArgs.add(countryCode);
 		}
 
-		if (city != null && city.size() != 0) {
+		if (!CollectionUtils.isEmpty(city)) {
 			sql.append("AND PC.City_seq IN (");
 			sql.append("SELECT C2.City_seq ");
 			sql.append("FROM City C2 ");
@@ -99,7 +99,7 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 			sql.append("))) ");
 		}
 
-		if (type != null && type.size() != 0) {
+		if (!CollectionUtils.isEmpty(type)) {
 			sql.append("AND PT.Type_Seq IN (");
 			for (int typeIndex = 0; typeIndex < type.size(); typeIndex++) {
 				sql.append(type.get(typeIndex));
@@ -111,35 +111,56 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 			}
 		}
 
-		if (place != null && place.size() != 0) {
-			sql.append("AND P.Place_Seq IN (");
-			for (int placeIndex = 0; placeIndex < place.size(); placeIndex++) {
-				sql.append(place.get(placeIndex));
-				if (placeIndex == place.size() - 1) {
-					sql.append(") ");
-					break;
-				}
-				sql.append(", ");
+		// place 파라미터 삭제 -- 2024.07.26(강봉수)
+		/*
+		 * if (place != null && place.size() != 0) { sql.append("AND P.Place_Seq IN (");
+		 * for (int placeIndex = 0; placeIndex < place.size(); placeIndex++) {
+		 * sql.append(place.get(placeIndex)); if (placeIndex == place.size() - 1) {
+		 * sql.append(") "); break; } sql.append(", "); } }
+		 */
+
+		if (size != null) {
+			sql.append("LIMIT " + size);
+			if (page != null) {
+				sql.append(" OFFSET " + size * (page - 1));
 			}
+		}
+		else {
+			sql.append("LIMIT 10");
 		}
 
 		sql.append(";");
 
-		return jdbcTemplate.query(sql.toString(), rs -> {
-			return extractData(rs);
+		return jdbcTemplate.query(sql.toString(), new RowMapper<Integer>() {
+			@Override
+			public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+				return rs.getInt("P.Place_seq");
+			}
 		}, sqlArgs.toArray());
 	}
 
-	// City가 2개면 어카지
 	@Override
-	public PlaceWrapper findPlaceByPlaceSeq(int placeSeq) {
-		String sql = "SELECT P.Place_seq, P.Place_id, T.Type_name, T.Type_name_translated, PT.Is_Primary_type, P.Place_formatted_address, C.Country_code, IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name_translated) AS City_name, IF(C.City_standard_seq IS NULL, C.City_name_language_code, 'ko') AS City_name_language_code, C.Type_seq, P.Place_latitude, P.Place_longitude, P.Place_gmap_uri, PN.Display_name, PN.Display_name_language_code "
+	public PlaceWrapper findPlaceByPlaceSeq(List<Integer> placeSeq) {
+		if (CollectionUtils.isEmpty(placeSeq)) {
+			return new PlaceWrapper(new ArrayList<Place>());
+		}
+
+		StringBuilder sql = new StringBuilder("SELECT P.Place_seq, P.Place_id, T.Type_name, T.Type_name_translated, PT.Is_Primary_type, P.Place_formatted_address, C.Country_code, IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name_translated) AS City_name, IF(C.City_standard_seq IS NULL, C.City_name_language_code, 'ko') AS City_name_language_code, C.Type_seq, P.Place_latitude, P.Place_longitude, P.Place_gmap_uri, PN.Display_name, PN.Display_name_language_code "
 				+ "FROM Place P, Place_name PN, Place_city PC, City C LEFT JOIN City_standard CS ON C.City_standard_seq = CS.City_standard_seq, Place_type PT, Type T "
 				+ "WHERE P.Place_seq = PN.Place_seq " + "AND P.Place_seq = PC.Place_seq " + "AND C.City_seq = PC.City_seq " + "AND P.Place_seq = PT.Place_seq " + "AND T.Type_seq = PT.Type_seq "
-				+ "AND P.Place_seq = ?";
-		return jdbcTemplate.query(sql, rs -> {
+				+ "AND P.Place_seq IN (");
+		for (int placeIndex = 0; placeIndex < placeSeq.size(); placeIndex++) {
+			sql.append(placeSeq.get(placeIndex));
+			if (placeIndex == placeSeq.size() - 1) {
+				sql.append(") ");
+				break;
+			}
+			sql.append(", ");
+		}
+		
+		return jdbcTemplate.query(sql.toString(), rs -> {
 			return extractData(rs);
-		}, placeSeq);
+		});
 	}
 
 	private PlaceWrapper extractData(ResultSet rs) throws SQLException, DataAccessException {
