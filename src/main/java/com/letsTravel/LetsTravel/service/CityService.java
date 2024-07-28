@@ -27,4 +27,8 @@ public class CityService {
 		return cityRepository.addCity(cityCreateDTO);
 	}
 
+	public List<CityReadDTO> findCitiesByKeyword(String keyword) {
+		return cityRepository.findCitiesByKeyword(keyword);
+	}
+
 }
