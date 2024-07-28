@@ -1,11 +1,10 @@
 package com.letsTravel.LetsTravel.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.letsTravel.LetsTravel.domain.city.CityListWrapper;
@@ -25,6 +24,12 @@ public class CityController {
 	@GetMapping("/city/{country-code}")
 	public CityListWrapper readCityByCountryCode(@PathVariable("country-code") String countryCode) {
 		CityListWrapper cityListWrapper = new CityListWrapper(cityService.findCities(countryCode));
+		return cityListWrapper;
+	}
+
+	@GetMapping("/city")
+	public CityListWrapper readCityByKeyWord(@RequestParam(value = "keyword") String keyword) {
+		CityListWrapper cityListWrapper = new CityListWrapper(cityService.findCitiesByKeyword(keyword));
 		return cityListWrapper;
 	}
 }
