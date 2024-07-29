@@ -1,18 +1,12 @@
 package com.letsTravel.LetsTravel.domain.member;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
 public class LoginDTO {
 
-<<<<<<< HEAD
-	private String id;
-	private String pw;
-=======
 	private String loginId;
 	private String password;
 	private String passwordCheck;
@@ -33,5 +27,4 @@ public class LoginDTO {
 				.build();
 	}
 
->>>>>>> ff333ba (일단 커밋)
 }
