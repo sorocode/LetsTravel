@@ -7,7 +7,7 @@ build/
 *.yml
 LetsTravelDevDB.sql
 LetsTravelLocalDB.sql
-
+.env
 ### STS ###
 .apt_generated
 .classpath
