@@ -24,7 +24,7 @@ public class JdbcTemplateMemberRepository implements MemberRepository {
 	@Override
 	public Optional<MemberBasicInfoReadDTO> findMember(LoginDTO loginDTO) {
 		String sql = "SELECT Mem_seq, Nickname FROM Member WHERE Email = ? AND Password = ?;";
-		List<MemberBasicInfoReadDTO> result = jdbcTemplate.query(sql, memberBasicInfoReadDTORowMapper(), loginDTO.getId(), loginDTO.getPw());
+		List<MemberBasicInfoReadDTO> result = jdbcTemplate.query(sql, memberBasicInfoReadDTORowMapper(), loginDTO.getLoginId(), loginDTO.getPassword());
 		return result.stream().findAny();
 	}
 
