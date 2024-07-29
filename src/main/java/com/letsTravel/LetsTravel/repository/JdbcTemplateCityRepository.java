@@ -29,38 +29,22 @@ public class JdbcTemplateCityRepository implements CityRepository {
 	@Override
 	public List<CityReadDTO> findCities(String countryCode) {
 		return jdbcTemplate.query(
-				"SELECT C.City_seq, IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name) AS cityName, IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name_translated) AS cityNameTranslated "
-						+ "FROM City C LEFT JOIN City_standard CS ON C.City_standard_seq = CS.City_standard_seq " + "WHERE C.Country_code = ? "+"ORDER BY cityName, cityNameTranslated;",
-				new ResultSetExtractor<List<CityReadDTO>>() {
-
-					@Override
-					public List<CityReadDTO> extractData(ResultSet rs) throws SQLException, DataAccessException {
-						List<CityReadDTO> cityList = new ArrayList<CityReadDTO>();
-						CityReadDTO city = null;
-
-						while (rs.next()) {
-							if (city == null) {
-								city = new CityReadDTO(new ArrayList<Integer>(Arrays.asList(rs.getInt("C.City_seq"))), countryCode, rs.getString("cityName"), rs.getString("cityNameTranslated"));
-							}
-							else {
-								// 이름이 중복됨 -> 같은 도시임
-								if (city.getCityName().equals(rs.getString("cityName")) && city.getCityNameTranslated().equals(rs.getString("cityNameTranslated"))) {
-									city.getCitySeq().add(rs.getInt("C.City_seq"));
-								}
-								else {
-									cityList.add(city);
-									city = new CityReadDTO(new ArrayList<Integer>(Arrays.asList(rs.getInt("C.City_seq"))), countryCode, rs.getString("cityName"), rs.getString("cityNameTranslated"));
-								}
-							}
-						}
-						// 혹시나 마지막 레코드를 안 넣고 끝나는 거 방지
-						if (city != null) {
-							cityList.add(city);
-						}
-
-						return cityList;
-					}
+				"SELECT C.City_seq, IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name) AS cityName, IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name_translated) AS cityNameTranslated, C.Country_code "
+						+ "FROM City C LEFT JOIN City_standard CS ON C.City_standard_seq = CS.City_standard_seq " + "WHERE C.Country_code = ? " + "ORDER BY cityName, cityNameTranslated;",
+				rs -> {
+					return extractData(rs);
 				}, countryCode);
+	}
+
+	@Override
+	public List<CityReadDTO> findCitiesByKeyword(String keyword) {
+		return jdbcTemplate.query(
+				"SELECT C.City_seq, IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name) AS cityName, IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name_translated) AS cityNameTranslated, C.Country_code "
+						+ "FROM City C LEFT JOIN City_standard CS ON C.City_standard_seq = CS.City_standard_seq "
+						+ "WHERE (C.City_standard_seq IS NULL AND C.City_name LIKE ?) OR (C.City_standard_seq IS NOT NULL AND C.City_standard_seq IN (SELECT C3.City_standard_seq FROM City C3 WHERE C3.City_name LIKE ?));",
+				rs -> {
+					return extractData(rs);
+				}, "%" + keyword + "%", "%" + keyword + "%");
 	}
 
 	@Override
@@ -79,5 +63,32 @@ public class JdbcTemplateCityRepository implements CityRepository {
 	public int addPlaceCity(PlaceCityCreateDTO placeCityCreateDTO) {
 		String sql = "INSERT IGNORE INTO Place_city VALUES(?, (SELECT City_seq FROM City WHERE Country_code = ? AND City_name = ?));";
 		return jdbcTemplate.update(sql, placeCityCreateDTO.getPlaceSeq(), placeCityCreateDTO.getCity().getCountryCode(), placeCityCreateDTO.getCity().getCityName());
+	}
+
+	private List<CityReadDTO> extractData(ResultSet rs) throws SQLException, DataAccessException {
+		List<CityReadDTO> cityList = new ArrayList<CityReadDTO>();
+		CityReadDTO city = null;
+
+		while (rs.next()) {
+			if (city == null) {
+				city = new CityReadDTO(new ArrayList<Integer>(Arrays.asList(rs.getInt("C.City_seq"))), rs.getString("C.Country_code"), rs.getString("cityName"), rs.getString("cityNameTranslated"));
+			}
+			else {
+				// 이름이 중복됨 -> 같은 도시임
+				if (city.getCityName().equals(rs.getString("cityName")) && city.getCityNameTranslated().equals(rs.getString("cityNameTranslated"))) {
+					city.getCitySeq().add(rs.getInt("C.City_seq"));
+				}
+				else {
+					cityList.add(city);
+					city = new CityReadDTO(new ArrayList<Integer>(Arrays.asList(rs.getInt("C.City_seq"))), rs.getString("C.Country_code"), rs.getString("cityName"), rs.getString("cityNameTranslated"));
+				}
+			}
+		}
+		// 혹시나 마지막 레코드를 안 넣고 끝나는 거 방지
+		if (city != null) {
+			cityList.add(city);
+		}
+
+		return cityList;
 	}
 }
