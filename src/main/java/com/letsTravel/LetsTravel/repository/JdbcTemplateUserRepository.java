@@ -40,7 +40,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
     private RowMapper<User> userRowMapper(){
         return (rs, rowNum) -> {
             User user = new User();
-            user.setId(rs.getLong("id"));
+            user.setId(rs.getLong("user_id"));
             user.setLoginId(rs.getString("login_id"));
             user.setPassword(rs.getString("password"));
             user.setRole(UserRole.valueOf(rs.getString("role")));
