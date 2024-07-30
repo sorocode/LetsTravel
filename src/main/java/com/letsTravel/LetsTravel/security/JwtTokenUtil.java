@@ -30,8 +30,8 @@ public class JwtTokenUtil {
         return expiredDate.before(new Date());
     }
 
-    private static Claims extractClaims(String token, String secretkey) {
-        return Jwts.parser().setSigningKey(secretkey).parseClaimsJwts(token).getBody();
+    private static Claims extractClaims(String token, String secretKey) {
+        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
     }
 
 }
