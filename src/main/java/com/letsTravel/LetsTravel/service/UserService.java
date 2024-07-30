@@ -18,8 +18,6 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    private final BCryptPasswordEncoder encoder;
-
     public boolean checkLoginId(String loginId) {
         return userRepository.existsByLoginId(loginId);
     }
@@ -28,9 +26,9 @@ public class UserService {
         userRepository.save(req.toUser());
     }
     // jdbcTemplate 구현하기
-    public void join2(LoginDTO req) {
+    /*public void join2(LoginDTO req) {
         userRepository.save(req.toUser(encoder.encode(req.getPassword())));
-    }
+    }*/
 
     public User login(LoginDTO req) {
         Optional<User> optionalUser = userRepository.findByLoginId(req.getLoginId());
