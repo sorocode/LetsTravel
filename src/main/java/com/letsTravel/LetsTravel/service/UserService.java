@@ -25,6 +25,7 @@ public class UserService {
     public void join(LoginDTO req) {
         userRepository.save(req.toUser());
     }
+    public void join2(LoginDTO req) { userRepository.save(req.toAdmin()); }
     // jdbcTemplate 구현하기
     /*public void join2(LoginDTO req) {
         userRepository.save(req.toUser(encoder.encode(req.getPassword())));

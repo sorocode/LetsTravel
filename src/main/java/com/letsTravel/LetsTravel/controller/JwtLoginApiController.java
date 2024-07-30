@@ -31,6 +31,20 @@ public class JwtLoginApiController {
 
     }
 
+    @PostMapping("/join/admin")
+    public String join2(@RequestBody LoginDTO loginDTO) {
+        if (userService.checkLoginId(loginDTO.getLoginId())) {
+            return "로그인 아이디 중복";
+        }
+
+        if (!loginDTO.getPassword().equals(loginDTO.getPasswordCheck())) {
+            return "비밀번호 불일치";
+        }
+
+        userService.join2(loginDTO);
+        return "회원가입 성공";
+    }
+
     @PostMapping("/login")
     public String login(@RequestBody LoginDTO loginDTO) {
 
