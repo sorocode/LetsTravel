@@ -1,5 +1,6 @@
 package com.letsTravel.LetsTravel.repository;
 
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ import com.letsTravel.LetsTravel.domain.Location;
 import com.letsTravel.LetsTravel.domain.place.AddressComponent;
 import com.letsTravel.LetsTravel.domain.place.DisplayName;
 import com.letsTravel.LetsTravel.domain.place.Place;
+import com.letsTravel.LetsTravel.domain.place.PlaceProcReturnDTO;
 import com.letsTravel.LetsTravel.domain.place.PlaceWrapper;
 
 @Repository
@@ -41,14 +43,19 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 	}
 
 	@Override
-	public int addPlace(Place place) {
+	public PlaceProcReturnDTO addPlace(Place place) {
 		// 이건 ON UPDATE DUPLICATE KEY가 맞음
 		SqlParameterSource in = new MapSqlParameterSource().addValue("in_id", place.getId()).addValue("in_name", place.getDisplayName().getText())
 				.addValue("in_name_language_code", place.getDisplayName().getLanguageCode()).addValue("in_formatted_address", place.getFormattedAddress())
 				.addValue("in_latitude", place.getLocation().getLatitude()).addValue("in_longitude", place.getLocation().getLongitude()).addValue("in_gmap_uri", place.getGoogleMapsUri());
 
 		Map out = simpleJdbcCall.execute(in);
-		return (int) out.get("out_place_seq");
+
+		PlaceProcReturnDTO placeProcReturnDTO = new PlaceProcReturnDTO();
+		placeProcReturnDTO.setPlaceSeq((int) out.get("out_place_seq"));
+		placeProcReturnDTO.setExisted((boolean) out.get("out_is_existed"));
+		placeProcReturnDTO.setPlaceInsertDate((Date) out.get("out_insert_date"));
+		return placeProcReturnDTO;
 	}
 
 	// 한 달 지난 거면 Places API 재호출해야 함
@@ -145,10 +152,11 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 			return new PlaceWrapper(new ArrayList<Place>());
 		}
 
-		StringBuilder sql = new StringBuilder("SELECT P.Place_seq, P.Place_id, T.Type_name, T.Type_name_translated, PT.Is_Primary_type, P.Place_formatted_address, C.Country_code, IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name_translated) AS City_name, IF(C.City_standard_seq IS NULL, C.City_name_language_code, 'ko') AS City_name_language_code, C.Type_seq, P.Place_latitude, P.Place_longitude, P.Place_gmap_uri, PN.Display_name, PN.Display_name_language_code "
-				+ "FROM Place P, Place_name PN, Place_city PC, City C LEFT JOIN City_standard CS ON C.City_standard_seq = CS.City_standard_seq, Place_type PT, Type T "
-				+ "WHERE P.Place_seq = PN.Place_seq " + "AND P.Place_seq = PC.Place_seq " + "AND C.City_seq = PC.City_seq " + "AND P.Place_seq = PT.Place_seq " + "AND T.Type_seq = PT.Type_seq "
-				+ "AND P.Place_seq IN (");
+		StringBuilder sql = new StringBuilder(
+				"SELECT P.Place_seq, P.Place_id, T.Type_name, T.Type_name_translated, PT.Is_Primary_type, P.Place_formatted_address, C.Country_code, IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name_translated) AS City_name, IF(C.City_standard_seq IS NULL, C.City_name_language_code, 'ko') AS City_name_language_code, C.Type_seq, P.Place_latitude, P.Place_longitude, P.Place_gmap_uri, PN.Display_name, PN.Display_name_language_code "
+						+ "FROM Place P, Place_name PN, Place_city PC, City C LEFT JOIN City_standard CS ON C.City_standard_seq = CS.City_standard_seq, Place_type PT, Type T "
+						+ "WHERE P.Place_seq = PN.Place_seq " + "AND P.Place_seq = PC.Place_seq " + "AND C.City_seq = PC.City_seq " + "AND P.Place_seq = PT.Place_seq "
+						+ "AND T.Type_seq = PT.Type_seq " + "AND P.Place_seq IN (");
 		for (int placeIndex = 0; placeIndex < placeSeq.size(); placeIndex++) {
 			sql.append(placeSeq.get(placeIndex));
 			if (placeIndex == placeSeq.size() - 1) {
@@ -157,7 +165,7 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 			}
 			sql.append(", ");
 		}
-		
+
 		return jdbcTemplate.query(sql.toString(), rs -> {
 			return extractData(rs);
 		});
