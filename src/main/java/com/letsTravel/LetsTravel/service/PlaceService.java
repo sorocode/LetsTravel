@@ -42,10 +42,8 @@ public class PlaceService {
 	@Transactional
 	public PlaceWrapper createPlace(PlaceWrapper placeWrapper) {
 
-		StopWatch stopWatch = new StopWatch();
 		// Place 개수만큼 place 등록
 		for (int placeIndex = 0; placeIndex < placeWrapper.getPlaces().size(); placeIndex++) {
-			stopWatch.start("place " + placeIndex);
 			Place place = placeWrapper.getPlaces().get(placeIndex);
 
 			List<String> types = place.getTypes();
@@ -114,10 +112,8 @@ public class PlaceService {
 				if (place.getPrimaryTypeDisplayName().getLanguageCode().equals("ko"))
 					typeRepository.modifyTypeNameTranslated(new PrimaryTypeDetailDTO(place.getPrimaryTypeDisplayName().getText(), place.getPrimaryType()));
 			}
-			stopWatch.stop();
 		}
 
-		System.out.println(stopWatch.prettyPrint());
 		return placeWrapper;
 	}
 
