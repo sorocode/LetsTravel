@@ -65,6 +65,16 @@ public class JdbcTemplateCityRepository implements CityRepository {
 		return jdbcTemplate.update(sql, placeCityCreateDTO.getPlaceSeq(), placeCityCreateDTO.getCity().getCountryCode(), placeCityCreateDTO.getCity().getCityName());
 	}
 
+	@Override
+	public List<CityReadDTO> findPlanCitiesByPlanSeq(int planSeq) {
+		String sql = "SELECT C.City_seq, C.Country_code, IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name) AS cityName, IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name_translated) AS cityNameTranslated "
+				+ "FROM Plan P, City C LEFT JOIN City_standard CS ON C.City_standard_seq = CS.City_standard_seq, Plan_city PC "
+				+ "WHERE P.Plan_seq = PC.Plan_seq AND PC.City_seq = C.City_seq AND P.Plan_seq = ?;";
+		return jdbcTemplate.query(sql, rs -> {
+			return extractData(rs);
+		}, planSeq);
+	}
+
 	private List<CityReadDTO> extractData(ResultSet rs) throws SQLException, DataAccessException {
 		List<CityReadDTO> cityList = new ArrayList<CityReadDTO>();
 		CityReadDTO city = null;
@@ -80,7 +90,8 @@ public class JdbcTemplateCityRepository implements CityRepository {
 				}
 				else {
 					cityList.add(city);
-					city = new CityReadDTO(new ArrayList<Integer>(Arrays.asList(rs.getInt("C.City_seq"))), rs.getString("C.Country_code"), rs.getString("cityName"), rs.getString("cityNameTranslated"));
+					city = new CityReadDTO(new ArrayList<Integer>(Arrays.asList(rs.getInt("C.City_seq"))), rs.getString("C.Country_code"), rs.getString("cityName"),
+							rs.getString("cityNameTranslated"));
 				}
 			}
 		}

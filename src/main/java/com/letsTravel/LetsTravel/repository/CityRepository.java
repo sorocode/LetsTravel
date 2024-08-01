@@ -12,4 +12,5 @@ public interface CityRepository {
 	public int addCity(CityCreateDTO cityCreateDTO);
 	public int addPlaceCity(PlaceCityCreateDTO placeCityCreateDTO);
 	public List<CityReadDTO> findCitiesByKeyword(String keyword);
+	public List<CityReadDTO> findPlanCitiesByPlanSeq(int planSeq);
 }
