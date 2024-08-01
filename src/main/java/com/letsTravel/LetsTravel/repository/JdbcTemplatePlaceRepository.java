@@ -14,7 +14,6 @@ import javax.sql.DataSource;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -28,7 +27,6 @@ import com.letsTravel.LetsTravel.domain.place.AddressComponent;
 import com.letsTravel.LetsTravel.domain.place.DisplayName;
 import com.letsTravel.LetsTravel.domain.place.Place;
 import com.letsTravel.LetsTravel.domain.place.PlaceProcReturnDTO;
-import com.letsTravel.LetsTravel.domain.place.PlaceWrapper;
 
 @Repository
 public class JdbcTemplatePlaceRepository implements PlaceRepository {
@@ -147,9 +145,9 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 	}
 
 	@Override
-	public PlaceWrapper findPlaceByPlaceSeq(List<Integer> placeSeq) {
+	public List<Place> findPlaceByPlaceSeq(List<Integer> placeSeq) {
 		if (CollectionUtils.isEmpty(placeSeq)) {
-			return new PlaceWrapper(new ArrayList<Place>());
+			return new ArrayList<Place>();
 		}
 
 		StringBuilder sql = new StringBuilder(
@@ -171,8 +169,7 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 		});
 	}
 
-	private PlaceWrapper extractData(ResultSet rs) throws SQLException, DataAccessException {
-		PlaceWrapper placeWrapper = new PlaceWrapper();
+	private List<Place> extractData(ResultSet rs) throws SQLException, DataAccessException {
 		List<Place> placeList = new ArrayList<Place>();
 		Set<String> typeSet = new LinkedHashSet<String>();
 		Set<AddressComponent> citySet = new LinkedHashSet<AddressComponent>();
@@ -236,7 +233,6 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 		place.setTypes(List.copyOf(typeSet));
 		place.setAddressComponents(List.copyOf(citySet));
 		placeList.add(place);
-		placeWrapper.setPlaces(placeList);
-		return placeWrapper;
+		return placeList;
 	}
 }

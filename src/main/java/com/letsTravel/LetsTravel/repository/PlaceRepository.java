@@ -11,5 +11,5 @@ public interface PlaceRepository {
 	// 뭘 반환할까
 	public PlaceProcReturnDTO addPlace(Place place);
 	public List<Integer> findPlaces(String countryCode, List<Integer> city, List<Integer> type, String keyword, Integer page, Integer size, String sort);
-	public PlaceWrapper findPlaceByPlaceSeq(List<Integer> placeSeq);
+	public List<Place> findPlaceByPlaceSeq(List<Integer> placeSeq);
 }

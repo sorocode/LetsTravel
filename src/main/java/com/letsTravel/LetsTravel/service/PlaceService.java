@@ -116,10 +116,10 @@ public class PlaceService {
 	}
 
 	public PlaceWrapper readPlaces(String countryCode, List<Integer> city, List<Integer> type, String keyword, Integer page, Integer size, String sort) {
-		return placeRepository.findPlaceByPlaceSeq(placeRepository.findPlaces(countryCode, city, type, keyword, page, size, sort));
+		return new PlaceWrapper(placeRepository.findPlaceByPlaceSeq(placeRepository.findPlaces(countryCode, city, type, keyword, page, size, sort)));
 	}
 
 	public PlaceWrapper readPlaceByPlaceSeq(List<Integer> placeSeq) {
-		return placeRepository.findPlaceByPlaceSeq(placeSeq);
+		return new PlaceWrapper(placeRepository.findPlaceByPlaceSeq(placeSeq));
 	}
 }
