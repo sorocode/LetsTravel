@@ -1,6 +1,9 @@
 package com.letsTravel.LetsTravel.domain.schedule;
 
+import java.sql.Time;
 import java.util.List;
+
+import com.letsTravel.LetsTravel.domain.place.Place;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,8 +14,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ScheduleReadDTO {
-
+public class ScheduleInfoDTO {
+	
+	private int scheduleSeq;
+	private Place place;
 	private int dateSeq;
-	private List<ScheduleDetailDTO> scheduleDetail;
+	private int visitSeq;
+	private Time visitTime;
 }
