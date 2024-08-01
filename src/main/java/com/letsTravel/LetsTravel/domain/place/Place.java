@@ -33,4 +33,8 @@ public class Place {
 		this.location = location;
 		this.googleMapsUri = googleMapsUri;
 	}
+	
+	public Place(int placeSeq) {
+		this.placeSeq = placeSeq;
+	}
 }
