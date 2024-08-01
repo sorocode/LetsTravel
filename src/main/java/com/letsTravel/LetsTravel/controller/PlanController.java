@@ -10,10 +10,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.letsTravel.LetsTravel.domain.plan.PlanBasicInfoReadDTO;
-import com.letsTravel.LetsTravel.domain.plan.PlanDetailReadDTO;
-import com.letsTravel.LetsTravel.domain.plan.PlanSeqReturnDTO;
-import com.letsTravel.LetsTravel.domain.plan.TravelPlan;
+import com.letsTravel.LetsTravel.domain.plan.PlanInfoDTO;
+import com.letsTravel.LetsTravel.domain.plan.PlanDetailDTO;
+import com.letsTravel.LetsTravel.domain.plan.PlanWrapper;
 import com.letsTravel.LetsTravel.service.PlanService;
 
 @RestController
@@ -28,17 +27,19 @@ public class PlanController {
 	}
 
 	@GetMapping("/member/{member-seq}/plan")
-	public List<PlanBasicInfoReadDTO> readPlanByMemberSeq(@PathVariable("member-seq")int memberSeq){
+	public List<PlanInfoDTO> readPlanByMemberSeq(@PathVariable("member-seq") int memberSeq) {
 		return planService.readPlanByMemberSeq(memberSeq);
 	}
-	
+
 	@GetMapping("/plan/{plan-seq}")
-	public PlanDetailReadDTO readPlanByPlanSeq(@PathVariable("plan-seq")int planSeq) {
-		return planService.readPlanByPlanSeq(planSeq);
+	public PlanWrapper readPlanByPlanSeq(@PathVariable("plan-seq") int planSeq) {
+		PlanDetailDTO planDetailDTO = planService.readPlanByPlanSeq(planSeq);
+		return new PlanWrapper(planDetailDTO);
 	}
-	
+
 	@PostMapping("/plan")
-	public PlanSeqReturnDTO createPlan(@RequestBody TravelPlan travelPlan) {
-		return planService.createPlan(travelPlan);
+	public PlanWrapper createPlan(@RequestBody PlanWrapper planWrapper) {
+		PlanDetailDTO planDetailDTO = planService.createPlan(planWrapper.getPlan());
+		return new PlanWrapper(planDetailDTO);
 	}
 }
