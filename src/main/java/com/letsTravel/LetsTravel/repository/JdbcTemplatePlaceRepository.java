@@ -145,8 +145,8 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 	}
 
 	@Override
-	public List<Place> findPlaceByPlaceSeq(List<Integer> placeSeq) {
-		if (CollectionUtils.isEmpty(placeSeq)) {
+	public List<Place> findPlaceByPlaceSeq(List<Integer> placeSeqList) {
+		if (CollectionUtils.isEmpty(placeSeqList)) {
 			return new ArrayList<Place>();
 		}
 
@@ -155,9 +155,34 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 						+ "FROM Place P, Place_name PN, Place_city PC, City C LEFT JOIN City_standard CS ON C.City_standard_seq = CS.City_standard_seq, Place_type PT, Type T "
 						+ "WHERE P.Place_seq = PN.Place_seq " + "AND P.Place_seq = PC.Place_seq " + "AND C.City_seq = PC.City_seq " + "AND P.Place_seq = PT.Place_seq "
 						+ "AND T.Type_seq = PT.Type_seq " + "AND P.Place_seq IN (");
-		for (int placeIndex = 0; placeIndex < placeSeq.size(); placeIndex++) {
-			sql.append(placeSeq.get(placeIndex));
-			if (placeIndex == placeSeq.size() - 1) {
+		for (int placeIndex = 0; placeIndex < placeSeqList.size(); placeIndex++) {
+			sql.append(placeSeqList.get(placeIndex));
+			if (placeIndex == placeSeqList.size() - 1) {
+				sql.append(") ");
+				break;
+			}
+			sql.append(", ");
+		}
+
+		return jdbcTemplate.query(sql.toString(), rs -> {
+			return extractData(rs);
+		});
+	}
+	
+	@Override
+	public List<Place> findPlaceByPlaceId(List<String> placeIdList) {
+		if (CollectionUtils.isEmpty(placeIdList)) {
+			return new ArrayList<Place>();
+		}
+
+		StringBuilder sql = new StringBuilder(
+				"SELECT P.Place_seq, P.Place_id, T.Type_name, T.Type_name_translated, PT.Is_Primary_type, P.Place_formatted_address, C.Country_code, IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name_translated) AS City_name, IF(C.City_standard_seq IS NULL, C.City_name_language_code, 'ko') AS City_name_language_code, C.Type_seq, P.Place_latitude, P.Place_longitude, P.Place_gmap_uri, PN.Display_name, PN.Display_name_language_code "
+						+ "FROM Place P, Place_name PN, Place_city PC, City C LEFT JOIN City_standard CS ON C.City_standard_seq = CS.City_standard_seq, Place_type PT, Type T "
+						+ "WHERE P.Place_seq = PN.Place_seq " + "AND P.Place_seq = PC.Place_seq " + "AND C.City_seq = PC.City_seq " + "AND P.Place_seq = PT.Place_seq "
+						+ "AND T.Type_seq = PT.Type_seq " + "AND P.Place_id IN (");
+		for (int placeIndex = 0; placeIndex < placeIdList.size(); placeIndex++) {
+			sql.append(placeIdList.get(placeIndex));
+			if (placeIndex == placeIdList.size() - 1) {
 				sql.append(") ");
 				break;
 			}

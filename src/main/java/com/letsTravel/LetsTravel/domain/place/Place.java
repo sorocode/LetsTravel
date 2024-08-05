@@ -36,4 +36,8 @@ public class Place {
 	public Place(int placeSeq) {
 		this.placeSeq = placeSeq;
 	}
+	
+	public Place(Location location) {
+		this.location = location;
+	}
 }
