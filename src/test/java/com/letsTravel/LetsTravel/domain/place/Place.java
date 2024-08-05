@@ -1,6 +1,8 @@
-package com.letsTravel.LetsTravel.tsptest;
+package com.letsTravel.LetsTravel.domain.place;
 
 import java.util.List;
+
+import com.letsTravel.LetsTravel.domain.place.AddressComponent;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

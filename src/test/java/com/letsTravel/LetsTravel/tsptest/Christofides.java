@@ -1,20 +1,20 @@
 package com.letsTravel.LetsTravel.tsptest;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
+import com.letsTravel.LetsTravel.domain.place.Location;
+import com.letsTravel.LetsTravel.domain.place.Place;
+
 import static java.lang.Math.toIntExact;
 
-public class mainProgram {
+public class Christofides {
 
 	@Test
-	void tspTest() throws FileNotFoundException {
+	void tspTest() {
 		List<Place> places = new ArrayList<>();
 		places.add(new Place(new Location(1.0f, 4.0f)));
 		places.add(new Place(new Location(4.0f, 4.0f)));
@@ -29,10 +29,10 @@ public class mainProgram {
 		places.add(new Place(new Location(-43.0f, 50.0f)));
 		places.add(new Place(new Location(57.0f, -2.0f)));
 		places.add(new Place(new Location(20.0f, 40.0f)));
-		mainProgram.christofidesAlgorithm(places, 5);
+		Christofides.christofidesAlgorithm(places, 5);
 	}
 
-	public static ChristofidesTour christofidesAlgorithm(List<Place> places, int secondsToRunTwoOpt) throws FileNotFoundException {
+	public static ChristofidesTour christofidesAlgorithm(List<Place> places, int secondsToRunTwoOpt) {
 		Benchmark benchmark = new Benchmark();
 		benchmark.startMark();
 		List<Vertex> theGraph = parseGraph(places);
@@ -43,7 +43,7 @@ public class mainProgram {
 		List<Vertex> travelingSalesPath = ShortCut.run(eulerTour);
 		TwoOpt twoOpt = new TwoOpt(travelingSalesPath, distances, secondsToRunTwoOpt);
 		travelingSalesPath = twoOpt.run();
-		ChristofidesTour finalAnswer = finalAnswer(travelingSalesPath, distances, "뭐지 이거");
+		ChristofidesTour finalAnswer = finalAnswer(travelingSalesPath, distances);
 		benchmark.endMark();
 		System.out.println("Program took: " + benchmark.resultTime() + " ms");
 		return finalAnswer;
@@ -109,7 +109,7 @@ public class mainProgram {
 		return minimumSpanningTree;
 	}
 
-	private static ChristofidesTour finalAnswer(List<Vertex> TSP, float[][] distances, String p) throws FileNotFoundException {
+	private static ChristofidesTour finalAnswer(List<Vertex> TSP, float[][] distances) {
 		int lineFormatting = 0;
 		for (Vertex vertex : TSP) {
 			System.out.print(vertex.getID() + " ");
