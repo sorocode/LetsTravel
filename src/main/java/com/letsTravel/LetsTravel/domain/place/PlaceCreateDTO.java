@@ -1,7 +1,5 @@
 package com.letsTravel.LetsTravel.domain.place;
 
-import com.letsTravel.LetsTravel.domain.Location;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

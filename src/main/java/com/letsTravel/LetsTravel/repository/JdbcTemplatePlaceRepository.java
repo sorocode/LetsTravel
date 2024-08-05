@@ -22,9 +22,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
-import com.letsTravel.LetsTravel.domain.Location;
 import com.letsTravel.LetsTravel.domain.place.AddressComponent;
 import com.letsTravel.LetsTravel.domain.place.DisplayName;
+import com.letsTravel.LetsTravel.domain.place.Location;
 import com.letsTravel.LetsTravel.domain.place.Place;
 import com.letsTravel.LetsTravel.domain.place.PlaceProcReturnDTO;
 
