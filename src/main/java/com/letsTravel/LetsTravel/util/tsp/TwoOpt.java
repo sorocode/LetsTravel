@@ -6,12 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TwoOpt {
-  private float[][] distances;
+  private double[][] distances;
   private List<Vertex> graph;
   private int secondsToRun;
   private LocalDateTime start;
 
-    TwoOpt(List<Vertex> g, float[][] d, int t) {
+    TwoOpt(List<Vertex> g, double[][] d, int t) {
         distances = d;
         graph = g;
         secondsToRun = t/2; // divide by two as impl has two opt running twice.
@@ -23,11 +23,11 @@ public class TwoOpt {
             if (timeIsUp()) {
                 break;
             }
-            float bestDistance = calculateTotalDistance(graph);
+            double bestDistance = calculateTotalDistance(graph);
             for (int i = 1; i < graph.size() - 1; i++) {
                 for (int k = i + 1; k < graph.size() - 2; k++) {
                     ArrayList<Vertex> newRoute = TwoOptSwap(graph, i, k);
-                    float newDistance = calculateTotalDistance(newRoute);
+                    double newDistance = calculateTotalDistance(newRoute);
                     if (newDistance < bestDistance) {
                         graph = newRoute;
                         bestDistance = newDistance;
@@ -83,8 +83,8 @@ public class TwoOpt {
     }
 
 
-   private float calculateTotalDistance(List<Vertex> path) {
-        float totalDistance = 0;
+   private double calculateTotalDistance(List<Vertex> path) {
+        double totalDistance = 0;
         for (int i = 0; i < path.size() - 1; i++) {
             totalDistance += distances[path.get(i).getID()][path.get(i + 1).getID()];
         }

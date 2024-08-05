@@ -4,11 +4,11 @@ public class Edge {
 	
 	int parent;
 	int child;
-	float weight;
+	double weight;
 	Vertex Owner;
 	Vertex Child;
 
-public Edge(Vertex parentEdge, Vertex childEdge, float distance) {
+public Edge(Vertex parentEdge, Vertex childEdge, double distance) {
 	parent = parentEdge.getID();
 	child = childEdge.getID();
 	weight = distance;

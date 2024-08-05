@@ -6,14 +6,14 @@ import java.util.ArrayList;
 public class Vertex 
 {
 	   private int id;
-	   private float x_var;
-	   private float y_var;	
+	   private double x_var;
+	   private double y_var;	
 	   public ArrayList<Edge> connectedVertices;
 	   public   Edge 	   edge; //used for prims algorithm
 
 	   boolean evenEdge;
 	   
-	   public Vertex(int id, float x_var, float y_var)
+	   public Vertex(int id, double x_var, double y_var)
 	   {	   
 		   this.id = id;
 		   this.x_var = x_var;
@@ -27,12 +27,12 @@ public class Vertex
 		      return id;
 	   }
 
-	   float getX()
+	   double getX()
 	   {
 		   	return x_var;
 	    }
 		   
-	    float getY()
+	    double getY()
 	    {
 		   return y_var;
 		}

@@ -11,10 +11,10 @@ import static java.lang.Math.toIntExact;
 public class Christofides {
 
 	public static ChristofidesTour christofidesAlgorithm(List<Place> places, int secondsToRunTwoOpt) {
-		//Benchmark benchmark = new Benchmark();
-		//benchmark.startMark();
+		// Benchmark benchmark = new Benchmark();
+		// benchmark.startMark();
 		List<Vertex> theGraph = parseGraph(places);
-		float[][] distances = getDistances(theGraph);
+		double[][] distances = getDistances(theGraph);
 		List<Vertex> minimumSpanningTree = PrimsAlgorithm.run(theGraph, distances);
 		createEvenlyVertexedEularianMultiGraphFromMST(minimumSpanningTree, distances);
 		List<Vertex> eulerTour = HierholzerAlgorithm.run(minimumSpanningTree);
@@ -22,7 +22,7 @@ public class Christofides {
 		TwoOpt twoOpt = new TwoOpt(travelingSalesPath, distances, secondsToRunTwoOpt);
 		travelingSalesPath = twoOpt.run();
 		ChristofidesTour finalAnswer = finalAnswer(travelingSalesPath, distances);
-		//benchmark.endMark();
+		// benchmark.endMark();
 		return finalAnswer;
 	}
 
@@ -30,7 +30,7 @@ public class Christofides {
 		AtomicInteger index = new AtomicInteger();
 		return places.stream().map(place -> {
 			int id;
-			float x, y;
+			double x, y;
 			id = index.getAndIncrement();
 			x = place.getLocation().getLatitude();
 			y = place.getLocation().getLongitude();
@@ -40,8 +40,8 @@ public class Christofides {
 	}
 
 	// function calculates distances between all points on the graph
-	private static float[][] getDistances(List<Vertex> graph) {
-		float[][] distanceGraph = new float[graph.size()][graph.size()];
+	private static double[][] getDistances(List<Vertex> graph) {
+		double[][] distanceGraph = new double[graph.size()][graph.size()];
 		for (int i = 0; i < graph.size(); i++) {
 			for (int j = 0; j < graph.size(); j++) {
 				distanceGraph[i][j] = difference(graph.get(i), graph.get(j));
@@ -51,9 +51,9 @@ public class Christofides {
 	}
 
 	// function that calculates the difference in location using A^2 + B^2 = C^2
-	private static int difference(Vertex a, Vertex b) {
-		long difference = Math.round(Math.sqrt(Math.pow((a.getX() - b.getX()), 2) + Math.pow((a.getY() - b.getY()), 2)));
-		return toIntExact(difference);
+	private static double difference(Vertex a, Vertex b) {
+		double difference = Math.round(Math.sqrt(Math.pow((a.getX() - b.getX()), 2) + Math.pow((a.getY() - b.getY()), 2)));
+		return difference;
 	}
 
 	/*
@@ -63,15 +63,15 @@ public class Christofides {
 	 * which means edges can be connected to each other twice. 2 edges "A-B" "A-B"
 	 * can exist from the same main.java.Vertex.
 	 */
-	private static List<Vertex> createEvenlyVertexedEularianMultiGraphFromMST(List<Vertex> minimumSpanningTree, float[][] distances) {
+	private static List<Vertex> createEvenlyVertexedEularianMultiGraphFromMST(List<Vertex> minimumSpanningTree, double[][] distances) {
 		List<Vertex> oddNumbers = minimumSpanningTree.stream().filter(vertex -> vertex.connectedVertices.size() % 2 == 1).collect(Collectors.toCollection(ArrayList::new));
 
 		while (!oddNumbers.isEmpty()) {
-			float distance = Float.MAX_VALUE;
+			double distance = Double.MAX_VALUE;
 			final Vertex parent = oddNumbers.get(0);
 
 			// Compare pointers to not use root node.
-			double minDistanceToNextNode = oddNumbers.stream().mapToDouble(vertex -> vertex == parent ? Float.MAX_VALUE : distances[parent.getID()][vertex.getID()]).min().getAsDouble();
+			double minDistanceToNextNode = oddNumbers.stream().mapToDouble(vertex -> vertex == parent ? Double.MAX_VALUE : distances[parent.getID()][vertex.getID()]).min().getAsDouble();
 
 			Vertex child = oddNumbers.stream().filter(vertex -> distances[parent.getID()][vertex.getID()] == minDistanceToNextNode && vertex != parent).findFirst().get();
 
@@ -85,9 +85,9 @@ public class Christofides {
 		return minimumSpanningTree;
 	}
 
-	private static ChristofidesTour finalAnswer(List<Vertex> TSP, float[][] distances) {
+	private static ChristofidesTour finalAnswer(List<Vertex> TSP, double[][] distances) {
 		// logic to connect end node to start node
-		float totalDistance = (float) TSP.stream().mapToDouble(
+		double totalDistance = TSP.stream().mapToDouble(
 				vertex -> TSP.indexOf(vertex) == TSP.size() - 1 ? distances[TSP.get(0).getID()][TSP.get(TSP.size() - 1).getID()] : distances[vertex.getID()][TSP.get(TSP.indexOf(vertex) + 1).getID()])
 				.sum();
 

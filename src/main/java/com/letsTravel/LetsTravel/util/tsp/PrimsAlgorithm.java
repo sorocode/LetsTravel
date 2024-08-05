@@ -17,7 +17,7 @@ public class PrimsAlgorithm {
 find the minimum-weight edge, and transfer it to the tree.
 3: Repeat step 2 (until all vertices are in the tree).
 * */	
-public static List<Vertex>  run(List<Vertex> unsortedList, float[][] distances)
+public static List<Vertex>  run(List<Vertex> unsortedList, double[][] distances)
 {
 	Comparator<Vertex> compareMethod = new VertexComparator();
 
@@ -78,7 +78,7 @@ public static List<Vertex>  run(List<Vertex> unsortedList, float[][] distances)
 			unsortedList.stream()
 					.forEach(vertex -> {
 				if (vertex != basedVertex) {
-					float checkNewWeight = distances[vertex.getID()][basedVertex.getID()];
+					double checkNewWeight = distances[vertex.getID()][basedVertex.getID()];
 					if (checkNewWeight < vertex.edge.weight) {
 						vertex.edge.child = basedVertex.getID();
 						vertex.edge.Child = basedVertex;

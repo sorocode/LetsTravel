@@ -4,9 +4,9 @@ import java.util.List;
 
 public class ChristofidesTour {
     private List<Integer> finalTour;
-    private float tourCost;
+    private double tourCost;
 
-    public ChristofidesTour(List<Integer> finalTour, float tourCost ) {
+    public ChristofidesTour(List<Integer> finalTour, double tourCost ) {
         this.finalTour = finalTour;
         this.tourCost = tourCost;
     }
@@ -22,11 +22,11 @@ public class ChristofidesTour {
         this.finalTour = finalTour;
     }
 
-    public float getTourCost() {
+    public double getTourCost() {
         return tourCost;
     }
 
-    public void setTourCost(float tourCost) {
+    public void setTourCost(double tourCost) {
         this.tourCost = tourCost;
     }
 
