@@ -151,7 +151,7 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 		}
 
 		StringBuilder sql = new StringBuilder(
-				"SELECT P.Place_seq, P.Place_id, T.Type_name, T.Type_name_translated, PT.Is_Primary_type, P.Place_formatted_address, C.Country_code, IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name_translated) AS City_name, IF(C.City_standard_seq IS NULL, C.City_name_language_code, 'ko') AS City_name_language_code, C.Type_seq, P.Place_latitude, P.Place_longitude, P.Place_gmap_uri, PN.Display_name, PN.Display_name_language_code "
+				"SELECT P.Place_seq, P.Place_id, T.Type_name, T.Type_name_translated, PT.Is_Primary_type, P.Place_formatted_address, C.Country_code, IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name_translated) AS City_name, IF(C.City_standard_seq IS NULL, C.City_name_language_code, 'ko') AS City_name_language_code, (SELECT T2.Type_name FROM Type T2 WHERE T2.Type_seq = C.Type_seq) AS City_type, P.Place_latitude, P.Place_longitude, P.Place_gmap_uri, PN.Display_name, PN.Display_name_language_code "
 						+ "FROM Place P, Place_name PN, Place_city PC, City C LEFT JOIN City_standard CS ON C.City_standard_seq = CS.City_standard_seq, Place_type PT, Type T "
 						+ "WHERE P.Place_seq = PN.Place_seq " + "AND P.Place_seq = PC.Place_seq " + "AND C.City_seq = PC.City_seq " + "AND P.Place_seq = PT.Place_seq "
 						+ "AND T.Type_seq = PT.Type_seq " + "AND P.Place_seq IN (");
@@ -175,8 +175,9 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 			return new ArrayList<Place>();
 		}
 
+		// City의 type을 type_seq로 받던 것을 type_name으로 받도록 쿼리 개선 -- 2024.08.06 강봉수
 		StringBuilder sql = new StringBuilder(
-				"SELECT P.Place_seq, P.Place_id, T.Type_name, T.Type_name_translated, PT.Is_Primary_type, P.Place_formatted_address, C.Country_code, IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name_translated) AS City_name, IF(C.City_standard_seq IS NULL, C.City_name_language_code, 'ko') AS City_name_language_code, C.Type_seq, P.Place_latitude, P.Place_longitude, P.Place_gmap_uri, PN.Display_name, PN.Display_name_language_code "
+				"SELECT P.Place_seq, P.Place_id, T.Type_name, T.Type_name_translated, PT.Is_Primary_type, P.Place_formatted_address, C.Country_code, IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name_translated) AS City_name, IF(C.City_standard_seq IS NULL, C.City_name_language_code, 'ko') AS City_name_language_code, (SELECT T2.Type_name FROM Type T2 WHERE T2.Type_seq = C.Type_seq) AS City_type, P.Place_latitude, P.Place_longitude, P.Place_gmap_uri, PN.Display_name, PN.Display_name_language_code "
 						+ "FROM Place P, Place_name PN, Place_city PC, City C LEFT JOIN City_standard CS ON C.City_standard_seq = CS.City_standard_seq, Place_type PT, Type T "
 						+ "WHERE P.Place_seq = PN.Place_seq " + "AND P.Place_seq = PC.Place_seq " + "AND C.City_seq = PC.City_seq " + "AND P.Place_seq = PT.Place_seq "
 						+ "AND T.Type_seq = PT.Type_seq " + "AND P.Place_id IN (");
@@ -228,7 +229,7 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 			AddressComponent addressComponent = new AddressComponent();
 			addressComponent.setLongText(rs.getString("City_name"));
 			addressComponent.setLanguageCode(rs.getString("City_name_language_code"));
-			addressComponent.setTypes(Arrays.asList(rs.getInt("C.Type_seq") == 1 ? "administrative_area_level_1" : "administrative_area_level_2"));
+			addressComponent.setTypes(Arrays.asList(rs.getString("City_type")));
 			citySet.add(addressComponent);
 
 			// displayName1이 없을 때
