@@ -13,7 +13,6 @@ public class Christofides {
 		// 1번째 place가 없어서 exception 발생해서 추가
 		// -- 2024.08.07 강봉수
 		if (places.size() < 2) {
-			System.out.println("아와와왕");
 			return new ChristofidesTour(new ArrayList<Integer>(), 0);
 		}
 		// Benchmark benchmark = new Benchmark();
