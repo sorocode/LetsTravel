@@ -6,8 +6,6 @@ import java.util.stream.Collectors;
 
 import com.letsTravel.LetsTravel.domain.place.Place;
 
-import static java.lang.Math.toIntExact;
-
 public class Christofides {
 
 	public static ChristofidesTour christofidesAlgorithm(List<Place> places, int secondsToRunTwoOpt) {
@@ -52,7 +50,7 @@ public class Christofides {
 
 	// function that calculates the difference in location using A^2 + B^2 = C^2
 	private static double difference(Vertex a, Vertex b) {
-		double difference = Math.round(Math.sqrt(Math.pow((a.getX() - b.getX()), 2) + Math.pow((a.getY() - b.getY()), 2)));
+		double difference = Math.sqrt(Math.pow((a.getX() - b.getX()), 2) + Math.pow((a.getY() - b.getY()), 2));
 		return difference;
 	}
 
