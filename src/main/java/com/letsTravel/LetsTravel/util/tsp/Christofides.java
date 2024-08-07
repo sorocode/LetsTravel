@@ -9,6 +9,13 @@ import com.letsTravel.LetsTravel.domain.place.Place;
 public class Christofides {
 
 	public static ChristofidesTour christofidesAlgorithm(List<Place> places, int secondsToRunTwoOpt) {
+		// places가 1개일 때 0번째 place와 1번째 place를 비교해야하는데
+		// 1번째 place가 없어서 exception 발생해서 추가
+		// -- 2024.08.07 강봉수
+		if (places.size() < 2) {
+			System.out.println("아와와왕");
+			return new ChristofidesTour(new ArrayList<Integer>(), 0);
+		}
 		// Benchmark benchmark = new Benchmark();
 		// benchmark.startMark();
 		List<Vertex> theGraph = parseGraph(places);
