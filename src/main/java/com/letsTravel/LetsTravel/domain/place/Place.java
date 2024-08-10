@@ -2,6 +2,7 @@ package com.letsTravel.LetsTravel.domain.place;
 
 import java.util.List;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,6 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@EqualsAndHashCode
 public class Place {
 
 	private int placeSeq;
@@ -23,7 +25,7 @@ public class Place {
 	private DisplayName displayName2;
 	private DisplayName primaryTypeDisplayName;
 	private String primaryType;
-	
+
 	public Place(int placeSeq, String id, String formattedAddress, String countryCode, Location location, String googleMapsUri) {
 		this.placeSeq = placeSeq;
 		this.id = id;
@@ -32,12 +34,17 @@ public class Place {
 		this.location = location;
 		this.googleMapsUri = googleMapsUri;
 	}
-	
+
 	public Place(int placeSeq) {
 		this.placeSeq = placeSeq;
 	}
-	
+
 	public Place(Location location) {
 		this.location = location;
+	}
+
+	public String toString() {
+		return displayName.getText();
+
 	}
 }
