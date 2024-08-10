@@ -48,7 +48,7 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 				.addValue("in_latitude", place.getLocation().getLatitude()).addValue("in_longitude", place.getLocation().getLongitude()).addValue("in_gmap_uri", place.getGoogleMapsUri());
 
 		Map out = simpleJdbcCall.execute(in);
-
+	
 		PlaceProcReturnDTO placeProcReturnDTO = new PlaceProcReturnDTO();
 		placeProcReturnDTO.setPlaceSeq((int) out.get("out_place_seq"));
 		placeProcReturnDTO.setExisted((boolean) out.get("out_is_existed"));
@@ -189,6 +189,9 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 			}
 			sql.append(", ");
 		}
+		
+		// Place_seq 정렬이 안되어 extractData에서 하나의 place_seq에 대해 여러 Place 인스턴스가 발생하는 버그 수정 -- 2024.08.09
+		sql.append("ORDER BY P.Place_seq ");
 
 		return jdbcTemplate.query(sql.toString(), rs -> {
 			return extractData(rs);
