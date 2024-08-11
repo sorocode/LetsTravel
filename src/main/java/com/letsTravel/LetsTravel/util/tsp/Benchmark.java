@@ -28,9 +28,9 @@ public Benchmark()
         end = LocalDateTime.now();
     }
    
-    long currentTime()
+    double currentTime()
     {
-    	return ChronoUnit.SECONDS.between(start, LocalDateTime.now());
+    	return ChronoUnit.MILLIS.between(start, LocalDateTime.now());
     }
     
     long resultTime()
