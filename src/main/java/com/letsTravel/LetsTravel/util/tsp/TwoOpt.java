@@ -34,16 +34,10 @@ public class TwoOpt {
 						if (twoOptIterationB) {
 							break;
 						}
-						if (timeIsUp()) {
-							break;
-						}
 					}
 					if (timeIsUp()) {
 						break;
 					}
-				}
-				if (timeIsUp()) {
-					break;
 				}
 			}
 		} while (!timeIsUp());
