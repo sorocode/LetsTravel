@@ -12,7 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.letsTravel.LetsTravel.domain.place.AddressComponent;
+import com.letsTravel.LetsTravel.domain.city.CityReadDTO;
+import com.letsTravel.LetsTravel.domain.member.MemberBasicInfoReadDTO;
 import com.letsTravel.LetsTravel.domain.place.Place;
 import com.letsTravel.LetsTravel.domain.plan.PlanDetailDTO;
 import com.letsTravel.LetsTravel.domain.plan.PlanInfoDTO;
@@ -87,8 +88,8 @@ public class PlanService {
 		return planDetailDTO;
 	}
 
-	public PlanWrapper getRecommendPlan(String countryCode, List<String> placeIdList, String accommodationId, String airportId, Integer planNDays) {
-		return new PlanWrapper(generateRecommendPlan(countryCode, placeIdList, accommodationId, airportId, planNDays, 1));
+	public PlanWrapper getRecommendPlan(String countryCode, List<String> placeIdList, String accommodationId, String airportId, Integer planNDays, Integer tspProcessingTime) {
+		return new PlanWrapper(generateRecommendPlan(countryCode, placeIdList, accommodationId, airportId, planNDays, tspProcessingTime));
 	}
 
 	private PlanDetailDTO generateRecommendPlan(String countryCode, List<String> placeIdList, String accommodationId, String airportId, Integer planNDays, Integer tspProcessingTime) {
@@ -103,7 +104,7 @@ public class PlanService {
 		Map<String, List<Place>> placesGroupedByCity = new HashMap<String, List<Place>>();
 		// O(3N)
 		for (Place place : placeList) {
-			String cityName = getCityName(place);
+			String cityName = place.getCityName();
 			if (placesGroupedByCity.get(cityName) == null) {
 				placesGroupedByCity.put(cityName, new ArrayList<Place>(Arrays.asList(place)));
 			}
@@ -153,7 +154,7 @@ public class PlanService {
 			// 도시 수 5개 이상
 			if (cityTraversalList.size() >= 5) {
 				// 첫날: 숙소 있는 곳과 멀지 않은 곳에 있는 도시
-				String firstDayCity = getCityName(cityTraversalList.remove(cityTraversalList.size() - 1));
+				String firstDayCity = cityTraversalList.remove(cityTraversalList.size() - 1).getCityName();
 				List<Place> firstDay = placesGroupedByCity.remove(firstDayCity);
 				if (accommodation != null)
 					firstDay.add(0, accommodation);
@@ -168,7 +169,7 @@ public class PlanService {
 				planMap.put(1, firstDay);
 
 				// 막날: 숙소 있는 도시
-				String lastDayCity = getCityName(cityTraversalList.remove(0));
+				String lastDayCity = cityTraversalList.remove(0).getCityName();
 				List<Place> lastDay = placesGroupedByCity.remove(lastDayCity);
 				// 숙소를 처음으로 이동
 				if (accommodation != null) {
@@ -206,7 +207,7 @@ public class PlanService {
 			// 도시수 3~4개
 			else {
 				// 첫날: 숙소 있는 도시
-				String firstDayCity = getCityName(cityTraversalList.remove(0));
+				String firstDayCity = cityTraversalList.remove(0).getCityName();
 				List<Place> firstDay = placesGroupedByCity.remove(firstDayCity);
 				// 숙소를 처음으로 이동
 				if (accommodation != null) {
@@ -257,7 +258,7 @@ public class PlanService {
 			// 첫날과 막날을 제외하고 하루에 방문할 도시의 개수
 			int cityPerDay = (cityTraversalList.size() - 2) / (planNDays - 2);
 			// 첫날: 숙소 있는 곳과 멀지 않은 곳에 있는 도시
-			List<String> firstDayCity = new ArrayList<String>(Arrays.asList(getCityName(cityTraversalList.remove(cityTraversalList.size() - 1))));
+			List<String> firstDayCity = new ArrayList<String>(Arrays.asList(cityTraversalList.remove(cityTraversalList.size() - 1).getCityName()));
 			List<Place> firstDay = placesGroupedByCity.remove(firstDayCity.get(0));
 			if (accommodation != null)
 				firstDay.add(0, accommodation);
@@ -273,7 +274,7 @@ public class PlanService {
 			System.out.println("1일차: " + firstDay + " / " + firstDayCity);
 
 			// 막날: 숙소 있는 도시
-			List<String> lastDayCity = new ArrayList<String>(Arrays.asList(getCityName(cityTraversalList.remove(0))));
+			List<String> lastDayCity = new ArrayList<String>(Arrays.asList(cityTraversalList.remove(0).getCityName()));
 			List<Place> lastDay = placesGroupedByCity.remove(lastDayCity.get(0));
 			// 숙소를 처음으로 이동
 			if (accommodation != null) {
@@ -296,11 +297,11 @@ public class PlanService {
 				List<Place> day = new ArrayList<Place>();
 				// 하루에 도시 방문해야 하는 만큼 추가
 				for (int cityVisitCount = 0; cityVisitCount < cityPerDay; cityVisitCount++) {
-					dayCity.add(getCityName(cityTraversalList.remove(0)));
+					dayCity.add(cityTraversalList.remove(0).getCityName());
 					day.addAll(placesGroupedByCity.remove(dayCity.get(cityVisitCount)));
 				}
 				if (additionalCityVisitCount > 0) {
-					dayCity.add(getCityName(cityTraversalList.remove(0)));
+					dayCity.add(cityTraversalList.remove(0).getCityName());
 					day.addAll(placesGroupedByCity.remove(dayCity.get(cityPerDay)));
 					additionalCityVisitCount--;
 				}
@@ -319,19 +320,23 @@ public class PlanService {
 			}
 			System.out.println(planNDays + "일차: " + lastDay + " / " + lastDayCity);
 		}
-
-		return plan;
-	}
-
-	private String getCityName(Place place) {
-		String cityName = null;
-		for (AddressComponent addressComponent : place.getAddressComponents()) {
-			if (addressComponent.getTypes().get(0).equals("locality") || addressComponent.getTypes().get(0).equals("sublocality_level_1")) {
-				cityName = addressComponent.getLongText();
-				break;
+		plan.setPlanInfo(new PlanInfoDTO());
+		plan.setPlanShareMembers(new ArrayList<MemberBasicInfoReadDTO>());
+		plan.setPlanCities(new ArrayList<CityReadDTO>());
+		List<ScheduleInfoDTO> schedules = new ArrayList<ScheduleInfoDTO>();
+		for (Map.Entry<Integer, List<Place>> entry : planMap.entrySet()) {
+			List<Place> placeListPerDay = entry.getValue();
+			for (int placeIndex = 0; placeIndex < placeListPerDay.size(); placeIndex++) {
+				ScheduleInfoDTO schedule = new ScheduleInfoDTO();
+				schedule.setDateSeq(entry.getKey());
+				schedule.setVisitSeq(placeIndex + 1);
+				schedule.setPlace(placeListPerDay.get(placeIndex));
+				schedules.add(schedule);
 			}
 		}
-		return cityName;
+		plan.setSchedules(schedules);
+
+		return plan;
 	}
 
 	private List<Place> sortPlacesByTraversalOrder(List<Place> places, List<Integer> traversalOrder) {
