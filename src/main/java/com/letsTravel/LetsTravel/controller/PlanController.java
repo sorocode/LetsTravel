@@ -49,7 +49,8 @@ public class PlanController {
 			@RequestParam("place-id") List<String> placeIdList,
 			@RequestParam(value="accommodation-id", required = false) String accommodationId,
 			@RequestParam(value ="airport-id", required = false) String airportId,
-			@RequestParam("ndays") Integer planNDays) {
-		return planService.getRecommendPlan(countryCode, placeIdList, accommodationId, airportId, planNDays);
+			@RequestParam("ndays") Integer planNDays,
+			@RequestParam("tsp-processing-time") Integer tspProcessingTime) {
+		return planService.getRecommendPlan(countryCode, placeIdList, accommodationId, airportId, planNDays, tspProcessingTime);
 	}
 }
