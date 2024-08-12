@@ -45,6 +45,16 @@ public class Place {
 
 	public String toString() {
 		return displayName.getText();
+	}
 
+	public String getCityName() {
+		String cityName = null;
+		for (AddressComponent addressComponent : this.addressComponents) {
+			if (addressComponent.getTypes().get(0).equals("locality") || addressComponent.getTypes().get(0).equals("sublocality_level_1")) {
+				cityName = addressComponent.getLongText();
+				break;
+			}
+		}
+		return cityName;
 	}
 }
