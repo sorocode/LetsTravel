@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.letsTravel.LetsTravel.domain.plan.PlanInfoDTO;
@@ -41,5 +42,15 @@ public class PlanController {
 	public PlanWrapper createPlan(@RequestBody PlanWrapper planWrapper) {
 		PlanDetailDTO planDetailDTO = planService.createPlan(planWrapper.getPlan());
 		return new PlanWrapper(planDetailDTO);
+	}
+
+	@GetMapping("/plan/recommend")
+	public PlanWrapper getRecommendPlan(@RequestParam("country-code") String countryCode, 
+			@RequestParam("place-id") List<String> placeIdList,
+			@RequestParam(value="accommodation-id", required = false) String accommodationId,
+			@RequestParam(value ="airport-id", required = false) String airportId,
+			@RequestParam("ndays") Integer planNDays,
+			@RequestParam("tsp-processing-time") Integer tspProcessingTime) {
+		return planService.getRecommendPlan(countryCode, placeIdList, accommodationId, airportId, planNDays, tspProcessingTime);
 	}
 }

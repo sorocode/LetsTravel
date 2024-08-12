@@ -1,4 +1,4 @@
-package com.letsTravel.LetsTravel.domain;
+package com.letsTravel.LetsTravel.domain.place;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,6 +11,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Location {
 
-	private float latitude;
-	private float longitude;
+	private double latitude;
+	private double longitude;
 }

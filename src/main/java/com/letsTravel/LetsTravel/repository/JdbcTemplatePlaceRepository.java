@@ -22,9 +22,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
-import com.letsTravel.LetsTravel.domain.Location;
 import com.letsTravel.LetsTravel.domain.place.AddressComponent;
 import com.letsTravel.LetsTravel.domain.place.DisplayName;
+import com.letsTravel.LetsTravel.domain.place.Location;
 import com.letsTravel.LetsTravel.domain.place.Place;
 import com.letsTravel.LetsTravel.domain.place.PlaceProcReturnDTO;
 
@@ -48,7 +48,7 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 				.addValue("in_latitude", place.getLocation().getLatitude()).addValue("in_longitude", place.getLocation().getLongitude()).addValue("in_gmap_uri", place.getGoogleMapsUri());
 
 		Map out = simpleJdbcCall.execute(in);
-
+	
 		PlaceProcReturnDTO placeProcReturnDTO = new PlaceProcReturnDTO();
 		placeProcReturnDTO.setPlaceSeq((int) out.get("out_place_seq"));
 		placeProcReturnDTO.setExisted((boolean) out.get("out_is_existed"));
@@ -145,24 +145,56 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 	}
 
 	@Override
-	public List<Place> findPlaceByPlaceSeq(List<Integer> placeSeq) {
-		if (CollectionUtils.isEmpty(placeSeq)) {
+	public List<Place> findPlaceByPlaceSeq(List<Integer> placeSeqList) {
+		if (CollectionUtils.isEmpty(placeSeqList)) {
 			return new ArrayList<Place>();
 		}
 
 		StringBuilder sql = new StringBuilder(
-				"SELECT P.Place_seq, P.Place_id, T.Type_name, T.Type_name_translated, PT.Is_Primary_type, P.Place_formatted_address, C.Country_code, IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name_translated) AS City_name, IF(C.City_standard_seq IS NULL, C.City_name_language_code, 'ko') AS City_name_language_code, C.Type_seq, P.Place_latitude, P.Place_longitude, P.Place_gmap_uri, PN.Display_name, PN.Display_name_language_code "
+				"SELECT P.Place_seq, P.Place_id, T.Type_name, T.Type_name_translated, PT.Is_Primary_type, P.Place_formatted_address, C.Country_code, IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name_translated) AS City_name, IF(C.City_standard_seq IS NULL, C.City_name_language_code, 'ko') AS City_name_language_code, (SELECT T2.Type_name FROM Type T2 WHERE T2.Type_seq = C.Type_seq) AS City_type, P.Place_latitude, P.Place_longitude, P.Place_gmap_uri, PN.Display_name, PN.Display_name_language_code "
 						+ "FROM Place P, Place_name PN, Place_city PC, City C LEFT JOIN City_standard CS ON C.City_standard_seq = CS.City_standard_seq, Place_type PT, Type T "
 						+ "WHERE P.Place_seq = PN.Place_seq " + "AND P.Place_seq = PC.Place_seq " + "AND C.City_seq = PC.City_seq " + "AND P.Place_seq = PT.Place_seq "
 						+ "AND T.Type_seq = PT.Type_seq " + "AND P.Place_seq IN (");
-		for (int placeIndex = 0; placeIndex < placeSeq.size(); placeIndex++) {
-			sql.append(placeSeq.get(placeIndex));
-			if (placeIndex == placeSeq.size() - 1) {
+		for (int placeIndex = 0; placeIndex < placeSeqList.size(); placeIndex++) {
+			sql.append(placeSeqList.get(placeIndex));
+			if (placeIndex == placeSeqList.size() - 1) {
 				sql.append(") ");
 				break;
 			}
 			sql.append(", ");
 		}
+		
+		// Place_seq 정렬이 안되어 extractData에서 하나의 place_seq에 대해 여러 Place 인스턴스가 발생하는 버그 수정 -- 2024.08.09
+		sql.append("ORDER BY P.Place_seq ");
+
+		return jdbcTemplate.query(sql.toString(), rs -> {
+			return extractData(rs);
+		});
+	}
+	
+	@Override
+	public List<Place> findPlaceByPlaceId(List<String> placeIdList) {
+		if (CollectionUtils.isEmpty(placeIdList)) {
+			return new ArrayList<Place>();
+		}
+
+		// City의 type을 type_seq로 받던 것을 type_name으로 받도록 쿼리 개선 -- 2024.08.06 강봉수
+		StringBuilder sql = new StringBuilder(
+				"SELECT P.Place_seq, P.Place_id, T.Type_name, T.Type_name_translated, PT.Is_Primary_type, P.Place_formatted_address, C.Country_code, IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name_translated) AS City_name, IF(C.City_standard_seq IS NULL, C.City_name_language_code, 'ko') AS City_name_language_code, (SELECT T2.Type_name FROM Type T2 WHERE T2.Type_seq = C.Type_seq) AS City_type, P.Place_latitude, P.Place_longitude, P.Place_gmap_uri, PN.Display_name, PN.Display_name_language_code "
+						+ "FROM Place P, Place_name PN, Place_city PC, City C LEFT JOIN City_standard CS ON C.City_standard_seq = CS.City_standard_seq, Place_type PT, Type T "
+						+ "WHERE P.Place_seq = PN.Place_seq " + "AND P.Place_seq = PC.Place_seq " + "AND C.City_seq = PC.City_seq " + "AND P.Place_seq = PT.Place_seq "
+						+ "AND T.Type_seq = PT.Type_seq " + "AND P.Place_id IN (");
+		for (int placeIndex = 0; placeIndex < placeIdList.size(); placeIndex++) {
+			sql.append(placeIdList.get(placeIndex));
+			if (placeIndex == placeIdList.size() - 1) {
+				sql.append(") ");
+				break;
+			}
+			sql.append(", ");
+		}
+		
+		// Place_seq 정렬이 안되어 extractData에서 하나의 place_seq에 대해 여러 Place 인스턴스가 발생하는 버그 수정 -- 2024.08.09
+		sql.append("ORDER BY P.Place_seq ");
 
 		return jdbcTemplate.query(sql.toString(), rs -> {
 			return extractData(rs);
@@ -203,7 +235,7 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 			AddressComponent addressComponent = new AddressComponent();
 			addressComponent.setLongText(rs.getString("City_name"));
 			addressComponent.setLanguageCode(rs.getString("City_name_language_code"));
-			addressComponent.setTypes(Arrays.asList(rs.getInt("C.Type_seq") == 1 ? "administrative_area_level_1" : "administrative_area_level_2"));
+			addressComponent.setTypes(Arrays.asList(rs.getString("City_type")));
 			citySet.add(addressComponent);
 
 			// displayName1이 없을 때

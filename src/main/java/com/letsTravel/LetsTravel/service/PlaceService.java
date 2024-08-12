@@ -12,9 +12,7 @@ import com.letsTravel.LetsTravel.domain.city.PlaceCityCreateDTO;
 import com.letsTravel.LetsTravel.domain.place.AddressComponent;
 import com.letsTravel.LetsTravel.domain.place.DisplayName;
 import com.letsTravel.LetsTravel.domain.place.Place;
-import com.letsTravel.LetsTravel.domain.place.PlaceInfoDTO;
 import com.letsTravel.LetsTravel.domain.place.PlaceProcReturnDTO;
-import com.letsTravel.LetsTravel.domain.place.PlaceReadDTO;
 import com.letsTravel.LetsTravel.domain.place.PlaceWrapper;
 import com.letsTravel.LetsTravel.domain.type.PlaceTypeCreateDTO;
 import com.letsTravel.LetsTravel.domain.type.PrimaryTypeDetailDTO;
@@ -54,26 +52,42 @@ public class PlaceService {
 			// countryCode만 뽑아올 수 있는 방법이 없을까
 			List<AddressComponent> addressComponentList = place.getAddressComponents();
 			List<CityCreateDTO> cityList = new ArrayList<>();
+			// locality가 존재하는지 확인하는 flag -- 2024.08.06 강봉수
+			boolean isLocalityExist = false;
+			// sublocality를 임시로 담아놓을 instance -- 2024.08.06 강봉수
+			CityCreateDTO sublocalityTemp = null;
 			for (int addrComponentIndex = 0; addrComponentIndex < addressComponentList.size(); addrComponentIndex++) {
 				addressComponentList.get(addrComponentIndex).getTypes().remove("political"); // political이 componentType으로 선정되는 경우가 있어 추가 -- 2024.07.31 강봉수
 				String componentType = addressComponentList.get(addrComponentIndex).getTypes().get(0);
 				if (componentType.equals("country")) {
 					place.setCountryCode(addressComponentList.get(addrComponentIndex).getShortText());
 				}
-				if (componentType.equals("administrative_area_level_1") || componentType.equals("administrative_area_level_2")) {
-					CityCreateDTO city = new CityCreateDTO();
-					city.setCityName(addressComponentList.get(addrComponentIndex).getLongText());
-					city.setCityNameLanguageCode(addressComponentList.get(addrComponentIndex).getLanguageCode());
-					city.setType(addressComponentList.get(addrComponentIndex).getTypes().get(0));
-					cityList.add(city);
+				else if (componentType.equals("administrative_area_level_1") || componentType.equals("administrative_area_level_2")) {
+					cityList.add(new CityCreateDTO(addressComponentList.get(addrComponentIndex).getTypes().get(0), addressComponentList.get(addrComponentIndex).getLongText(),
+							addressComponentList.get(addrComponentIndex).getLanguageCode()));
+				}
+				// locality, sublocality_level_1 둘 중 하나 저장 -- 2024.08.06 강봉수
+				else if (componentType.equals("locality")) {
+					cityList.add(new CityCreateDTO(addressComponentList.get(addrComponentIndex).getTypes().get(0), addressComponentList.get(addrComponentIndex).getLongText(),
+							addressComponentList.get(addrComponentIndex).getLanguageCode()));
+					isLocalityExist = true;
+				}
+				else if (!isLocalityExist && componentType.equals("sublocality_level_1")) {
+					sublocalityTemp = new CityCreateDTO(addressComponentList.get(addrComponentIndex).getTypes().get(0), addressComponentList.get(addrComponentIndex).getLongText(),
+							addressComponentList.get(addrComponentIndex).getLanguageCode());
 				}
 			}
-
+			// locality가 없다면 sublocality 저장 -- 2024.08.06 강봉수
+			if(!isLocalityExist) {
+				cityList.add(sublocalityTemp);
+			}
+			
 			// Place 저장
 			PlaceProcReturnDTO placeProcReturnDTO = placeRepository.addPlace(place);
 			int placeSeq = placeProcReturnDTO.getPlaceSeq();
 			place.setPlaceSeq(placeSeq);
 
+			// 등록한 적 없는 Place이면 DB에 저장
 			if (!placeProcReturnDTO.isExisted()) {
 				// City 저장(없으면 저장, 있으면 패스)
 				for (int cityIndex = 0; cityIndex < cityList.size(); cityIndex++) {
