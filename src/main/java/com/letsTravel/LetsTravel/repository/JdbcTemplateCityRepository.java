@@ -12,6 +12,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.ObjectUtils;
 
 import com.letsTravel.LetsTravel.domain.city.CityCreateDTO;
 import com.letsTravel.LetsTravel.domain.city.CityReadDTO;
@@ -27,13 +28,33 @@ public class JdbcTemplateCityRepository implements CityRepository {
 	}
 
 	@Override
-	public List<CityReadDTO> findCities(String countryCode) {
-		return jdbcTemplate.query(
+	public List<CityReadDTO> findCities(String keyword, List<String> countryCodeList) {
+		StringBuilder sql = new StringBuilder(
 				"SELECT C.City_seq, IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name) AS cityName, IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name_translated) AS cityNameTranslated, C.Country_code "
-						+ "FROM City C LEFT JOIN City_standard CS ON C.City_standard_seq = CS.City_standard_seq " + "WHERE C.Country_code = ? " + "ORDER BY cityName, cityNameTranslated;",
-				rs -> {
-					return extractData(rs);
-				}, countryCode);
+						+ "FROM City C LEFT JOIN City_standard CS ON C.City_standard_seq = CS.City_standard_seq WHERE 1=1 ");
+		List<String> sqlArgs = new ArrayList<String>();
+
+		if (!ObjectUtils.isEmpty(keyword)) {
+			sql.append(
+					"AND (C.City_standard_seq IS NULL AND C.City_name LIKE ?) OR (C.City_standard_seq IS NOT NULL AND C.City_standard_seq IN (SELECT C3.City_standard_seq FROM City C3 WHERE C3.City_name LIKE ?)) ");
+			sqlArgs.add("%" + keyword + "%");
+			sqlArgs.add("%" + keyword + "%");
+		}
+
+		if (!ObjectUtils.isEmpty(countryCodeList)) {
+			sql.append("AND C.Country_code IN (");
+			for (String countryCode : countryCodeList) {
+				sql.append("?,");
+				sqlArgs.add(countryCode);
+			}
+			sql.deleteCharAt(sql.length() - 1);
+			sql.append(") ");
+		}
+		sql.append("ORDER BY C.Country_code, cityName, cityNameTranslated;");
+
+		return jdbcTemplate.query(sql.toString(), rs -> {
+			return extractData(rs);
+		}, sqlArgs.toArray());
 	}
 
 	@Override
