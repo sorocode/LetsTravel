@@ -19,8 +19,8 @@ public class CityService {
 		this.cityRepository = cityRepository;
 	}
 
-	public List<CityReadDTO> findCities(String countryCode) {
-		return cityRepository.findCities(countryCode);
+	public List<CityReadDTO> findCities(String keyword, List<String> countryCodeList) {
+		return cityRepository.findCities(keyword, countryCodeList);
 	}
 
 	public int addCity(CityCreateDTO cityCreateDTO) {

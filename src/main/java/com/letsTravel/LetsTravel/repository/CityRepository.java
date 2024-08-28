@@ -8,7 +8,7 @@ import com.letsTravel.LetsTravel.domain.city.PlaceCityCreateDTO;
 
 public interface CityRepository {
 
-	public List<CityReadDTO> findCities(String countryCode);
+	public List<CityReadDTO> findCities(String keyword, List<String> countryCodeList);
 	public int addCity(CityCreateDTO cityCreateDTO);
 	public int addPlaceCity(PlaceCityCreateDTO placeCityCreateDTO);
 	public List<CityReadDTO> findCitiesByKeyword(String keyword);
