@@ -1,14 +1,20 @@
 package com.letsTravel.LetsTravel.repository;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.sql.DataSource;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.ObjectUtils;
 
@@ -52,15 +58,9 @@ public class JdbcTemplateMetropolisRepository implements MetropolisRepository {
 
 	@Override
 	public int addMetropolis(MetropolisCreateDTO metropolisCreateDTO) {
-		String sql = "INSERT INTO Metropolis(Country_code, Type_seq, Metropolis_name, Metropolis_name_language_code, Is_admin_checked) SELECT ?, (SELECT Type_seq FROM Type WHERE Type_name = ?), ?, ?, ? FROM DUAL WHERE NOT EXISTS (SELECT Metropolis_seq FROM Metropolis WHERE Metropolis_name = ?);";
+		String sql = "INSERT IGNORE INTO Metropolis(Country_code, Type_seq, Metropolis_name, Is_admin_checked) VALUES(?, (SELECT Type_seq FROM Type WHERE Type_name = ?), ?, ?);";
 		return jdbcTemplate.update(sql, metropolisCreateDTO.getCountryCode(), metropolisCreateDTO.getType(), metropolisCreateDTO.getMetropolisName(),
-				metropolisCreateDTO.getMetropolisNameLanguageCode(), metropolisCreateDTO.getMetropolisNameLanguageCode().equals("ko") ? 1 : 0, metropolisCreateDTO.getMetropolisName());
-	}
-
-	@Override
-	public int addPlaceCity(PlaceCityCreateDTO placeCityCreateDTO) {
-		String sql = "INSERT IGNORE INTO Place_city VALUES(?, (SELECT City_seq FROM City WHERE Country_code = ? AND City_name = ?));";
-		return jdbcTemplate.update(sql, placeCityCreateDTO.getPlaceSeq(), placeCityCreateDTO.getCity().getCountryCode(), placeCityCreateDTO.getCity().getMetropolisName());
+				metropolisCreateDTO.getMetropolisNameLanguageCode().equals("ko") ? 1 : 0);
 	}
 
 	private RowMapper<MetropolisReadDTO> metropolisRowMapper() {

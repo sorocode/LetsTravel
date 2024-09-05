@@ -10,5 +10,4 @@ public interface MetropolisRepository {
 
 	public List<MetropolisReadDTO> findMetropolises(String keyword, List<String> countryCodeList);
 	public int addMetropolis(MetropolisCreateDTO cityCreateDTO);
-	public int addPlaceCity(PlaceCityCreateDTO placeCityCreateDTO);
 }

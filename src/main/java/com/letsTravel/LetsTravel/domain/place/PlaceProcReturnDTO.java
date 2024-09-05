@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class PlaceProcReturnDTO {
 
-	int placeSeq;
+	Long placeSeq;
 	boolean isExisted;
 	Date placeInsertDate;
 }

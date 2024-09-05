@@ -7,6 +7,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class PrimaryTypeUpdateDTO {
 
-	private int placeSeq;
+	private long placeSeq;
 	private String primaryType;
 }

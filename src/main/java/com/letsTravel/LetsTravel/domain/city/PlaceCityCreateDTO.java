@@ -7,6 +7,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class PlaceCityCreateDTO {
 
-	private int placeSeq;
-	private CityCreateDTO city;
+	private long placeSeq;
+	private long citySeq;
 }

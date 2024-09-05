@@ -50,7 +50,7 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 		Map out = simpleJdbcCall.execute(in);
 	
 		PlaceProcReturnDTO placeProcReturnDTO = new PlaceProcReturnDTO();
-		placeProcReturnDTO.setPlaceSeq((int) out.get("out_place_seq"));
+		placeProcReturnDTO.setPlaceSeq((Long) out.get("out_place_seq"));
 		placeProcReturnDTO.setExisted((boolean) out.get("out_is_existed"));
 		placeProcReturnDTO.setPlaceInsertDate((Date) out.get("out_insert_date"));
 		return placeProcReturnDTO;
@@ -59,7 +59,7 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 	// 한 달 지난 거면 Places API 재호출해야 함
 	// Paging을 위해 Place_seq만 반환하도록 변경 -- 2024.07.26(강봉수)
 	@Override
-	public List<Integer> findPlaces(String countryCode, List<Integer> city, List<Integer> type, String keyword, Integer page, Integer size, String sort) {
+	public List<Long> findPlaces(String countryCode, List<Integer> city, List<Integer> type, String keyword, Integer page, Integer size, String sort) {
 		StringBuilder sql = new StringBuilder("SELECT DISTINCT P.Place_seq " + "FROM Place P, Place_name PN, Place_city PC, Place_type PT, City C " + "WHERE P.Place_seq = PN.Place_seq "
 				+ "AND P.Place_seq = PC.Place_seq " + "AND C.City_seq = PC.City_seq " + "AND P.Place_seq = PT.Place_seq ");
 		List<String> sqlArgs = new ArrayList<>();
@@ -136,16 +136,16 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 
 		sql.append(";");
 
-		return jdbcTemplate.query(sql.toString(), new RowMapper<Integer>() {
+		return jdbcTemplate.query(sql.toString(), new RowMapper<Long>() {
 			@Override
-			public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
-				return rs.getInt("P.Place_seq");
+			public Long mapRow(ResultSet rs, int rowNum) throws SQLException {
+				return rs.getLong("P.Place_seq");
 			}
 		}, sqlArgs.toArray());
 	}
 
 	@Override
-	public List<Place> findPlaceByPlaceSeq(List<Integer> placeSeqList) {
+	public List<Place> findPlaceByPlaceSeq(List<Long> placeSeqList) {
 		if (CollectionUtils.isEmpty(placeSeqList)) {
 			return new ArrayList<Place>();
 		}
@@ -166,12 +166,12 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 		
 		// Place_seq 정렬이 안되어 extractData에서 하나의 place_seq에 대해 여러 Place 인스턴스가 발생하는 버그 수정 -- 2024.08.09
 		sql.append("ORDER BY P.Place_seq ");
-
+		
 		return jdbcTemplate.query(sql.toString(), rs -> {
 			return extractData(rs);
 		});
 	}
-	
+
 	@Override
 	public List<Place> findPlaceByPlaceId(List<String> placeIdList) {
 		if (CollectionUtils.isEmpty(placeIdList)) {
@@ -185,20 +185,21 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 						+ "WHERE P.Place_seq = PN.Place_seq " + "AND P.Place_seq = PC.Place_seq " + "AND C.City_seq = PC.City_seq " + "AND P.Place_seq = PT.Place_seq "
 						+ "AND T.Type_seq = PT.Type_seq " + "AND P.Place_id IN (");
 		for (int placeIndex = 0; placeIndex < placeIdList.size(); placeIndex++) {
-			sql.append(placeIdList.get(placeIndex));
+			sql.append("?");
 			if (placeIndex == placeIdList.size() - 1) {
 				sql.append(") ");
 				break;
 			}
 			sql.append(", ");
 		}
-		
-		// Place_seq 정렬이 안되어 extractData에서 하나의 place_seq에 대해 여러 Place 인스턴스가 발생하는 버그 수정 -- 2024.08.09
+
+		// Place_seq 정렬이 안되어 extractData에서 하나의 place_seq에 대해 여러 Place 인스턴스가 발생하는 버그 수정
+		// -- 2024.08.09
 		sql.append("ORDER BY P.Place_seq ");
 
 		return jdbcTemplate.query(sql.toString(), rs -> {
 			return extractData(rs);
-		});
+		}, placeIdList.toArray());
 	}
 
 	private List<Place> extractData(ResultSet rs) throws SQLException, DataAccessException {

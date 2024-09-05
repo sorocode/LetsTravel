@@ -13,7 +13,7 @@ import lombok.Setter;
 @EqualsAndHashCode
 public class Place {
 
-	private int placeSeq;
+	private long placeSeq;
 	private String id;
 	private List<String> types;
 	private String formattedAddress;
