@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.letsTravel.LetsTravel.domain.city.CityCreateDTO;
+import com.letsTravel.LetsTravel.domain.city.MetropolisCityCreateDTO;
 import com.letsTravel.LetsTravel.domain.city.PlaceCityCreateDTO;
+import com.letsTravel.LetsTravel.domain.metropolis.MetropolisCreateDTO;
 import com.letsTravel.LetsTravel.domain.place.AddressComponent;
 import com.letsTravel.LetsTravel.domain.place.DisplayName;
 import com.letsTravel.LetsTravel.domain.place.Place;
@@ -18,6 +20,7 @@ import com.letsTravel.LetsTravel.domain.type.PlaceTypeCreateDTO;
 import com.letsTravel.LetsTravel.domain.type.PrimaryTypeDetailDTO;
 import com.letsTravel.LetsTravel.domain.type.PrimaryTypeUpdateDTO;
 import com.letsTravel.LetsTravel.repository.CityRepository;
+import com.letsTravel.LetsTravel.repository.MetropolisRepository;
 import com.letsTravel.LetsTravel.repository.PlaceRepository;
 import com.letsTravel.LetsTravel.repository.TypeRepository;
 
@@ -25,14 +28,16 @@ import com.letsTravel.LetsTravel.repository.TypeRepository;
 public class PlaceService {
 
 	private final PlaceRepository placeRepository;
-	private final CityRepository cityRepository;
+	private final MetropolisRepository metropolisRepository;
 	private final TypeRepository typeRepository;
+	private final CityRepository cityRepository;
 
 	@Autowired
-	public PlaceService(PlaceRepository placeRepository, CityRepository cityRepository, TypeRepository typeRepository) {
+	public PlaceService(PlaceRepository placeRepository, MetropolisRepository metropolisRepository, TypeRepository typeRepository, CityRepository cityRepository) {
 		this.placeRepository = placeRepository;
-		this.cityRepository = cityRepository;
+		this.metropolisRepository = metropolisRepository;
 		this.typeRepository = typeRepository;
+		this.cityRepository = cityRepository;
 	}
 
 	@Transactional
@@ -51,53 +56,51 @@ public class PlaceService {
 
 			// countryCode만 뽑아올 수 있는 방법이 없을까
 			List<AddressComponent> addressComponentList = place.getAddressComponents();
-			List<CityCreateDTO> cityList = new ArrayList<>();
-			// locality가 존재하는지 확인하는 flag -- 2024.08.06 강봉수
-			boolean isLocalityExist = false;
-			// sublocality를 임시로 담아놓을 instance -- 2024.08.06 강봉수
-			CityCreateDTO sublocalityTemp = null;
-			for (int addrComponentIndex = 0; addrComponentIndex < addressComponentList.size(); addrComponentIndex++) {
-				addressComponentList.get(addrComponentIndex).getTypes().remove("political"); // political이 componentType으로 선정되는 경우가 있어 추가 -- 2024.07.31 강봉수
-				String componentType = addressComponentList.get(addrComponentIndex).getTypes().get(0);
+			List<MetropolisCreateDTO> metropolisList = new ArrayList<>();
+			CityCreateDTO city = null;
+
+			for (AddressComponent addressComponent : addressComponentList) {
+				addressComponent.getTypes().remove("political"); // political이 componentType으로 선정되는 경우가 있어 추가 -- 2024.07.31 강봉수
+				String componentType = addressComponent.getTypes().get(0);
 				if (componentType.equals("country")) {
-					place.setCountryCode(addressComponentList.get(addrComponentIndex).getShortText());
+					place.setCountryCode(addressComponent.getShortText());
 				}
 				else if (componentType.equals("administrative_area_level_1") || componentType.equals("administrative_area_level_2")) {
-					cityList.add(new CityCreateDTO(addressComponentList.get(addrComponentIndex).getTypes().get(0), addressComponentList.get(addrComponentIndex).getLongText(),
-							addressComponentList.get(addrComponentIndex).getLanguageCode()));
+					metropolisList.add(new MetropolisCreateDTO(componentType, addressComponent.getLongText(), addressComponent.getLanguageCode()));
 				}
 				// locality, sublocality_level_1 둘 중 하나 저장 -- 2024.08.06 강봉수
 				else if (componentType.equals("locality")) {
-					cityList.add(new CityCreateDTO(addressComponentList.get(addrComponentIndex).getTypes().get(0), addressComponentList.get(addrComponentIndex).getLongText(),
-							addressComponentList.get(addrComponentIndex).getLanguageCode()));
-					isLocalityExist = true;
+					city = new CityCreateDTO(componentType, addressComponent.getLongText(), addressComponent.getLanguageCode());
 				}
-				else if (!isLocalityExist && componentType.equals("sublocality_level_1")) {
-					sublocalityTemp = new CityCreateDTO(addressComponentList.get(addrComponentIndex).getTypes().get(0), addressComponentList.get(addrComponentIndex).getLongText(),
-							addressComponentList.get(addrComponentIndex).getLanguageCode());
+				else if (city == null && componentType.equals("sublocality_level_1")) {
+					city = new CityCreateDTO(componentType, addressComponent.getLongText(), addressComponent.getLanguageCode());
 				}
 			}
-			// locality가 없다면 sublocality 저장 -- 2024.08.06 강봉수
-			if(!isLocalityExist) {
-				cityList.add(sublocalityTemp);
-			}
-			
+
 			// Place 저장
 			PlaceProcReturnDTO placeProcReturnDTO = placeRepository.addPlace(place);
-			int placeSeq = placeProcReturnDTO.getPlaceSeq();
+			Long placeSeq = placeProcReturnDTO.getPlaceSeq();
 			place.setPlaceSeq(placeSeq);
 
 			// 등록한 적 없는 Place이면 DB에 저장
 			if (!placeProcReturnDTO.isExisted()) {
-				// City 저장(없으면 저장, 있으면 패스)
-				for (int cityIndex = 0; cityIndex < cityList.size(); cityIndex++) {
-					cityList.get(cityIndex).setCountryCode(place.getCountryCode());
-					cityRepository.addCity(cityList.get(cityIndex));
+				metropolisList.get(0).setCountryCode(place.getCountryCode());
+				// City 저장
+				Long citySeq = cityRepository.addCity(city, metropolisList.get(0));
+
+				// Metropolis 저장
+				for (MetropolisCreateDTO metropolisCreateDTO : metropolisList) {
+					metropolisCreateDTO.setCountryCode(place.getCountryCode());
+					metropolisRepository.addMetropolis(metropolisCreateDTO);
+				}
+
+				// Metropolis-City 관계 저장
+				for (MetropolisCreateDTO metropolisCreateDTO : metropolisList) {
+					cityRepository.addMetropolisCity(new MetropolisCityCreateDTO(metropolisCreateDTO, citySeq));
 				}
 
 				// Place의 City 저장
-				for (int cityIndex = 0; cityIndex < cityList.size(); cityIndex++)
-					cityRepository.addPlaceCity(new PlaceCityCreateDTO(placeSeq, cityList.get(cityIndex)));
+				cityRepository.addPlaceCity(new PlaceCityCreateDTO(placeSeq, citySeq));
 
 				// Place의 Type 저장
 				types.remove("establishment");
@@ -107,8 +110,8 @@ public class PlaceService {
 					place.setPrimaryType("etc");
 					place.setPrimaryTypeDisplayName(new DisplayName("기타", "ko"));
 				}
-				for (int typeIndex = 0; typeIndex < types.size(); typeIndex++)
-					typeRepository.addPlaceType(new PlaceTypeCreateDTO(placeSeq, types.get(typeIndex)));
+				for (String type : types)
+					typeRepository.addPlaceType(new PlaceTypeCreateDTO(placeSeq, type));
 
 				// Primary Type 정보가 없으면
 				if (place.getPrimaryType() == null) {
@@ -133,7 +136,7 @@ public class PlaceService {
 		return new PlaceWrapper(placeRepository.findPlaceByPlaceSeq(placeRepository.findPlaces(countryCode, city, type, keyword, page, size, sort)));
 	}
 
-	public PlaceWrapper readPlaceByPlaceSeq(List<Integer> placeSeq) {
+	public PlaceWrapper readPlaceByPlaceSeq(List<Long> placeSeq) {
 		return new PlaceWrapper(placeRepository.findPlaceByPlaceSeq(placeSeq));
 	}
 }

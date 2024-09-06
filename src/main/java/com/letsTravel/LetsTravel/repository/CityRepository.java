@@ -1,16 +1,13 @@
 package com.letsTravel.LetsTravel.repository;
 
-import java.util.List;
-
 import com.letsTravel.LetsTravel.domain.city.CityCreateDTO;
-import com.letsTravel.LetsTravel.domain.city.CityReadDTO;
+import com.letsTravel.LetsTravel.domain.city.MetropolisCityCreateDTO;
 import com.letsTravel.LetsTravel.domain.city.PlaceCityCreateDTO;
+import com.letsTravel.LetsTravel.domain.metropolis.MetropolisCreateDTO;
 
 public interface CityRepository {
-
-	public List<CityReadDTO> findCities(String keyword, List<String> countryCodeList);
-	public int addCity(CityCreateDTO cityCreateDTO);
+	
+	public Long addCity(CityCreateDTO cityCreateDTO, MetropolisCreateDTO metropolisCreateDTO);
+	public int addMetropolisCity(MetropolisCityCreateDTO metropolisCityCreateDTO);
 	public int addPlaceCity(PlaceCityCreateDTO placeCityCreateDTO);
-	public List<CityReadDTO> findCitiesByKeyword(String keyword);
-	public List<CityReadDTO> findPlanCitiesByPlanSeq(int planSeq);
 }
