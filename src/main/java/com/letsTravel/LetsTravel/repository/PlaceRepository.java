@@ -9,7 +9,7 @@ public interface PlaceRepository {
 
 	// 뭘 반환할까
 	public PlaceProcReturnDTO addPlace(Place place);
-	public List<Long> findPlaces(String countryCode, List<Integer> city, List<Integer> type, String keyword, Integer page, Integer size, String sort);
+	public List<Long> findPlaces(List<Integer> city, List<Integer> type, String keyword, Integer page, Integer size, String sort);
 	public List<Place> findPlaceByPlaceSeq(List<Long> placeSeqList);
 	public List<Place> findPlaceByPlaceId(List<String> placeIdList);
 }
