@@ -34,13 +34,12 @@ public class PlaceController {
 	}
 
 	@GetMapping("/place")
-	public PlaceWrapper readPlaces(@RequestParam(value = "country-code", required = false) String countryCode,
-			@RequestParam(value = "city", required = false) List<Integer> city,
+	public PlaceWrapper readPlaces(@RequestParam(value = "city", required = false) List<Integer> city,
 			@RequestParam(value = "type", required = false) List<Integer> type,
 			@RequestParam(value = "keyword", required = false) String keyword,
 			@RequestParam(value = "page", required = false) Integer page,
 			@RequestParam(value = "size", required = false) Integer size,
 			@RequestParam(value = "sort", required = false) String sort) {
-		return placeService.readPlaces(countryCode, city, type, keyword, page, size, sort);
+		return placeService.readPlaces(city, type, keyword, page, size, sort);
 	}
 }

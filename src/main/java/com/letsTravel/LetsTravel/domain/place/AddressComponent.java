@@ -6,7 +6,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Getter
 @Setter
@@ -14,7 +13,12 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class AddressComponent {
 	private String longText;
-    private String shortText;
-    private List<String> types;
-    private String languageCode;
+	private String shortText;
+	private List<String> types;
+	private String languageCode;
+
+	public AddressComponent(String longText, List<String> types) {
+		this.longText = longText;
+		this.types = types;
+	}
 }
