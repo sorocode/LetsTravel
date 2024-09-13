@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.letsTravel.LetsTravel.domain.city.CityReadDTO;
 import com.letsTravel.LetsTravel.domain.member.MemberBasicInfoReadDTO;
 import com.letsTravel.LetsTravel.domain.place.Place;
 import com.letsTravel.LetsTravel.domain.plan.PlanDetailDTO;
@@ -20,7 +19,7 @@ import com.letsTravel.LetsTravel.domain.plan.PlanInfoDTO;
 import com.letsTravel.LetsTravel.domain.plan.PlanWrapper;
 import com.letsTravel.LetsTravel.domain.schedule.ScheduleCreateDTO;
 import com.letsTravel.LetsTravel.domain.schedule.ScheduleInfoDTO;
-import com.letsTravel.LetsTravel.repository.CityRepository;
+import com.letsTravel.LetsTravel.repository.MetropolisRepository;
 import com.letsTravel.LetsTravel.repository.MemberRepository;
 import com.letsTravel.LetsTravel.repository.PlaceRepository;
 import com.letsTravel.LetsTravel.repository.PlanRepository;
@@ -33,15 +32,16 @@ public class PlanService {
 	private final PlanRepository planRepository;
 	private final ScheduleRepository scheduleRepository;
 	private final MemberRepository memberRepository;
-	private final CityRepository cityRepository;
+	private final MetropolisRepository metropolisRepository;
 	private final PlaceRepository placeRepository;
 
 	@Autowired
-	public PlanService(PlanRepository planRepository, ScheduleRepository scheduleRepository, MemberRepository memberRepository, CityRepository cityRepository, PlaceRepository placeRepository) {
+	public PlanService(PlanRepository planRepository, ScheduleRepository scheduleRepository, MemberRepository memberRepository, MetropolisRepository metropolisRepository,
+			PlaceRepository placeRepository) {
 		this.planRepository = planRepository;
 		this.scheduleRepository = scheduleRepository;
 		this.memberRepository = memberRepository;
-		this.cityRepository = cityRepository;
+		this.metropolisRepository = metropolisRepository;
 		this.placeRepository = placeRepository;
 	}
 
@@ -69,10 +69,9 @@ public class PlanService {
 		PlanDetailDTO planDetailDTO = new PlanDetailDTO();
 		planDetailDTO.setPlanInfo(planRepository.findPlanByPlanSeq(planSeq));
 		planDetailDTO.setPlanShareMembers(memberRepository.findPlanShareMemberByPlanSeq(planSeq));
-		planDetailDTO.setPlanCities(cityRepository.findPlanCitiesByPlanSeq(planSeq));
 		// 개선할 필요가 매우 매우 있어보여요
 		List<ScheduleInfoDTO> schedules = scheduleRepository.findSchedulesByPlanSeq(planSeq);
-		List<Integer> placeSeqList = new ArrayList<Integer>();
+		List<Long> placeSeqList = new ArrayList<Long>();
 		for (int scheduleIndex = 0; scheduleIndex < schedules.size(); scheduleIndex++) {
 			placeSeqList.add(schedules.get(scheduleIndex).getPlace().getPlaceSeq());
 		}
@@ -89,6 +88,10 @@ public class PlanService {
 	}
 
 	public PlanWrapper getRecommendPlan(String countryCode, List<String> placeIdList, String accommodationId, String airportId, Integer planNDays, Integer tspProcessingTime) {
+		// PlanGenerator planGenerator = new PlanGenerator(placeRepository,
+		// tspProcessingTime);
+		// return new PlanWrapper(planGenerator.generateRecommendPlan(countryCode,
+		// placeIdList, accommodationId, airportId, planNDays));
 		return new PlanWrapper(generateRecommendPlan(countryCode, placeIdList, accommodationId, airportId, planNDays, tspProcessingTime));
 	}
 
@@ -143,10 +146,6 @@ public class PlanService {
 		// 도시 순회 순서 최적화
 		List<Integer> cityTraversalOrder = Christofides.christofidesAlgorithm(cityTraversalList, tspProcessingTime).getFinalTour();
 		cityTraversalList = sortPlacesByTraversalOrder(cityTraversalList, cityTraversalOrder);
-//		for (Place place : cityTraversalList) {
-//			System.out.println(getCityName(place));
-//		}
-
 		// 일자별 여행 장소 저장할 Map
 		Map<Integer, List<Place>> planMap = new HashMap<Integer, List<Place>>();
 		// 2박 3일
@@ -294,35 +293,33 @@ public class PlanService {
 			int additionalCityVisitCount = cityTraversalList.size() % (planNDays - 2);
 			for (int dayIndex = 0; dayIndex < planNDays - 2; dayIndex++) {
 				List<String> dayCity = new ArrayList<String>();
-				List<Place> day = new ArrayList<Place>();
+				List<Place> dayPlace = new ArrayList<Place>();
 				// 하루에 도시 방문해야 하는 만큼 추가
 				for (int cityVisitCount = 0; cityVisitCount < cityPerDay; cityVisitCount++) {
 					dayCity.add(cityTraversalList.remove(0).getCityName());
-					day.addAll(placesGroupedByCity.remove(dayCity.get(cityVisitCount)));
+					dayPlace.addAll(placesGroupedByCity.remove(dayCity.get(cityVisitCount)));
 				}
 				if (additionalCityVisitCount > 0) {
 					dayCity.add(cityTraversalList.remove(0).getCityName());
-					day.addAll(placesGroupedByCity.remove(dayCity.get(cityPerDay)));
+					dayPlace.addAll(placesGroupedByCity.remove(dayCity.get(cityPerDay)));
 					additionalCityVisitCount--;
 				}
-
 				// 숙소 시작
 				if (accommodation != null)
-					day.add(0, accommodation);
+					dayPlace.add(0, accommodation);
 				// 여행지+숙소의 최적 경로
-				List<Integer> dayOrder = Christofides.christofidesAlgorithm(day, tspProcessingTime).getFinalTour();
-				day = sortPlacesByTraversalOrder(day, dayOrder);
+				List<Integer> dayOrder = Christofides.christofidesAlgorithm(dayPlace, tspProcessingTime).getFinalTour();
+				dayPlace = sortPlacesByTraversalOrder(dayPlace, dayOrder);
 				// 숙소->여행지->숙소
 				if (accommodation != null)
-					day.add(accommodation);
-				planMap.put(2 + dayIndex, day);
-				System.out.println((2 + dayIndex) + "일차: " + day + " / " + dayCity);
+					dayPlace.add(accommodation);
+				planMap.put(2 + dayIndex, dayPlace);
+				System.out.println((2 + dayIndex) + "일차: " + dayPlace + " / " + dayCity);
 			}
 			System.out.println(planNDays + "일차: " + lastDay + " / " + lastDayCity);
 		}
 		plan.setPlanInfo(new PlanInfoDTO());
 		plan.setPlanShareMembers(new ArrayList<MemberBasicInfoReadDTO>());
-		plan.setPlanCities(new ArrayList<CityReadDTO>());
 		List<ScheduleInfoDTO> schedules = new ArrayList<ScheduleInfoDTO>();
 		for (Map.Entry<Integer, List<Place>> entry : planMap.entrySet()) {
 			List<Place> placeListPerDay = entry.getValue();
