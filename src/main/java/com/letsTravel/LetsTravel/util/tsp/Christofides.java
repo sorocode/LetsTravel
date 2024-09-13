@@ -12,9 +12,12 @@ public class Christofides {
 		// places가 1개일 때 0번째 place와 1번째 place를 비교해야하는데
 		// 1번째 place가 없어서 exception 발생해서 추가
 		// -- 2024.08.07 강봉수
+		// places가 1개일 때 빈 Integer Array를 반환하니 PlanService.sortPlacesByTraversalOrder에서 고장나서 수정
+		// -- 2024.09.13 강봉수
 		if (places.size() < 2) {
-			return new ChristofidesTour(new ArrayList<Integer>(), 0);
+			return new ChristofidesTour(new ArrayList<Integer>(Arrays.asList(0)), 0);
 		}
+
 		// Benchmark benchmark = new Benchmark();
 		// benchmark.startMark();
 		List<Vertex> theGraph = parseGraph(places);

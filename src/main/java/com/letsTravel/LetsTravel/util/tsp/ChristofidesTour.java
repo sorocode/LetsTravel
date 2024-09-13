@@ -6,7 +6,7 @@ public class ChristofidesTour {
     private List<Integer> finalTour;
     private double tourCost;
 
-    public ChristofidesTour(List<Integer> finalTour, double tourCost ) {
+    public ChristofidesTour(List<Integer> finalTour, double tourCost) {
         this.finalTour = finalTour;
         this.tourCost = tourCost;
     }

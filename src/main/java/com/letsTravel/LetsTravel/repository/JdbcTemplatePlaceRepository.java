@@ -176,18 +176,41 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 
 		// City의 type을 type_seq로 받던 것을 type_name으로 받도록 쿼리 개선 -- 2024.08.06 강봉수
 		StringBuilder sql = new StringBuilder(
-				"SELECT P.Place_seq, P.Place_id, T.Type_name, T.Type_name_translated, PT.Is_Primary_type, P.Place_formatted_address, C.Country_code, IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name_translated) AS City_name, IF(C.City_standard_seq IS NULL, C.City_name_language_code, 'ko') AS City_name_language_code, (SELECT T2.Type_name FROM Type T2 WHERE T2.Type_seq = C.Type_seq) AS City_type, P.Place_latitude, P.Place_longitude, P.Place_gmap_uri, PN.Display_name, PN.Display_name_language_code "
-						+ "FROM Place P, Place_name PN, Place_city PC, City C LEFT JOIN City_standard CS ON C.City_standard_seq = CS.City_standard_seq, Place_type PT, Type T "
-						+ "WHERE P.Place_seq = PN.Place_seq " + "AND P.Place_seq = PC.Place_seq " + "AND C.City_seq = PC.City_seq " + "AND P.Place_seq = PT.Place_seq "
-						+ "AND T.Type_seq = PT.Type_seq " + "AND P.Place_id IN (");
-		for (int placeIndex = 0; placeIndex < placeIdList.size(); placeIndex++) {
-			sql.append("?");
-			if (placeIndex == placeIdList.size() - 1) {
-				sql.append(") ");
-				break;
-			}
-			sql.append(", ");
+				"SELECT \r\n"
+						+ "    P.Place_seq, \r\n"
+						+ "    P.Place_id, \r\n"
+						+ "    T.Type_name, \r\n"
+						+ "    T.Type_name_translated, \r\n"
+						+ "    PT.Is_Primary_type, \r\n"
+						+ "    P.Place_formatted_address, \r\n"
+						+ "    M.Country_code, \r\n"
+						+ "    IF(M.Metropolis_standard_seq IS NULL, M.Metropolis_name, MS.Metropolis_name_translated) AS Metropolis_name,\r\n"
+						+ "    IF(C.City_standard_seq IS NULL, C.City_name, CS.City_name_translated) AS City_name, \r\n"
+						+ "    (SELECT Type.Type_name FROM Type WHERE M.Type_seq = Type.Type_seq) AS Metropolis_type,\r\n"
+						+ "    (SELECT Type.Type_name FROM Type WHERE C.Type_seq = Type.Type_seq) AS City_type,\r\n"
+						+ "    P.Place_latitude, \r\n"
+						+ "    P.Place_longitude, \r\n"
+						+ "    P.Place_gmap_uri, \r\n"
+						+ "    PN.Display_name, \r\n"
+						+ "    PN.Display_name_language_code\r\n"
+						+ "FROM \r\n"
+						+ "    Place P \r\n"
+						+ "    LEFT JOIN Place_name PN ON P.Place_seq = PN.Place_seq\r\n"
+						+ "    JOIN Place_city PC ON P.Place_seq = PC.Place_seq\r\n"
+						+ "    JOIN City C ON C.City_seq = PC.City_seq \r\n"
+						+ "    LEFT JOIN City_standard CS ON C.City_standard_seq = CS.City_standard_seq\r\n"
+						+ "    JOIN Place_type PT ON P.Place_seq = PT.Place_seq\r\n"
+						+ "    JOIN Type T ON T.Type_seq = PT.Type_seq, \r\n"
+						+ "    Metropolis_city MC\r\n"
+						+ "    JOIN Metropolis M ON MC.Metropolis_seq = M.Metropolis_seq\r\n"
+						+ "    LEFT JOIN Metropolis_standard MS ON M.Metropolis_standard_seq = MS.Metropolis_standard_seq\r\n"
+						+ "WHERE \r\n"
+						+ "    C.City_seq = MC.City_seq " + "AND P.Place_id IN (");
+		for (String placeId: placeIdList) {
+			sql.append("?,");
 		}
+		sql.deleteCharAt(sql.length() - 1);
+		sql.append(") ");
 
 		// Place_seq 정렬이 안되어 extractData에서 하나의 place_seq에 대해 여러 Place 인스턴스가 발생하는 버그 수정
 		// -- 2024.08.09
@@ -227,6 +250,8 @@ public class JdbcTemplatePlaceRepository implements PlaceRepository {
 					placeList.add(place);
 					place = new Place(rs.getInt("P.Place_seq"), rs.getString("P.Place_id"), rs.getString("P.Place_formatted_address"), rs.getString("M.Country_code"),
 							new Location(rs.getFloat("P.Place_latitude"), rs.getFloat("P.Place_longitude")), rs.getString("P.Place_gmap_uri"));
+					AddressComponent addressComponent = new AddressComponent(rs.getString("City_name"), Arrays.asList(rs.getString("City_type")));
+					addrComponentSet.add(addressComponent);
 				}
 			}
 
