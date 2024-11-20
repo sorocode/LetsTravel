@@ -9,7 +9,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import com.letsTravel.LetsTravel.domain.member.LoginDTO;
 import com.letsTravel.LetsTravel.domain.member.MemberBasicInfoReadDTO;
 
 @Repository
@@ -21,12 +20,6 @@ public class JdbcTemplateMemberRepository implements MemberRepository {
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 	}
 
-	@Override
-	public Optional<MemberBasicInfoReadDTO> findMember(LoginDTO loginDTO) {
-		String sql = "SELECT M.Mem_seq, M.Nickname FROM Member M WHERE Email = ? AND Password = ?;";
-		List<MemberBasicInfoReadDTO> result = jdbcTemplate.query(sql, memberBasicInfoReadDTORowMapper(), loginDTO.getLoginId(), loginDTO.getPassword());
-		return result.stream().findAny();
-	}
 
 	private RowMapper<MemberBasicInfoReadDTO> memberBasicInfoReadDTORowMapper() {
 		return (rs, rowNum) -> {
