@@ -1,4 +1,7 @@
 spring:
+  config:
+    import:
+      - application-db.yml
   profiles:
     default: dev
   web:

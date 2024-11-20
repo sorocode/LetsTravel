@@ -4,12 +4,12 @@ plugins {
 	id 'io.spring.dependency-management' version '1.1.4'
 	id "com.github.node-gradle.node" version "3.4.0"
 }
-
-node {
-	version = '22.2.0' // 사용할 Node.js 버전
-	npmVersion = '10.7.0' // 사용할 npm 버전
-	download = true // 자동 다운로드 설정
-}
+//
+//node {
+//	version = '22.2.0' // 사용할 Node.js 버전
+//	npmVersion = '10.7.0' // 사용할 npm 버전
+//	download = true // 자동 다운로드 설정
+//}
 
 group = 'com.letsTravel'
 version = '0.0.1-SNAPSHOT'
@@ -35,6 +35,7 @@ dependencies {
 
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
 	implementation 'javax.xml.bind:jaxb-api:2.3.1'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
 
 }
@@ -43,7 +44,7 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
-def frontendDir = "$projectDir/src/main/frontend"
+//def frontendDir = "$projectDir/src/main/frontend"
 
 sourceSets {
 	main {
@@ -52,32 +53,32 @@ sourceSets {
 	}
 }
 
-processResources { dependsOn "copyReactBuildFiles" }
-
-task installReact(type: NpmTask) {
-	workingDir = file(frontendDir)
-	inputs.dir frontendDir
-	group = BasePlugin.BUILD_GROUP
-	args = ['install']
-}
-
-task auditFix(type: NpmTask) {
-	workingDir = file(frontendDir)
-	inputs.dir frontendDir
-	group = BasePlugin.BUILD_GROUP
-	args = ['audit', 'fix']
-}
-
-task buildReact(type: NpmTask) {
-	dependsOn "installReact", "auditFix"
-	workingDir = file(frontendDir)
-	inputs.dir frontendDir
-	group = BasePlugin.BUILD_GROUP
-	args = ['run', 'build']
-}
-
-task copyReactBuildFiles(type: Copy) {
-	dependsOn "buildReact"
-	from "$frontendDir/dist"
-	into "$projectDir/src/main/resources/static"
-}
+//processResources { dependsOn "copyReactBuildFiles" }
+//
+//task installReact(type: NpmTask) {
+//	workingDir = file(frontendDir)
+//	inputs.dir frontendDir
+//	group = BasePlugin.BUILD_GROUP
+//	args = ['install']
+//}
+//
+//task auditFix(type: NpmTask) {
+//	workingDir = file(frontendDir)
+//	inputs.dir frontendDir
+//	group = BasePlugin.BUILD_GROUP
+//	args = ['audit', 'fix']
+//}
+//
+//task buildReact(type: NpmTask) {
+//	dependsOn "installReact", "auditFix"
+//	workingDir = file(frontendDir)
+//	inputs.dir frontendDir
+//	group = BasePlugin.BUILD_GROUP
+//	args = ['run', 'build']
+//}
+//
+//task copyReactBuildFiles(type: Copy) {
+//	dependsOn "buildReact"
+//	from "$frontendDir/dist"
+//	into "$projectDir/src/main/resources/static"
+//}
