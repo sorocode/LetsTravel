@@ -2,7 +2,6 @@ package com.letsTravel.LetsTravel.domain.plan;
 
 import java.util.List;
 
-import com.letsTravel.LetsTravel.domain.city.CityReadDTO;
 import com.letsTravel.LetsTravel.domain.member.MemberBasicInfoReadDTO;
 import com.letsTravel.LetsTravel.domain.schedule.ScheduleInfoDTO;
 
@@ -16,6 +15,5 @@ import lombok.Setter;
 public class PlanDetailDTO {
 	private PlanInfoDTO planInfo;
 	private List<MemberBasicInfoReadDTO> planShareMembers;
-	private List<CityReadDTO> planCities;
 	private List<ScheduleInfoDTO> schedules;
 }
